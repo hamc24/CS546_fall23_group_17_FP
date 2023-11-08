@@ -185,4 +185,5 @@ export default {
   checkStringArray,
   checkNull,
   validateEmail,
+  validateDate,
 };
