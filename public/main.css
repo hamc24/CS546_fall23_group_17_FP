@@ -1,1 +1,64 @@
- 
+ * {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	font-size: 14pt;
+}
+
+body {
+	background: #999999;
+	font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+header {
+	border-bottom: 1px solid #afafaf;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #000;
+	margin-bottom: 5px;
+}
+
+h1 {
+	font-size: 2rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+}
+
+h3 {
+	font-size: 1.5rem;
+}
+
+h4 {
+	font-size: 1.25rem;
+}
+
+h5 {
+	font-size: 1.15rem;
+}
+
+h6 {
+	font-size: 1.05rem;
+}
+
+p {
+	font-size: 1rem;
+	line-height: 2;
+}
+
+p.error, h1.error {
+	color: #a00
+}
+
+label {
+	font-weight: bold;
+}
