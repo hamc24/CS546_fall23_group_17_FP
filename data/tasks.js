@@ -1,4 +1,4 @@
-import validation from '../helpers.js';
+import validation from '../validation.js';
 import { ObjectId } from 'mongodb';
 import { tasks } from '../config/mongoCollections.js';
 
@@ -21,3 +21,5 @@ const getTask = async (userId, taskId) => {};
 
 // Update the status of a
 const updateStatus = async (id) => {};
+
+export default { create, getTask, updateStatus };

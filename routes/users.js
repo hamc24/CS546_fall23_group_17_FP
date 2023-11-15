@@ -6,3 +6,5 @@ import validation from '../validation.js';
 router.route('/').get(async (req, res) => {
   //Todo
 });
+
+export default router;
