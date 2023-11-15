@@ -1,5 +1,8 @@
 // Prototypical router method just to make sure we can get something very primitive, we really should decide EXACTLY how the routes will be handled though.
 
+import tasks from './tasks.js';
+import users from './users.js';
+
 const constructorMethod = (app) => {
   app.use('/tasks', tasks);
   app.use('/users', users);
