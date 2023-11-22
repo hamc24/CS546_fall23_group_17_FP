@@ -150,7 +150,7 @@ function validateEmail(input) {
 
 function validateDate(date) {
   date = date.split('/');
-  if (date.length != 3) throw 'Error: date is not valid';
+  if (date.length != 3) throw 'Error: date is not valid (not long enough)';
   let month = date[0];
   let day = date[1];
   let year = date[2];
@@ -159,7 +159,7 @@ function validateDate(date) {
     parseInt(day) != day ||
     parseInt(year) != year
   )
-    throw 'Error: date is not valid';
+    throw 'Error: date is not valid (did not match)';
   if (month < 1 || month > 12) throw 'Error: date is not valid';
   if (day < 1) throw 'Error: date is invalid';
   if (month == 4 || month == 6 || month == 9 || month == 11) {
@@ -179,6 +179,13 @@ function validateDate(date) {
     throw 'Error: year has to be a number greater than 0 but less than 5';
 }
 
+function validateBirthday(dateString){ // Should be used after validating date
+  let ageDifMs = new Date() - new Date(dateString);
+   let ageDate = new Date(ageDifMs); // miliseconds from epoch
+   let age = ageDate.getUTCFullYear() - 1970;
+   if(age < 13) throw "Error: You must be at least 13 years or older to create an account!";
+}
+
 export default {
   checkId,
   checkString,
@@ -186,4 +193,5 @@ export default {
   checkNull,
   validateEmail,
   validateDate,
+  validateBirthday
 };
