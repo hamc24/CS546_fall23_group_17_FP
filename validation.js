@@ -148,6 +148,7 @@ function validateEmail(input) {
   }
 }
 
+//Date validations function
 function validateDate(date) {
   date = date.split('/');
   if (date.length != 3) throw 'Error: date is not valid (not long enough)';
@@ -179,6 +180,7 @@ function validateDate(date) {
     throw 'Error: year has to be a number greater than 0 but less than 5';
 }
 
+//Birthday validation function
 function validateBirthday(dateString){ // Should be used after validating date
   let ageDifMs = new Date() - new Date(dateString);
    let ageDate = new Date(ageDifMs); // miliseconds from epoch
@@ -186,6 +188,104 @@ function validateBirthday(dateString){ // Should be used after validating date
    if(age < 13) throw "Error: You must be at least 13 years or older to create an account!";
 }
 
+// Check if date is in the future
+function compareDate(date) {
+  date = date.split('/');
+  let month = date[0];
+  let day = date[1];
+  let year = date[2];
+
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+
+  if (yyyy > year) {
+    throw 'Error: date has to be in the future';
+  } else if (yyyy == year) {
+    if (mm > month) {
+      throw 'Error: date has to be in the future';
+    } else if (mm == month) {
+      if (dd > day) {
+        throw 'Error: date has to be in the future';
+      }
+    }
+  }
+}
+
+// Checking if time is formatted correctly
+function validateTime(time) {
+  let splitTime = time.split(':');
+  if (splitTime.length != 2) throw 'Error: invalid time';
+  let hour = splitTime[0];
+  let minute = splitTime[1].substring(0, 2);
+  let AMPM = splitTime[1].substring(2);
+
+  // Checking hour so that it is formatted correctly
+  if (hour.length > 2 || hour.length < 1) {
+    throw 'Error: invalid Hour';
+  } else if (hour.length == 2) {
+    if (hour[0] == '0') {
+      throw 'Error: bad formatting for hour';
+    }
+  }
+
+  if (minute.length != 2 || AMPM.length != 3) throw 'Error: invalid time';
+
+  AMPM = AMPM.trim();
+  if (AMPM.length != 2) throw 'Error AMPM Format error';
+
+  if (parseInt(hour) != hour || parseInt(minute) != minute)
+    throw 'Error: invalid time';
+  if (
+    AMPM.toUpperCase().localeCompare('AM') != 0 &&
+    AMPM.toUpperCase().localeCompare('PM') != 0
+  )
+    throw 'Error: invalid time';
+
+  if (hour < 1 || hour > 12) throw 'Error: Invalid time';
+  if (minute < 0 || minute > 59) throw 'Error: Invalid time';
+}
+
+
+//Compare two different times
+function compareTimes(start, end) {
+  validateTime(start);
+  let splitStart = start.split(':');
+  let startHour = splitStart[0];
+  let startMin = splitStart[1].substring(0, 2);
+  let startAMPM = splitStart[1].substring(2, 4);
+
+  validateTime(end);
+  let splitEnd = end.split(':');
+  let endHour = splitEnd[0];
+  let endMin = splitEnd[1].substring(0, 2);
+  let endAMPM = splitEnd[1].substring(2, 4);
+
+  // console.log(startHour);
+  // console.log(startMin);
+  // console.log(startAMPM);
+  // console.log(endHour);
+  // console.log(endMin);
+  // console.log(endAMPM);
+
+  if (endAMPM.toUpperCase() == 'AM' && startAMPM.toUpperCase() == 'PM') {
+    throw "Error: end time can't be earlier than start time1";
+  } else if (endAMPM.toUpperCase() == startAMPM.toUpperCase()) {
+    if (parseInt(endHour) < parseInt(startHour)) {
+      throw "Error: end time can't be later than start time2";
+    } else if (parseInt(endHour) == parseInt(startHour)) {
+      if (parseInt(endMin) < parseInt(startMin)) {
+        throw 'Error: end time cant be earlier than start time3';
+      } else if (parseInt(endMin) - parseInt(startMin) < 30)
+        throw 'Error: end time must be at least 30 minutes later than the start time4';
+    } else if (parseInt(endHour) - parseInt(startHour) == 1) {
+      if (60 - parseInt(startMin) + parseInt(endMin) < 30) {
+        throw 'Error: end time must be at least 30 minutes later than the start time5';
+      }
+    }
+  }
+}
 export default {
   checkId,
   checkString,
@@ -193,5 +293,8 @@ export default {
   checkNull,
   validateEmail,
   validateDate,
-  validateBirthday
+  validateBirthday,
+  compareDate,
+  validateTime,
+  compareTimes
 };

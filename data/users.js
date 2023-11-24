@@ -40,11 +40,13 @@ const create = async (firstName, lastName, email, userName, dateOfBirth, passWor
   const userCollection = await users();
   const newInsertInformation = await userCollection.insertOne(newUser);
   if(!newInsertInformation) throw "Insert failed"
-
-
-
-
+  //Todo: return the task object
 };
+
+//TODO: NEED TO FINISH THIS ASAP
+const getUserByID = async (id) => {
+  
+}
 
 // Function for deleting user in database given the id
 const remove = async (id) => {
