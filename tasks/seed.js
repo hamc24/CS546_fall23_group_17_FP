@@ -39,6 +39,10 @@ try {
   console.log(chang);
   console.log(patrick);
   console.log(changTask1);
+
+  console.log(
+    await taskData.updateStatus(changTask1._id.toString(), "revision required")
+  );
 } catch (error) {
   console.log(error);
 }

@@ -102,6 +102,32 @@ const getAllTasks = async () => {
 };
 
 // Update the status of a
-const updateStatus = async (id) => {};
+const updateStatus = async (id, statusString) => {
+  //* Status has the type number, so will have to convert status string to number
+  let statusNum = 0;
+  //*validation
+  id = validation.checkId(id);
+  statusString = validation.checkString(statusString);
+  if (statusString.localeCompare("in progress") == 0) {
+    statusNum = 0;
+  } else if (statusString.localeCompare("revision required") == 0) {
+    statusNum = 1;
+  } else if (statusString.localeCompare("resolved") == 0) {
+    statusNum = 2;
+  } else {
+    throw "Error: Invalid Status String";
+  }
+
+  const taskCollection = await tasks();
+  const updateInfo = await taskCollection.findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    { $set: { status: statusNum } },
+    { returnDocument: "after" }
+  );
+
+  if (!updateInfo)
+    throw `Error: Update failed, could not find a user with id of ${id}`;
+  return updateInfo;
+};
 
 export default { create, getAllTasks, updateStatus };
