@@ -1,0 +1,26 @@
+    <h1>Login</h1>
+    <main>
+        <p>Please log in to your user account.</p>
+        <form id=login-form action=/login method=POST>
+            <label for="emailAddressInput"> Please enter your email address:
+                <br>
+                <input type=email name="emailAddressInput" id="emailAddressInput"/>
+            </label>
+            <br>
+            <label for="passwordInput"> Please enter your password:
+                <br>
+                <input type=password name="passwordInput" id="passwordInput"/>
+            </label>
+            <br>
+            <label> Submit:
+                <br>
+                <input type=submit value="Login!" />
+            </label>
+        </form>
+        <p class=error>
+            {{error}}
+        </p>
+        <a href=/register>
+            Click here to register!
+        </a>
+    </main>
