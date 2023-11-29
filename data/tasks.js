@@ -90,12 +90,18 @@ const getTaskByID = async (id) => {
 };
 
 //TODO: We will probably need this later for displaying all the tasks on the public task board
-//TODO: Also need to use advanced mongo to sort by parameters
-const getAllTasks = (sortByOption) => {};
-
-const getTask = async (userId, taskId) => {};
+// ! Note: we can get all tasks then sorting will be done through client side javascript
+const getAllTasks = async () => {
+  const taskCollection = await tasks();
+  const taskList = await taskCollection
+    .find({})
+    .project({ taskName: 1 })
+    .toArray();
+  if (!taskList) throw "Error: Could not get all tasks";
+  return taskList;
+};
 
 // Update the status of a
 const updateStatus = async (id) => {};
 
-export default { create, getTask, updateStatus };
+export default { create, getAllTasks, updateStatus };
