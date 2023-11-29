@@ -1,6 +1,6 @@
-import validation from '../validation.js';
-import { ObjectId } from 'mongodb';
-import { tasks } from '../config/mongoCollections.js';
+import validation from "../validation.js";
+import { ObjectId } from "mongodb";
+import { tasks } from "../config/mongoCollections.js";
 
 // Create a new task
 const create = async (
@@ -12,10 +12,86 @@ const create = async (
   dateDue,
   timeDue,
   durationH,
-  durationM
+  durationM,
+  maxContributors
 ) => {
-  //Todo
+  //Validate Null
+  validation.checkNull(taskName);
+  validation.checkNull(description);
+  validation.checkNull(creatorId);
+  validation.checkNull(creator);
+  validation.checkNull(publicPost);
+  validation.checkNull(dateDue);
+  validation.checkNull(timeDue);
+  validation.checkNull(durationH);
+  validation.checkNull(durationM);
+  validation.checkNull(maxContributors);
+
+  //Input validation for types
+  taskName = validation.checkString(taskName, "Task Name");
+  description = validation.checkString(description, "Description");
+  creatorId = validation.checkId(creatorId, "Creator ID");
+  creator = validation.checkString(creator, "Creator Name"); //? Forgot if we have to turn this into a string...
+  if (typeof publicPost != "boolean")
+    throw "Error: publicPost input is not a boolean";
+  dateDue = validation.checkString(dateDue, "Date Due");
+  timeDue = validation.checkString(timeDue, "Time Due");
+  if (typeof durationH != "number" || typeof durationM != "number")
+    throw "Error: Duration is not a number";
+
+  if (typeof maxContributors != "number")
+    throw "Error: MaxContributors is not a number";
+  //Date validation
+  validation.validateDate(dateDue);
+  validation.compareDate(dateDue);
+
+  //Time validation
+  validation.validateTime(timeDue);
+  if (durationH > 24 || durationH < 0)
+    throw "Error: Task Duration hour cannot be more than 24 hours long and less than 0";
+  if (durationM > 60 || durationM < 0)
+    throw "Error: Task Duration minutes cannot exceed 60 mins or be less than 0";
+
+  //Create user obj to put into collection
+  let newTask = {
+    taskName: taskName,
+    description: description,
+    creatorId: creatorId,
+    creator: creator,
+    publicPost: publicPost,
+    dateDue: dateDue,
+    timeDue: timeDue,
+    maxContributors,
+    maxContributors,
+    contributors: [],
+    unauthorized: [],
+    duration: {
+      durationH: durationH,
+      durationM: durationM,
+    },
+    status: 0,
+    submitted: false,
+  };
+
+  const taskCollection = await tasks();
+  const newInsertInformation = await taskCollection.insertOne(newTask);
+  if (!newInsertInformation.insertedId) throw "Insert failed";
+  return await getTaskByID(newInsertInformation.insertedId.toString());
 };
+
+const getTaskByID = async (id) => {
+  id = validation.checkId(id);
+  const taskCollection = await tasks();
+  const task = await taskCollection.findOne({
+    _id: new ObjectId(id),
+  });
+  if (!task) throw "Error: Task not found";
+  return task;
+};
+
+//TODO: We will probably need this later for displaying all the tasks on the public task board
+//TODO: Also need to use advanced mongo to sort by parameters
+const getAllTasks = (sortByOption) => {};
 
 const getTask = async (userId, taskId) => {};
 

@@ -6,11 +6,13 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node ./tasks/seed.js"
   },
   "author": "Chang-Woo Ham, Rudolph Sedlin, Siyan Wen, Wilson Jeng",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
     "mongodb": "^6.2.0"
