@@ -11,8 +11,12 @@
   "author": "Chang-Woo Ham, Rudolph Sedlin, Siyan Wen, Wilson Jeng",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
-    "mongodb": "^6.2.0"
+    "express-session": "^1.17.3",
+    "mongodb": "^6.2.0",
+    "xss": "^1.0.14"
   }
 }
