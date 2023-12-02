@@ -1,4 +1,13 @@
 import { ObjectId } from "mongodb"; // Used for ObjectId Checking
+import xss from 'xss';
+
+// A helper to sanitize form input, be sure to call whenever a form is recieved.
+
+function sanitize(body) {
+  for (let element in body)
+    body[element] = xss(body[element]);
+  return body;
+}
 
 //
 function checkId(id, varName) {
@@ -299,6 +308,7 @@ function validatePassword(string) {
 }
 
 export default {
+  sanitize,
   checkId,
   checkString,
   checkStringArray,
