@@ -1,8 +1,7 @@
 import { Router } from 'express';
 const router = Router();
-import { userData } from '../data/index.js';
 import validation from '../validation.js';
-import * as users from '../data/users.js';
+import {userData} from '../data/index.js';
 import middleware from '../middleware.js'
 
 router
@@ -24,7 +23,7 @@ router
       if (password !== confirmPassword)
         throw "Passwords do not match.";
 
-      let status = (await users.registerUser(firstName, lastName, email, password, role));
+      let status = (await userData.create(firstName, lastName, email, password, role));
 
       if (status.insertedUser)
         return res.status(200).redirect('/login');
@@ -48,7 +47,7 @@ router
       let email = req.body.emailAddressInput;
       let password = req.body.passwordInput;
 
-      let status = (await users.loginUser(email, password));
+      let status = (await userData.loginUser(email, password));
 
       if (status == "Database error.")
         return res.status(500).json({error: 'Internal server error'});
@@ -56,9 +55,9 @@ router
         res.cookie('AuthState', 'Logged in!');
         req.session.user = status;
         if (status.role == 'admin')
-          return res.status(200).redirect('/admin');
+          return res.status(200).redirect('/users/admin');
         else
-          return res.status(200).redirect('/protected');
+          return res.status(200).redirect('/users/protected');
         }
     }
     catch (error) {

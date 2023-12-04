@@ -3,7 +3,7 @@
         <p>
             Please register a new user account.
         </p>
-        <form id=registration-form action=/register method=POST>
+        <form id="registration-form" action="/users/register" method="post">
             <label for="firstNameInput">
                 Please enter your first name:
                 <br>
@@ -66,7 +66,7 @@
             {{/each}}
         </ul>           
         {{/if}}
-        <a href=/login>
+        <a href="/users/login">
             Already have an account? Click here to log-in
         </a>
     </main>

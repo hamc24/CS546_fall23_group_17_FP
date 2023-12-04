@@ -72,7 +72,7 @@ router
 
 
 router
-  .route('.allTaskByDuration')
+  .route('/allTaskByDuration')
   .get(middleware.privateProtect, async(req,res)=> {
     let url = window.location.pathname
     let page = Number(url.split("=")[url.length-1]);
@@ -83,7 +83,7 @@ router
 
 
 router
-  .route('allTaskByDueTime')
+  .route('/allTaskByDueTime')
   .get(middleware.privateProtect, async (req,res) => {
     let url = window.location.pathname
     let page = Number(url.split("=")[url.length-1]);

@@ -1,20 +1,20 @@
-    <h1>Login</h1>
+    <h1>{{title}}</h1>
     <main>
         <p>Please log in to your user account.</p>
-        <form id=login-form action=/login method=POST>
+        <form id="login-form" action="/users/login" method="post">
             <label for="emailAddressInput"> Please enter your email address:
                 <br>
-                <input type=email name="emailAddressInput" id="emailAddressInput"/>
+                <input type="email" name="emailAddressInput" id="emailAddressInput"/>
             </label>
             <br>
             <label for="passwordInput"> Please enter your password:
                 <br>
-                <input type=password name="passwordInput" id="passwordInput"/>
+                <input type="password" name="passwordInput" id="passwordInput"/>
             </label>
             <br>
             <label> Submit:
                 <br>
-                <input type=submit value="Login!" />
+                <input type="submit" value="Login!" />
             </label>
         </form>
         <p class=error>
@@ -29,7 +29,7 @@
             {{/each}}
         </ul>           
         {{/if}}
-        <a href=/register>
+        <a href="/users/register">
             Click here to register!
         </a>
     </main>

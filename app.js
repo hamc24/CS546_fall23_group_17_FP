@@ -31,13 +31,20 @@ app.use(
     cookie: {maxAge: 60000}
   })
 );
-
+const rewriteUnsupportedBrowserMethods = (req, res, next) => {
+  if (req.body && req.body._method) {
+    req.method = req.body._method;
+    delete req.body._method;
+  }
+  next();
+};
+app.use(rewriteUnsupportedBrowserMethods);
 app.use(async (req, res, next) => {
   if(req.path==="/"){
     if(req.session.user){      
-      return res.redirect('/protected');    
+      return res.redirect('/users/protected');    
     }else{
-      return res.redirect('/login');
+      return res.redirect('/users/login');
     }
   }else{
     next();
