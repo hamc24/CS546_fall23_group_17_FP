@@ -30,7 +30,17 @@ function checkString(strVal, varName) {
     throw `Error: ${varName} cannot be an empty string or string with just spaces`;
   return strVal;
 }
-
+function checkNumber(val,name){
+  if (typeof(val) != "number"){
+      throw `input ${name} ${val} is not number`;
+  };
+  if (isNaN(val)){
+      throw `input ${name} ${val} is NaN`;
+  };
+  if (val === Infinity || val === -Infinity){
+      throw `input ${name} ${val} is Infinity or -Infinity`;
+  };
+}
 function checkStringArray(arr, varName) {
   //arr = [string], varName = string
   //We will allow an empty array for this,
@@ -311,6 +321,7 @@ export default {
   sanitize,
   checkId,
   checkString,
+  checkNumber,
   checkStringArray,
   checkNull,
   validateEmail,

@@ -32,7 +32,17 @@ app.use(
   })
 );
 
-app.use(middleware());
+app.use(async (req, res, next) => {
+  if(req.path==="/"){
+    if(req.session.user){      
+      return res.redirect('/protected');    
+    }else{
+      return res.redirect('/login');
+    }
+  }else{
+    next();
+  }
+})
 
 configRoutes(app);
 

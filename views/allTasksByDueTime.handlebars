@@ -1,0 +1,12 @@
+<main>
+    {{#if }}
+    <a href="/tasks/allTasksByDuration?page=0">sort by task duration time</a>
+    <ul>
+        {{#each taskList}}
+        <li>
+            {{this}}
+        </li>
+        {{/each}}
+    </ul>
+    <a href="/tasks/allTasksByDueTime?page={{page}}">{{page}}</a>
+</main>

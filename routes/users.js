@@ -3,6 +3,7 @@ const router = Router();
 import { userData } from '../data/index.js';
 import validation from '../validation.js';
 import * as users from '../data/users.js';
+import middleware from '../middleware.js'
 
 router
   .route('/register')
@@ -70,7 +71,7 @@ router.route('/error').get(async (req, res) => {
   return res.status(200).render('error');
 });
 
-router.route('/logout').get(async (req, res) => {
+router.route('/logout').get(middleware.privateProtect,async (req, res) => {
   //code here for GET
   const anHourAgo = new Date();
   anHourAgo.setHours(anHourAgo.getHours() - 1);
@@ -80,4 +81,8 @@ router.route('/logout').get(async (req, res) => {
   return res.status(200).render('logout');
 });
 
+
+router.route('protected').get(middleware.privateProtect, async (req,res) => {
+  return res.render('protected',{title:"protected"})
+})
 export default router;

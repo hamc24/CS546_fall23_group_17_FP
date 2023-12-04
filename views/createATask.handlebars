@@ -1,0 +1,58 @@
+<main>
+    <h1>{{title}}</h1>
+    <form action="/tasks" id="createATask-Form" method="post">
+        <label for="taskNameInput">
+            Please enter task name:
+            <br>
+            <input type="text" name="taskNameInput" id="taskNameInput" value={{data.taskNameInput}}/>
+        </label>
+        <br>
+        <label for="descriptionInput">
+            Please enter task description:
+            <br>
+            <input type="text" name="taskDescriptionInput" id="taskDescriptionNameInput" value={{data.taskDescriptionNameInput}}/>
+        </label>
+        <br>
+        <label for="taskTypeInput">
+            Please select task type:
+            <br>
+            <select name="taskTypeInput" id="taskTypeInput" value={{data.taskTypeInput}}>
+                <option value="public">public</option>
+                <option value="private">private</option>
+            </select>
+        </label>
+        <br>
+        <label for="taskDateDueInput">
+            Please enter Due Date:
+            <br>
+            <input type="date" name="taskDateDueInput" id="taskDateDueInput" value={{data.taskDateDueInput}}/>
+        </label>
+        <br>
+        <label for="taskTimeDueInput">
+            Please enter Due Time:
+            <br>
+            <input type="time" name="taskTimeDueInput" id="taskTimeDueInput" value={{data.taskTimeDueInput}}/>
+        </label>
+        <br>
+        <label for="taskMaxContributorInput">
+            Please enter max contributor:
+            <br>
+            <input type="time" name="taskMaxContributorInput" id="taskMaxContributorInput" value={{data.taskMaxContributorInput}}/>
+        </label>
+        <br>
+        <label for="taskDurationInputH">
+            Please enter task duration:
+            <br>
+            <input type="text" name="taskDurationInputH" id="taskDurationInputH" value={{data.taskDurationInputH}}/>
+        </label>
+        <label for="taskDurationInputM">
+            :
+            <br>
+            <input type="text" name="taskDurationInputM" id="taskDurationInputM" value={{data.taskDurationInputM}}/>
+        </label>
+        <br>
+
+        <input type=submit value="Submit"/>   
+        <input type="reset" value="Reset">
+    </form>
+</main>

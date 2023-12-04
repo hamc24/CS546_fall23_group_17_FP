@@ -20,6 +20,15 @@
         <p class=error>
             {{error}}
         </p>
+        {{#if hasErrors}}
+        <ul class="errorList">
+        {{#each errorList}}
+            <li>
+            <p  class="error">{{ this }}</p>
+            </li>
+            {{/each}}
+        </ul>           
+        {{/if}}
         <a href=/register>
             Click here to register!
         </a>

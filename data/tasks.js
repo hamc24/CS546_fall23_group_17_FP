@@ -39,6 +39,16 @@ const create = async (
   if (typeof durationH != "number" || typeof durationM != "number")
     throw "Error: Duration is not a number";
 
+
+  let timeString = dateDue +" "+ timeDue;
+  let due = Date.parse(timeString,'MM/DD/YYYY h:mm A');
+  
+  if(!date.isValid(timeString,'MM/DD/YYYY h:mm A')){
+    throw "invalid Due Date or Due Time";
+  }
+  let durationString = durationH +" "+ durationM;
+  let durationStamp = Date.parse(durationString,'MM/DD/YYYY h:mm A');
+
   if (typeof maxContributors != "number")
     throw "Error: MaxContributors is not a number";
   //Date validation
@@ -52,16 +62,29 @@ const create = async (
   if (durationM > 60 || durationM < 0)
     throw "Error: Task Duration minutes cannot exceed 60 mins or be less than 0";
 
+    let dateTime = new Date().toUTCString();
+    let dateCreated = dateTime.toLocaleDateString();
+    let timeCreated = dateTime.toLocaleTimeString();
+
+    if(publicPost != "public" && publicPost != "private"){
+      throw "Error : tasks must be either public or private"
+    }
+    let bool = false
+    if(publicPost == "public"){
+      bool = true
+    }
   //Create user obj to put into collection
   let newTask = {
     taskName: taskName,
     description: description,
     creatorId: creatorId,
     creator: creator,
-    publicPost: publicPost,
+    publicPost: bool,
+    dateCreated: dateCreated,
+    timeCreated: timeCreated,
     dateDue: dateDue,
     timeDue: timeDue,
-    maxContributors,
+    due:due,
     maxContributors,
     contributors: [],
     unauthorized: [],
@@ -69,6 +92,7 @@ const create = async (
       durationH: durationH,
       durationM: durationM,
     },
+    durationStamp:durationStamp,
     status: 0,
     submitted: false,
   };
@@ -95,11 +119,42 @@ const getAllTasks = async () => {
   const taskCollection = await tasks();
   const taskList = await taskCollection
     .find({})
-    .project({ taskName: 1 })
+    .sort({ due: -1 })
+    .project({ taskName: 1, comments : 1 })
     .toArray();
   if (!taskList) throw "Error: Could not get all tasks";
   return taskList;
 };
+
+
+const getAllTasksByDueTime = async (page) => {
+  const taskCollection = await tasks();
+  const taskList = await taskCollection
+  
+    .find({})
+    .sort({ due: -1 })
+    .skip(page*15)
+    .limit(15)
+    .project({ taskName: 1 ,comments : 1})
+    .toArray();
+  if (!taskList) throw "Error: Could not get all tasks";
+  return taskList;
+}
+
+
+const getAllTasksByDuration = async (page) => {
+  const taskCollection = await tasks();
+  const taskList = await taskCollection
+  
+    .find({})
+    .sort({ durationStamp: -1 })
+    .skip(page*15)
+    .limit(15)
+    .project({ taskName: 1 ,comments : 1})
+    .toArray();
+  if (!taskList) throw "Error: Could not get all tasks";
+  return taskList;
+}
 
 // Update the status of a
 const updateStatus = async (id, statusString) => {
@@ -130,4 +185,9 @@ const updateStatus = async (id, statusString) => {
   return updateInfo;
 };
 
-export default { create, getAllTasks, updateStatus };
+export default {
+  create,
+  getAllTasks,
+  updateStatus,
+  getAllTasksByDueTime,
+  getAllTasksByDuration};

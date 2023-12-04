@@ -56,6 +56,16 @@
         <p class=error>
             {{error}}
         </p>
+
+        {{#if hasErrors}}
+        <ul class="errorList">
+        {{#each errorList}}
+            <li>
+            <p  class="error">{{ this }}</p>
+            </li>
+            {{/each}}
+        </ul>           
+        {{/if}}
         <a href=/login>
             Already have an account? Click here to log-in
         </a>

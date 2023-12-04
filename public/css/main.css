@@ -62,3 +62,16 @@ p.error, h1.error {
 label {
 	font-weight: bold;
 }
+.error {
+	color: red;
+	font-weight: bold;
+}
+
+.inputClass {
+	border: 3px solid red;
+	background-color: #eee;
+    
+}
+.tasks {
+	background-color: yellow;
+}
