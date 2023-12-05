@@ -94,14 +94,14 @@ const getTaskByID = async (id) => {
 const getAllTasks = async () => {
   const taskCollection = await tasks();
   const taskList = await taskCollection
-    .find({})
+    .find({ publicPost: { $eq: true } })
     .project({ taskName: 1 })
     .toArray();
   if (!taskList) throw "Error: Could not get all tasks";
   return taskList;
 };
 
-// Update the status of a
+// Update the status of a task
 const updateStatus = async (id, statusString) => {
   //* Status has the type number, so will have to convert status string to number
   let statusNum = 0;
@@ -130,4 +130,4 @@ const updateStatus = async (id, statusString) => {
   return updateInfo;
 };
 
-export default { create, getAllTasks, updateStatus };
+export default { create, getTaskByID, getAllTasks, updateStatus };

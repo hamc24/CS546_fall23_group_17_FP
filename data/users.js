@@ -4,13 +4,14 @@ import { users } from "../config/mongoCollections.js";
 import bcrypt from "bcrypt";
 
 // Function for creating a user in the user data base
-const create = async (
+const registerUser = async (
   firstName,
   lastName,
   email,
   userName,
   dateOfBirth,
-  passWord
+  password,
+  confirmPassword
 ) => {
   //Validation Handling
   //* Validate Null
@@ -19,6 +20,7 @@ const create = async (
   validation.checkNull(email);
   validation.checkNull(userName);
   validation.checkNull(dateOfBirth);
+  validation.checkNull(confirmPassword);
 
   // Validate String params
   firstName = validation.checkString(firstName, "First Name");
@@ -34,9 +36,12 @@ const create = async (
   validation.validateBirthday(dateOfBirth);
 
   //Password validation and hashing
-  validation.validatePassword(passWord);
+  validation.validatePassword(password);
+  validation.validatePassword(confirmPassword);
+  if (password.localeCompare(confirmPassword) != 0)
+    throw "Error: Passwords do not match";
   const saltRounds = 16;
-  const hash = await bcrypt.hash(passWord, saltRounds);
+  const hash = await bcrypt.hash(password, saltRounds);
 
   //Create user object to put into collection
   let newUser = {
