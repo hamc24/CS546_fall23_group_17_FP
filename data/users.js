@@ -95,4 +95,4 @@ const addTask = async (userName, taskId) => {
 // Function for getting all tasks for a user
 const getTasks = async (userId) => {};
 
-export default { create, remove, updateUser, addTask, getTasks };
+export default { registerUser, remove, updateUser, addTask, getTasks };
