@@ -2,7 +2,6 @@ import { Router } from 'express';
 const router = Router();
 import { userData } from '../data/index.js';
 import validation from '../validation.js';
-import * as users from '../data/users.js';
 
 router
   .route('/')
@@ -16,16 +15,17 @@ router
       let firstName = req.body.firstNameInput;
       let lastName = req.body.lastNameInput;
       let email = req.body.emailAddressInput;
+      let userName = req.body.userNameInput;
+      let dateOfBirth = req.body.dateOfBirthInput;
       let password = req.body.passwordInput;
       let confirmPassword = req.body.confirmPasswordInput;
-      let role = req.body.roleInput;
 
       if (password !== confirmPassword)
         throw "Passwords do not match.";
 
-      let status = (await users.registerUser(firstName, lastName, email, password, role));
+      let status = (await userData.create(firstName, lastName, email, userName, dateOfBirth, password));
 
-      if (status.insertedUser)
+      if (status)
         return res.status(200).redirect('/login');
       else
         return res.status(500).json({error: 'Internal server error'});
