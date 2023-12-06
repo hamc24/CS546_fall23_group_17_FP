@@ -90,4 +90,28 @@ const addTask = async (userName, taskId) => {
 // Function for getting all tasks for a user
 const getTasks = async (userId) => {};
 
-export default { create, remove, updateUser, addTask, getTasks };
+// Function to return user login information.
+const loginUser = async (emailAddress, password) => {
+  let userCollection;
+  try {
+    userCollection = await users();
+  }
+  catch (error) {
+    return "Database error.";
+  }
+
+  emailAddress = validation.validateEmail(emailAddress);
+  validation.validatePassword(password);
+
+  let user = await userCollection.findOne({emailAddress: emailAddress});
+  if (user == null)
+    throw "User with email " + emailAddress + " doesn't exist.";
+
+  let authenticated = await bcrypt.compare(password, user.password);
+  if (!authenticated)
+    throw "Password is invalid.";
+
+  return {firstName: user.firstName, lastName: user.lastName, emailAddress: user.emailAddress, role: user.role};
+};
+
+export default { create, remove, updateUser, addTask, getTasks, loginUser };

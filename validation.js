@@ -300,7 +300,7 @@ function compareTimes(start, end) {
 // Reference:
 //https://stackoverflow.com/questions/12090077/javascript-regular-expression-password-validation-having-special-characters
 function validatePassword(string) {
-  var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  var re = /^(?=.*\d)(?=.*[!@#$%^&*():<>?,.;/[]\\-=`~\'\"+{}|])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
   if (!re.test(string))
     throw "Error: Password must be 8 Characters long, have at least one uppercase letter, one letter, and one special character";
   if (string.split(" ").length > 1)
