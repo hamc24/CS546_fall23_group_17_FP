@@ -35,6 +35,7 @@ const create = async (
 
   //Password validation and hashing
   validation.validatePassword(passWord);
+
   const saltRounds = 16;
   const hash = await bcrypt.hash(passWord, saltRounds);
 
@@ -50,6 +51,11 @@ const create = async (
   };
 
   const userCollection = await users();
+
+  let user = await userCollection.findOne({email: email});
+  if (user !== null)
+    throw "User with email " + email + " already exists.";
+
   const newInsertInformation = await userCollection.insertOne(newUser);
   if (!newInsertInformation.insertedId) throw "Insert failed";
   return await getUserByID(newInsertInformation.insertedId.toString());
@@ -91,7 +97,7 @@ const addTask = async (userName, taskId) => {
 const getTasks = async (userId) => {};
 
 // Function to return user login information.
-const loginUser = async (emailAddress, password) => {
+const loginUser = async (email, password) => {
   let userCollection;
   try {
     userCollection = await users();
@@ -100,12 +106,12 @@ const loginUser = async (emailAddress, password) => {
     return "Database error.";
   }
 
-  emailAddress = validation.validateEmail(emailAddress);
+  validation.validateEmail(email);
   validation.validatePassword(password);
 
-  let user = await userCollection.findOne({emailAddress: emailAddress});
+  let user = await userCollection.findOne({email: email});
   if (user == null)
-    throw "User with email " + emailAddress + " doesn't exist.";
+    throw "User with email " + email + " doesn't exist.";
 
   let authenticated = await bcrypt.compare(password, user.hashedPass);
   if (!authenticated)
