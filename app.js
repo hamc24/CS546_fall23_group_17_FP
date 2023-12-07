@@ -32,60 +32,14 @@ app.use(
   })
 );
 
-app.get('/login', async (req, res, next) => {
-  try {
-    if (!req.session.user);
-      //res.redirect('login');
-    else {
-      if (req.session.user.role == 'admin')
-        res.redirect('/admin');
-      else if (req.session.user.role == 'user')
-        res.redirect('/protected');
-    }
-    next();
-  }
-  catch (error) {}
-}
-);
-
-app.get('/register', async (req, res, next) => {
-  try {
-    if (!req.session.user);
-      //res.redirect('register');
-    else {
-      if (req.session.user.role == 'admin')
-        res.redirect('/admin');
-      else if (req.session.user.role == 'user')
-        res.redirect('/protected');
-    }
-    next();
-  }
-  catch (error) {}
-}
-);
-
-app.get('/protected', async (req, res, next) => {
+app.get('/', async (req, res, next) => {
   try {
     if (!req.session.user)
-      res.status(200).redirect('/login');
-    else
-      next();
-  }
-  catch (error) {}
-}
-);
-
-app.get('/admin', async (req, res, next) => {
-  try {
-  if (!req.session.user)
-    res.status(200).redirect('/login');
-  else {
-    if (req.session.user.role == 'admin')
-      next();
-    else if (req.session.user.role == 'user')
-      res.status(403).redirect('/error');
-  }
-  //next();
+      res.redirect('login');
+    else {
+      res.redirect('users');
+    }
+    next();
   }
   catch (error) {}
 }
