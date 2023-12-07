@@ -107,11 +107,11 @@ const loginUser = async (emailAddress, password) => {
   if (user == null)
     throw "User with email " + emailAddress + " doesn't exist.";
 
-  let authenticated = await bcrypt.compare(password, user.password);
+  let authenticated = await bcrypt.compare(password, user.hashedPass);
   if (!authenticated)
     throw "Password is invalid.";
 
-  return {firstName: user.firstName, lastName: user.lastName, emailAddress: user.emailAddress, role: user.role};
+  return {firstName: user.firstName, lastName: user.lastName, email: user.email, userName: user.userName, dateOfBirth: user.dateOfBirth};
 };
 
 export default { create, remove, updateUser, addTask, getTasks, loginUser };

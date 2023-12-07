@@ -22,10 +22,7 @@ router
       else {
         res.cookie('AuthState', 'Logged in!');
         req.session.user = status;
-        if (status.role == 'admin')
-          return res.status(200).redirect('/admin');
-        else
-          return res.status(200).redirect('/protected');
+        return res.status(200).redirect('users');
         }
     }
     catch (error) {
