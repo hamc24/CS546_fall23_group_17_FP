@@ -202,10 +202,10 @@ function validateBirthday(dateString) {
 
 // Check if date is in the future
 function compareDate(date) {
-  date = date.split("/");
-  let month = date[0];
-  let day = date[1];
-  let year = date[2];
+  date = date.split("-");
+  let month = date[1];
+  let day = date[2];
+  let year = date[0];
 
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, "0");
