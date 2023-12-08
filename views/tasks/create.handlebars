@@ -1,0 +1,69 @@
+<h1>Create a task</h1>
+<main>
+<p>
+    Please create a new task.
+    </p>
+    <form id=create-form action=/tasks/create method=POST>
+        <label for="taskNameInput">
+            Please enter the task's name:
+            <br>
+            <input type=text name="taskNameInput" id="taskNameInput"/>
+        </label>
+        <br>
+        <label for="descriptionInput">
+            Please enter your task's description:
+            <br>
+            <input type=text name="descriptionInput" id="descriptionInput"/>
+        </label>
+        <br>
+        <label for="emailAddressInput"> // FIX THIS!
+            Please enter your email address:
+            <br>
+            <input type=email name="emailAddressInput" id="emailAddressInput"/>
+        </label>
+        <br>
+        <label for="dateDueInput">
+            Please enter your tasks's due date:
+            <br>
+            <input type=date name="dateDueInput" id="dateDueInput"/>
+        </label>
+        <br>
+        <label for="dateOfBirthInput">
+            Please enter your tasks's due time:
+            <br>
+            <input type=time name="timeDueInput" id="timeDueInput"/>
+        </label>
+        <br>
+        <label for="passwordInput">
+            Please enter your password:
+            <br>
+            <input type=password name="passwordInput" id="passwordInput"/>
+        </label>
+        <br>
+        <label for="confirmPasswordInput">
+            Please confirm your password:
+            <br>
+            <input type=password name="confirmPasswordInput" id="confirmPasswordInput"/>
+        </label>
+        <br>
+        <label>
+            Submit:
+            <br>
+            <input type=submit value="Create!"/>
+        </label>
+    </form>
+    <p class=error>
+        {{error}}
+    </p>
+    <a href=/tasks/tasks>
+        Click here to return to tasks!
+    </a>
+    <br>
+    <a href=/users>
+        Click here to return to users!
+    </a>
+    <br>
+    <a href=/logout>
+        Click here to logout!
+    </a>
+</main>
