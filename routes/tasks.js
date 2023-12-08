@@ -4,9 +4,37 @@ import { userData } from '../data/index.js';
 import validation from '../validation.js';
 import * as users from '../data/users.js';
 
-router.route('/').get(async (req, res) => {
+router.route('/tasks').get(async (req, res) => {
   if (req.session.user)
-    return res.status(200).render('tasks', {});
+    return res.status(200).render('tasks/tasks', {});
+
+  return res.status(400).redirect('/');
+});
+
+router.route('/all').get(async (req, res) => {
+  if (req.session.user)
+    return res.status(200).render('tasks/all', {});
+
+  return res.status(400).redirect('/');
+});
+
+router.route('/public').get(async (req, res) => {
+  if (req.session.user)
+    return res.status(200).render('tasks/public', {});
+
+  return res.status(400).redirect('/');
+});
+
+router.route('/private').get(async (req, res) => {
+  if (req.session.user)
+    return res.status(200).render('tasks/private', {});
+
+  return res.status(400).redirect('/');
+});
+
+router.route('/forum').get(async (req, res) => {
+  if (req.session.user)
+    return res.status(200).render('tasks/forum', {});
 
   return res.status(400).redirect('/');
 });
