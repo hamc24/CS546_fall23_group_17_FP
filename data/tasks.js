@@ -1,6 +1,6 @@
 import validation from "../validation.js";
 import { ObjectId } from "mongodb";
-import { tasks } from "../config/mongoCollections.js";
+import { tasks, users } from "../config/mongoCollections.js";
 
 // Create a new task
 const create = async (
@@ -74,9 +74,17 @@ const create = async (
     submitted: false,
   };
 
+  //* Add the task to the task collection
   const taskCollection = await tasks();
   const newInsertInformation = await taskCollection.insertOne(newTask);
   if (!newInsertInformation.insertedId) throw "Insert failed";
+
+  //* Update user taskList
+  const userCollection = await users();
+  const updateUser = await userCollection.updateOne(
+    { _id: new ObjectId(creatorId) },
+    { $push: { tasks: newInsertInformation.insertedId.toString() } }
+  );
   return await getTaskByID(newInsertInformation.insertedId.toString());
 };
 
@@ -104,8 +112,24 @@ const getAllTasks = async () => {
 
 const deleteTask = async (id) => {
   //Todo
-};
+  //* Start Validation
+  validation.checkNull(id);
+  id = validation.checkId(id);
 
+  //* Get collections
+  const taskCollection = await tasks();
+  const userCollection = await users();
+
+  //* Delete the task from taskCollection
+  let deletedTask = await taskCollection.findOneAndDelete({
+    _id: new ObjectId(id),
+  });
+  if (!deletedTask) throw "Error: Task couldn't be deleted";
+
+  //* Go through all users and delete taskId from task list if they have it
+  await userCollection.updateMany({}, { $pull: { tasks: id } });
+  return { task: id, deleted: true };
+};
 // Update the status of a
 const updateStatus = async (id, statusString) => {
   //* Status has the type number, so will have to convert status string to number
@@ -135,4 +159,4 @@ const updateStatus = async (id, statusString) => {
   return updateInfo;
 };
 
-export default { create, getTaskByID, getAllTasks, updateStatus };
+export default { create, getTaskByID, deleteTask, getAllTasks, updateStatus };

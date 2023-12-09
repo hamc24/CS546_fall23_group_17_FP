@@ -42,7 +42,7 @@ try {
     "Weekly Office Hours that are hosted at 4pm. Come if you have any questions, or not",
     patrick._id.toString(),
     ` ${patrick.firstName} ${patrick.lastName}`,
-    false,
+    true,
     "12/13/2023",
     "4:00 PM",
     3,
@@ -62,6 +62,9 @@ try {
 
   console.log(await userData.getUserByID(chang._id.toString()));
   console.log(await taskData.getTaskByID(patrickTask1._id.toString()));
+  console.log(await userData.getTasks(chang._id.toString()));
+
+  console.log(await taskData.deleteTask(patrickTask1._id.toString()));
 
   // console.log(
   //   await taskData.updateStatus(changTask1._id.toString(), "revision required")
