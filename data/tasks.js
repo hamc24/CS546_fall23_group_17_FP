@@ -63,9 +63,9 @@ const create = async (
     timeDue: timeDue,
     maxContributors,
     maxContributors,
-    contributors: [],
+    contributors: [creatorId],
     unauthorized: [],
-    numContributors: 0,
+    numContributors: 1,
     duration: {
       durationH: durationH,
       durationM: durationM,
@@ -102,6 +102,10 @@ const getAllTasks = async () => {
   return taskList;
 };
 
+const deleteTask = async (id) => {
+  //Todo
+};
+
 // Update the status of a
 const updateStatus = async (id, statusString) => {
   //* Status has the type number, so will have to convert status string to number
@@ -131,4 +135,4 @@ const updateStatus = async (id, statusString) => {
   return updateInfo;
 };
 
-export default { create, getAllTasks, updateStatus };
+export default { create, getTaskByID, getAllTasks, updateStatus };

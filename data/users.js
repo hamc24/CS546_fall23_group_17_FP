@@ -72,7 +72,6 @@ const getUserByID = async (id) => {
 
 // Function for deleting user in database given the id
 const remove = async (id) => {
-  //Todo
   id = validation.checkId(id);
   const userCollection = await users();
   const userDeletionInfo = await userCollection.findOneAndDelete({
@@ -124,9 +123,37 @@ const addTaskToUser = async (userId, taskId) => {
   const taskCollection = await tasks();
 
   // First check if user is already in the contributor or unauthorized list in taskCollection
-  const task = await taskCollection.findOne({ _id: new ObjectId(taskId) });
-
+  let task = await taskCollection.findOne({ _id: new ObjectId(taskId) });
   if (!task) throw `Error: Couldn't find task`;
+  if (task.contributors.includes(userId))
+    throw "Error: User is already a Contributor";
+
+  // Then check if the task is full
+  if (task.maxContributors == task.numContributors)
+    throw "Error: This task is already filled up";
+
+  // Add user id to task.contributors
+  let updatedContNum = task.numContributors + 1;
+  task.contributors.push(userId);
+  let updateInfo = await taskCollection.updateOne(
+    {
+      _id: new ObjectId(taskId),
+    },
+    {
+      $set: {
+        numContributors: updatedContNum,
+        contributors: task.contributors,
+      },
+    }
+  );
+  if (!updateInfo) throw "Error: Insert failed";
+
+  //After user is added to task, the task id is put into user's tasks Array
+  let pushed = await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $push: { tasks: taskId } }
+  );
+  if (!pushed) throw "Error: Couldn't update user tasklist";
 };
 
 // Function for getting all tasks for a user
@@ -161,6 +188,7 @@ const loginUser = async (email, password) => {
 
 export default {
   create,
+  getUserByID,
   remove,
   updateUser,
   addTaskToUser,
