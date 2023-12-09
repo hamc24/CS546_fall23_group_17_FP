@@ -1,11 +1,10 @@
 import { ObjectId } from "mongodb"; // Used for ObjectId Checking
-import xss from 'xss';
+import xss from "xss";
 
 // A helper to sanitize form input, be sure to call whenever a form is recieved.
 
 function sanitize(body) {
-  for (let element in body)
-    body[element] = xss(body[element]);
+  for (let element in body) body[element] = xss(body[element]);
   return body;
 }
 
@@ -160,18 +159,19 @@ function validateEmail(input) {
 //Date validations function
 function validateDate(date) {
   //console.log(date);
-  date = date.split("-");
+  date = date.split("/");
   if (date.length != 3) throw "Error: date is not valid (not long enough)";
-  let month = date[1];
-  let day = date[2];
-  let year = date[0];
+  let month = date[0];
+  let day = date[1];
+  let year = date[2];
   if (
     parseInt(month) != month ||
     parseInt(day) != day ||
     parseInt(year) != year
   )
     throw "Error: date is not valid (did not match)";
-  if (month < 1 || month > 12) throw "Error: date is not valid";
+  if (month < 1 || month > 12)
+    throw `Error: date is not valid (has to be 1-12 but was ${month})`;
   if (day < 1) throw "Error: date is invalid";
   if (month == 4 || month == 6 || month == 9 || month == 11) {
     if (day > 30) {
@@ -299,16 +299,13 @@ function compareTimes(start, end) {
 }
 
 function validatePassword(password) {
-  if (password == undefined)
-    throw "Password must be defined.";
+  if (password == undefined) throw "Password must be defined.";
 
-  if (typeof password !== "string")
-    throw "Password must be a string.";
+  if (typeof password !== "string") throw "Password must be a string.";
 
-  if (password.length < 8)
-    throw "Password must be at least 8 characters long.";
+  if (password.length < 8) throw "Password must be at least 8 characters long.";
 
-  let specialCharacters = "!@#$%^&*():<>?,.;/[]\\-=`~\'\"+{}|";
+  let specialCharacters = "!@#$%^&*():<>?,.;/[]\\-=`~'\"+{}|";
   let numbers = "0123456789";
   let upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let hasNumber = false;
@@ -316,23 +313,21 @@ function validatePassword(password) {
   let hasUpperCase = false;
 
   for (let character of password) {
-    if (character == " ")
-      throw "Password cannot contain spaces.";
+    if (character == " ") throw "Password cannot contain spaces.";
 
-    if (specialCharacters.includes(character))
-      hasSpecial = true;
-    if (numbers.includes(character))
-      hasNumber = true;
-    if (upperCase.includes(character))
-      hasUpperCase = true;
+    if (specialCharacters.includes(character)) hasSpecial = true;
+    if (numbers.includes(character)) hasNumber = true;
+    if (upperCase.includes(character)) hasUpperCase = true;
   }
 
-  if (!hasNumber)
-    throw "Password is missing a number.";
+  if (!hasNumber) throw "Password is missing a number.";
   if (!hasSpecial)
-    throw "Password is missing a special character from the set '" + specialCharacters + "'.";
-  if (!hasUpperCase)
-    throw "Password is missing an uppercase letter.";
+    throw (
+      "Password is missing a special character from the set '" +
+      specialCharacters +
+      "'."
+    );
+  if (!hasUpperCase) throw "Password is missing an uppercase letter.";
 }
 
 export default {

@@ -65,6 +65,7 @@ const create = async (
     maxContributors,
     contributors: [],
     unauthorized: [],
+    numContributors: 0,
     duration: {
       durationH: durationH,
       durationM: durationM,
