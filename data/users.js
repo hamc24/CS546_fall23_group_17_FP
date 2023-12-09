@@ -1,6 +1,6 @@
 import validation from "../validation.js";
 import { ObjectId } from "mongodb";
-import { users } from "../config/mongoCollections.js";
+import { tasks, users } from "../config/mongoCollections.js";
 import bcrypt from "bcrypt";
 
 // Function for creating a user in the user data base
@@ -52,9 +52,8 @@ const create = async (
 
   const userCollection = await users();
 
-  let user = await userCollection.findOne({email: email});
-  if (user !== null)
-    throw "User with email " + email + " already exists.";
+  let user = await userCollection.findOne({ email: email });
+  if (user !== null) throw "User with email " + email + " already exists.";
 
   const newInsertInformation = await userCollection.insertOne(newUser);
   if (!newInsertInformation.insertedId) throw "Insert failed";
@@ -73,7 +72,34 @@ const getUserByID = async (id) => {
 
 // Function for deleting user in database given the id
 const remove = async (id) => {
-  //Todo
+  id = validation.checkId(id);
+  const userCollection = await users();
+  const userDeletionInfo = await userCollection.findOneAndDelete({
+    _id: new ObjectId(id),
+  });
+
+  if (!userDeletionInfo) {
+    throw `Could not delete user with id of ${id}`;
+  }
+
+  const taskCollection = await tasks();
+  // Remove user id from the contributors array and unauthorized
+  // If the user was in there.
+  const updatedTaskInfo = await taskCollection.updateMany(
+    { _id: new ObjectId(id) },
+    {
+      $pull: {
+        contributors: { $in: [new ObjectId(id)] },
+        unauthorized: new ObjectId(id),
+      },
+    }
+  );
+  await taskCollection.updateOne(
+    { _id: id },
+    { $inc: { numContributors: -1 } }
+  );
+
+  return `User: ${id} has been deleted`;
 };
 
 // Function for updating a user with new descriptions
@@ -89,8 +115,45 @@ const updateUser = async (
 };
 
 // Function for adding tasks to user
-const addTask = async (userName, taskId) => {
-  //Todo
+const addTaskToUser = async (userId, taskId) => {
+  userId = validation.checkId(userId);
+  taskId = validation.checkId(taskId);
+
+  const userCollection = await users();
+  const taskCollection = await tasks();
+
+  // First check if user is already in the contributor or unauthorized list in taskCollection
+  let task = await taskCollection.findOne({ _id: new ObjectId(taskId) });
+  if (!task) throw `Error: Couldn't find task`;
+  if (task.contributors.includes(userId))
+    throw "Error: User is already a Contributor";
+
+  // Then check if the task is full
+  if (task.maxContributors == task.numContributors)
+    throw "Error: This task is already filled up";
+
+  // Add user id to task.contributors
+  let updatedContNum = task.numContributors + 1;
+  task.contributors.push(userId);
+  let updateInfo = await taskCollection.updateOne(
+    {
+      _id: new ObjectId(taskId),
+    },
+    {
+      $set: {
+        numContributors: updatedContNum,
+        contributors: task.contributors,
+      },
+    }
+  );
+  if (!updateInfo) throw "Error: Insert failed";
+
+  //After user is added to task, the task id is put into user's tasks Array
+  let pushed = await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $push: { tasks: taskId } }
+  );
+  if (!pushed) throw "Error: Couldn't update user tasklist";
 };
 
 // Function for getting all tasks for a user
@@ -101,23 +164,34 @@ const loginUser = async (email, password) => {
   let userCollection;
   try {
     userCollection = await users();
-  }
-  catch (error) {
+  } catch (error) {
     return "Database error.";
   }
 
   validation.validateEmail(email);
   validation.validatePassword(password);
 
-  let user = await userCollection.findOne({email: email});
-  if (user == null)
-    throw "User with email " + email + " doesn't exist.";
+  let user = await userCollection.findOne({ email: email });
+  if (user == null) throw "User with email " + email + " doesn't exist.";
 
   let authenticated = await bcrypt.compare(password, user.hashedPass);
-  if (!authenticated)
-    throw "Password is invalid.";
+  if (!authenticated) throw "Password is invalid.";
 
-  return {firstName: user.firstName, lastName: user.lastName, email: user.email, userName: user.userName, dateOfBirth: user.dateOfBirth};
+  return {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    userName: user.userName,
+    dateOfBirth: user.dateOfBirth,
+  };
 };
 
-export default { create, remove, updateUser, addTask, getTasks, loginUser };
+export default {
+  create,
+  getUserByID,
+  remove,
+  updateUser,
+  addTaskToUser,
+  getTasks,
+  loginUser,
+};
