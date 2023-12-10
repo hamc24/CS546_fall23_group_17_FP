@@ -13,7 +13,7 @@ try {
     "Ham",
     "cham@stevens.edu",
     "hamc24",
-    "03/22/2002",
+    "2002-03-22",
     "SomePassword123!"
   );
   let patrick = await userData.create(
@@ -21,7 +21,7 @@ try {
     "Hill",
     "phill@stevens.edu",
     "graffixnyc",
-    "05/11/1977",
+    "1977-05-11",
     "Cs546Prof?*"
   );
   let changTask1 = await taskData.create(
@@ -30,7 +30,7 @@ try {
     chang._id.toString(),
     ` ${chang.firstName} ${chang.lastName}`,
     false,
-    "12/17/2023",
+    "2023-12-17",
     "11:59 PM",
     3,
     30,
@@ -43,7 +43,7 @@ try {
     patrick._id.toString(),
     ` ${patrick.firstName} ${patrick.lastName}`,
     true,
-    "12/13/2023",
+    "2023-12-13",
     "4:00 PM",
     3,
     30,
