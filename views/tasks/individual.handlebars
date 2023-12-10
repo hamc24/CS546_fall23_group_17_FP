@@ -1,5 +1,12 @@
 <h1>Task {{id}}</h1>
 <main>
+    <ul>
+        {{#each elements}}
+        <li>
+            {{this}}
+        </li>
+        {{/each}}
+    </ul>
     <a href=/tasks/tasks>
         Click here to return to tasks!
     </a>

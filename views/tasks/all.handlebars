@@ -1,5 +1,15 @@
 <h1>All Tasks</h1>
 <main>
+    <ul>
+        {{#each taskList}}
+        <li>
+            {{this.taskName}}
+            <a href="/tasks/{{this._id}}">
+                Click here to return to go to this task!
+            </a>
+        </li>
+        {{/each}}
+    </ul>
     <a href=/tasks/tasks>
         Click here to return to tasks!
     </a>

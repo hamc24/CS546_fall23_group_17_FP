@@ -4,10 +4,10 @@
     Please create a new task.
     </p>
     <form id=create-form action=/tasks/create method=POST>
-        <label for="taskNameInput">
+        <label for="nameInput">
             Please enter the task's name:
             <br>
-            <input type=text name="taskNameInput" id="taskNameInput"/>
+            <input type=text name="nameInput" id="nameInput"/>
         </label>
         <br>
         <label for="descriptionInput">
@@ -16,10 +16,13 @@
             <input type=text name="descriptionInput" id="descriptionInput"/>
         </label>
         <br>
-        <label for="emailAddressInput"> // FIX THIS!
-            Please enter your email address:
+        <label for="publicPostInput">
+            Please select task type:
             <br>
-            <input type=email name="emailAddressInput" id="emailAddressInput"/>
+            <select name="publicPostInput" id="publicPostInput">
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+            </select>
         </label>
         <br>
         <label for="dateDueInput">
@@ -28,28 +31,35 @@
             <input type=date name="dateDueInput" id="dateDueInput"/>
         </label>
         <br>
-        <label for="dateOfBirthInput">
+        <label for="timeDueInput">
             Please enter your tasks's due time:
             <br>
-            <input type=time name="timeDueInput" id="timeDueInput"/>
+            <input type=text name="timeDueInput" id="timeDueInput"/>
         </label>
         <br>
-        <label for="passwordInput">
-            Please enter your password:
+        <label for="maxContributorInput">
+            Please enter your task's max contributors:
             <br>
-            <input type=password name="passwordInput" id="passwordInput"/>
+            <input type=number name="maxContributorInput" id="maxContributorInput" min=1>
         </label>
         <br>
-        <label for="confirmPasswordInput">
-            Please confirm your password:
+        <label for="durationInputH">
+            Please enter your task's duration in hours:
             <br>
-            <input type=password name="confirmPasswordInput" id="confirmPasswordInput"/>
+            <input type=number name="durationInputH" id="durationInputH" min=0 max=24>
+        </label>
+        <br>
+        <label for="durationInputM">
+            Please enter your task's duration in additional minutes:
+            <br>
+            <input type=number name="durationInputM" id="durationInputM" min=0 max=60>
         </label>
         <br>
         <label>
             Submit:
             <br>
             <input type=submit value="Create!"/>
+            <input type=reset value="Reset">
         </label>
     </form>
     <p class=error>

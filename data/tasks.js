@@ -129,4 +129,4 @@ const updateStatus = async (id, statusString) => {
   return updateInfo;
 };
 
-export default { create, getAllTasks, updateStatus };
+export default { create, getTaskByID, getAllTasks, updateStatus };
