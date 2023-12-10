@@ -26,6 +26,12 @@ const create = async (
   userName = validation.checkString(userName, "User Name");
   dateOfBirth = validation.checkString(dateOfBirth, "Date of Birth");
 
+  //* Name length check
+  if (firstName.length < 2 || firstName.length > 25)
+    throw "Error: First name is too short or too long";
+  if (lastName.length < 2 || firstName.length > 25)
+    throw "Error: Last name is too short or too long";
+
   // Validate Email
   validation.validateEmail(email);
 
@@ -103,15 +109,39 @@ const remove = async (id) => {
 };
 
 // Function for updating a user with new descriptions
-const updateUser = async (
-  id,
-  firstName,
-  lastName,
-  email,
-  userName,
-  dateOfBirth
-) => {
-  //Todo
+//! IN THE CLIENTSIDE FORM YOU MUST MAKE IT SO THAT THE FORM LOADS IN WITH THE EXISTING USER DATA
+const updateUser = async (id, firstName, lastName, userName) => {
+  //* Null Validation
+  validation.checkNull(id);
+  validation.checkNull(firstName);
+  validation.checkNull(lastName);
+  validation.checkNull(userName);
+
+  //* id check
+  id = validation.checkId(id);
+
+  //* String input check
+  firstName = validation.checkString(firstName);
+  lastName = validation.checkString(lastName);
+  userName = validation.checkString(userName);
+
+  //* Name length check
+  if (firstName.length < 2 || firstName.length > 25)
+    throw "Error: First name is too short or too long";
+  if (lastName.length < 2 || firstName.length > 25)
+    throw "Error: Last name is too short or too long";
+
+  const userCollection = await users();
+  let user = await userCollection.findOne({ _id: new ObjectId(id) });
+  if (!user) throw "Error: User not found!";
+
+  let updateUser = userCollection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { firstName: firstName, lastName: lastName, userName: userName } }
+  );
+
+  if (!updateUser) throw "Error: User could not be updated";
+  return await getUserByID(id);
 };
 
 // Function for adding tasks to user
@@ -127,6 +157,12 @@ const addTaskToUser = async (userId, taskId) => {
   if (!task) throw `Error: Couldn't find task`;
   if (task.contributors.includes(userId))
     throw "Error: User is already a Contributor";
+
+  // Check if it is a private task, if so check if creatorId is the userId
+  if (!task.publicPost) {
+    if (task.creatorId != userId)
+      throw "You are not authorized to access this task";
+  }
 
   // Then check if the task is full
   if (task.maxContributors == task.numContributors)
@@ -157,7 +193,21 @@ const addTaskToUser = async (userId, taskId) => {
 };
 
 // Function for getting all tasks for a user
-const getTasks = async (userId) => {};
+const getTasks = async (userId) => {
+  validation.checkNull(userId);
+  userId = validation.checkId(userId);
+
+  //Find user then get the tasks that they have
+  let user = await getUserByID(userId);
+  let userTasks = user.tasks.map(function (id) {
+    return new ObjectId(id);
+  });
+  const taskCollection = await tasks();
+  let foundTasks = await taskCollection
+    .find({ _id: { $in: userTasks } })
+    .toArray();
+  return foundTasks;
+};
 
 // Function to return user login information.
 const loginUser = async (email, password) => {
