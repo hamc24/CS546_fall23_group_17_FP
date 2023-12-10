@@ -65,6 +65,33 @@ const getUserByID = async (id) => {
   return user;
 };
 
+// Function to return user login information.
+const loginUser = async (email, password) => {
+  let userCollection;
+  try {
+    userCollection = await users();
+  } catch (error) {
+    return "Database error.";
+  }
+
+  validation.validateEmail(email);
+  validation.validatePassword(password);
+
+  let user = await userCollection.findOne({ email: email });
+  if (user == null) throw "User with email " + email + " doesn't exist.";
+
+  let authenticated = await bcrypt.compare(password, user.hashedPass);
+  if (!authenticated) throw "Password is invalid.";
+
+  return {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    userName: user.userName,
+    dateOfBirth: user.dateOfBirth,
+  };
+};
+
 // Function for deleting user in database given the id
 const remove = async (id) => {
   //Todo
@@ -90,4 +117,4 @@ const addTask = async (userName, taskId) => {
 // Function for getting all tasks for a user
 const getTasks = async (userId) => {};
 
-export default { create, remove, updateUser, addTask, getTasks };
+export default { create, remove, updateUser, addTask, getTasks, loginUser };
