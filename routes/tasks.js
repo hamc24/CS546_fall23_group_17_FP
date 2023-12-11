@@ -140,11 +140,34 @@ router.route("/forum").get(async (req, res) => {
 });
 
 router.route("/:id").get(async (req, res) => {
-  if (req.session.user)
-    return res.status(200).render("tasks/individual", {
-      id: req.params.id,
-      task: await taskData.getTaskByID(req.params.id),
-    });
+  if (req.session.user) {
+    let task;
+    try {
+      task = await taskData.getTaskByID(req.params.id);
+    } catch (error) {
+      return res.status(404).render("error", { error: e });
+    }
+
+    if (task.publicPost == false) {
+      //If private
+      if (task.creatorId.localeCompare(req.session.user._id) == 0) {
+        // Check if creatorId = sessionUserId
+        return res.status(200).render("tasks/individual", {
+          id: req.params.id,
+          task: task,
+        });
+      } else {
+        return res
+          .status(403)
+          .render("error", { error: "You don't have access to this task" });
+      }
+    } else {
+      return res.status(200).render("tasks/individual", {
+        id: req.params.id,
+        task: task,
+      });
+    }
+  }
 
   return res.status(400).redirect("/");
 });
