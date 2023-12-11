@@ -62,7 +62,6 @@ const create = async (
     dateDue: dateDue,
     timeDue: timeDue,
     maxContributors,
-    maxContributors,
     contributors: [creatorId],
     unauthorized: [],
     numContributors: 1,

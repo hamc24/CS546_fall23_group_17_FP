@@ -228,6 +228,7 @@ const loginUser = async (email, password) => {
   if (!authenticated) throw "Password is invalid.";
 
   return {
+    _id: user._id,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
