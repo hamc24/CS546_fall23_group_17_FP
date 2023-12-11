@@ -1,0 +1,96 @@
+<h1>Create a task</h1>
+<main>
+  <p>
+    Please create a new task.
+  </p>
+  <form id="create-form" action="/tasks" create method="POST">
+    <label for="nameInput">
+      Please enter the task's name:
+      <br />
+      <input type="text" name="nameInput" id="nameInput" />
+    </label>
+    <br />
+    <label for="descriptionInput">
+      Please enter your task's description:
+      <br />
+      <input type="text" name="descriptionInput" id="descriptionInput" />
+    </label>
+    <br />
+    <label for="publicPostInput">
+      Please select task type:
+      <br />
+      <select name="publicPostInput" id="publicPostInput">
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+      </select>
+    </label>
+    <br />
+    <label for="dateDueInput">
+      Please enter your tasks's due date:
+      <br />
+      <input type="date" name="dateDueInput" id="dateDueInput" />
+    </label>
+    <br />
+    <label for="timeDueInput">
+      Please enter your tasks's due time:
+      <br />
+      <input type="text" name="timeDueInput" id="timeDueInput" />
+    </label>
+    <br />
+    <label for="maxContributorInput">
+      Please enter your task's max contributors:
+      <br />
+      <input
+        type="number"
+        name="maxContributorInput"
+        id="maxContributorInput"
+        min="1"
+      />
+    </label>
+    <br />
+    <label for="durationInputH">
+      Please enter your task's duration in hours:
+      <br />
+      <input
+        type="number"
+        name="durationInputH"
+        id="durationInputH"
+        min="0"
+        max="24"
+      />
+    </label>
+    <br />
+    <label for="durationInputM">
+      Please enter your task's duration in additional minutes:
+      <br />
+      <input
+        type="number"
+        name="durationInputM"
+        id="durationInputM"
+        min="0"
+        max="60"
+      />
+    </label>
+    <br />
+    <label>
+      Submit:
+      <br />
+      <input type="submit" value="Create!" />
+      <input type="reset" value="Reset" />
+    </label>
+  </form>
+  <p class="error">
+    {{error}}
+  </p>
+  <a href="/tasks" tasks>
+    Click here to return to tasks!
+  </a>
+  <br />
+  <a href="/users">
+    Click here to return to users!
+  </a>
+  <br />
+  <a href="/logout">
+    Click here to logout!
+  </a>
+</main>
