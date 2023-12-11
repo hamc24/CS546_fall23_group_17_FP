@@ -32,6 +32,19 @@ app.use(
   })
 );
 
+app.use(async (req, res, next) => {
+  let currTime = new Date().toUTCString();
+  let reqMethod = req.method;
+  let reqRoute = req.originalUrl;
+  let auth = "Non-Authenticated User";
+  if (req.session.user) {
+    auth = "Authenticated User";
+  }
+
+  console.log(`[${currTime}]: ${reqMethod} ${reqRoute} (${auth})`);
+  next();
+});
+
 app.get("/", async (req, res, next) => {
   try {
     if (!req.session.user) res.redirect("login");

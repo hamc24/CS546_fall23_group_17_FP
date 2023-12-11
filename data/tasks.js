@@ -1,6 +1,7 @@
 import validation from "../validation.js";
 import { ObjectId } from "mongodb";
 import { tasks, users } from "../config/mongoCollections.js";
+import { userData } from "./index.js";
 
 // Create a new task
 const create = async (
@@ -30,6 +31,11 @@ const create = async (
   //Input validation for types
   taskName = validation.checkString(taskName, "Task Name");
   description = validation.checkString(description, "Description");
+  if (taskName.length < 2 || taskName.length > 50)
+    throw "Error: Task Name is too short or too long";
+  if (description.length < 15 || description.length > 250)
+    throw "Error: Description is too short or too long";
+
   creatorId = validation.checkId(creatorId, "Creator ID");
   creator = validation.checkString(creator, "Creator Name"); //? Forgot if we have to turn this into a string...
   if (typeof publicPost != "boolean")
@@ -71,6 +77,7 @@ const create = async (
     },
     status: 0,
     submitted: false,
+    comments: [],
   };
 
   //* Add the task to the task collection
@@ -101,10 +108,7 @@ const getTaskByID = async (id) => {
 // ! Note: we can get all tasks then sorting will be done through client side javascript
 const getAllTasks = async () => {
   const taskCollection = await tasks();
-  const taskList = await taskCollection
-    .find({})
-    .project({ taskName: 1 })
-    .toArray();
+  const taskList = await taskCollection.find({ publicPost: true }).toArray();
   if (!taskList) throw "Error: Could not get all tasks";
   return taskList;
 };
@@ -158,4 +162,40 @@ const updateStatus = async (id, statusString) => {
   return updateInfo;
 };
 
-export default { create, getTaskByID, deleteTask, getAllTasks, updateStatus };
+const addComment = async (userId, taskId, message) => {
+  validation.checkNull(userId);
+  validation.checkNull(taskId);
+  validation.checkNull(message);
+
+  validation.checkString(userId);
+  validation.checkString(taskId);
+  validation.checkString(message);
+
+  userId = validation.checkId(userId);
+  taskId = validation.checkId(taskId);
+
+  let user = await userData.getUserByID(userId);
+  let fullName = `${user.firstName} ${user.lastName}`;
+
+  let currentdate = new Date();
+  let datetime = `${currentdate.getDate()}/${
+    currentdate.getMonth() + 1
+  }/${currentdate.getFullYear()} (${currentdate.getHours()}:${currentdate.getMinutes()})`;
+
+  let fullMSG = `${fullName} ${datetime}: ${message}`;
+
+  const taskCollection = await tasks();
+  let updatedTask = await taskCollection.updateOne(
+    { _id: new ObjectId(taskId) },
+    { $push: { comments: fullMSG } }
+  );
+};
+
+export default {
+  create,
+  getTaskByID,
+  deleteTask,
+  getAllTasks,
+  updateStatus,
+  addComment,
+};

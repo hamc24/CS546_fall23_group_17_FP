@@ -65,6 +65,26 @@ try {
   console.log(await userData.getTasks(chang._id.toString()));
 
   console.log(await taskData.deleteTask(patrickTask1._id.toString()));
+  await taskData.addComment(
+    chang._id.toString(),
+    changTask1._id.toString(),
+    "Where are the handlebars?"
+  );
+  await taskData.addComment(
+    chang._id.toString(),
+    changTask1._id.toString(),
+    "Where are the input validations?"
+  );
+  await taskData.addComment(
+    chang._id.toString(),
+    changTask1._id.toString(),
+    "Where is the CSS?"
+  );
+  await taskData.addComment(
+    chang._id.toString(),
+    changTask1._id.toString(),
+    "What a mess...?"
+  );
 
   // console.log(
   //   await taskData.updateStatus(changTask1._id.toString(), "revision required")

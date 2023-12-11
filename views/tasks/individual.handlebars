@@ -1,7 +1,6 @@
-<h1>Task {{id}}</h1>
+<h1>{{task.taskName}}</h1>
 <main>
   <p>Task ID: {{id}} </p>
-  <p>Task name: {{task.taskName}} </p>
   <p>Task description: {{task.description}}</p>
   <p>Task creator ID: {{task.creatorId}}</p>
   <p>Task creator name: {{task.creator}}</p>
@@ -9,7 +8,21 @@
   <p>Task due date: {{task.dateDue}}</p>
   <p>Task due time: {{task.timeDue}}</p>
   <p>Task max contributors: {{task.maxContributors}}</p>
-  <a href="/tasks" tasks>
+  <div class="comment-div">
+    <p>Comments:</p>
+    <ul>
+      {{#if task.comments.length}}
+        {{#each task.comments}}
+          <li>{{this}}</li>
+        {{/each}}
+      {{/if}}
+    </ul>
+  </div>
+
+  {{! FOR THIS SECTION WE WILL NEED TO ADD A FORM TO SUBMIT 
+  COMMENTS }}
+
+  <a href="/tasks/tasks" tasks>
     Click here to return to tasks!
   </a>
   <br />

@@ -1,6 +1,16 @@
 <h1>All Accepted Public Tasks</h1>
 <main>
-  <a href="/tasks" tasks>
+  <ul>
+    {{#each taskList}}
+      <li>
+        {{this.taskName}}
+        <a href="/tasks/{{this._id}}">
+          Click here to go to this task!
+        </a>
+      </li>
+    {{/each}}
+  </ul>
+  <a href="/tasks/tasks" tasks>
     Click here to return to tasks!
   </a>
   <br />

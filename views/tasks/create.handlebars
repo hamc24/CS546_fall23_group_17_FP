@@ -3,7 +3,7 @@
   <p>
     Please create a new task.
   </p>
-  <form id="create-form" action="/tasks" create method="POST">
+  <form id="create-form" action="/tasks/create" create method="POST">
     <label for="nameInput">
       Please enter the task's name:
       <br />
@@ -82,7 +82,7 @@
   <p class="error">
     {{error}}
   </p>
-  <a href="/tasks" tasks>
+  <a href="/tasks/tasks" tasks>
     Click here to return to tasks!
   </a>
   <br />

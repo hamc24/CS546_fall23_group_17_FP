@@ -19,12 +19,15 @@ const create = async (
   validation.checkNull(email);
   validation.checkNull(userName);
   validation.checkNull(dateOfBirth);
+  validation.checkNull(passWord);
 
-  // Validate String params
+  // * Validate String params
   firstName = validation.checkString(firstName, "First Name");
   lastName = validation.checkString(lastName, "Last Name");
+  email = validation.checkString(email, "Email");
   userName = validation.checkString(userName, "User Name");
   dateOfBirth = validation.checkString(dateOfBirth, "Date of Birth");
+  passWord = validation.checkString(passWord, "Password");
 
   //* Name length check
   if (firstName.length < 2 || firstName.length > 25)
@@ -32,14 +35,14 @@ const create = async (
   if (lastName.length < 2 || firstName.length > 25)
     throw "Error: Last name is too short or too long";
 
-  // Validate Email
+  // * Validate Email
   validation.validateEmail(email);
 
-  //Birthday Validation
+  // * Birthday Validation
   validation.validateDate(dateOfBirth);
   validation.validateBirthday(dateOfBirth);
 
-  //Password validation and hashing
+  // * Password validation and hashing
   validation.validatePassword(passWord);
 
   const saltRounds = 16;
@@ -209,6 +212,41 @@ const getTasks = async (userId) => {
   return foundTasks;
 };
 
+// Function for getting all public tasks for a user
+const getPublicTasks = async (userId) => {
+  validation.checkNull(userId);
+  userId = validation.checkId(userId);
+
+  //Find user then get the tasks that they have
+  let user = await getUserByID(userId);
+  let userTasks = user.tasks.map(function (id) {
+    return new ObjectId(id);
+  });
+  const taskCollection = await tasks();
+  let foundTasks = await taskCollection
+    .find({ _id: { $in: userTasks }, publicPost: true })
+    .toArray();
+  return foundTasks;
+};
+
+// Function for getting all private tasks for a user
+const getPrivateTasks = async (userId) => {
+  validation.checkNull(userId);
+  userId = validation.checkId(userId);
+
+  //Find user then get the tasks that they have
+  let user = await getUserByID(userId);
+  let userTasks = user.tasks.map(function (id) {
+    return new ObjectId(id);
+  });
+
+  const taskCollection = await tasks();
+  let foundTasks = await taskCollection
+    .find({ _id: { $in: userTasks }, publicPost: false })
+    .toArray();
+  return foundTasks;
+};
+
 // Function to return user login information.
 const loginUser = async (email, password) => {
   let userCollection;
@@ -244,5 +282,7 @@ export default {
   updateUser,
   addTaskToUser,
   getTasks,
+  getPublicTasks,
+  getPrivateTasks,
   loginUser,
 };
