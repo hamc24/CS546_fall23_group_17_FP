@@ -7,7 +7,7 @@ router
   .route("/")
   .get(async (req, res) => {
     //code here for GET
-    return res.status(200).render("login");
+    return res.status(200).render("login", { title: "Login Page" });
   })
   .post(async (req, res) => {
     //code here for POST
@@ -31,7 +31,9 @@ router
         return res.status(200).redirect("users");
       }
     } catch (error) {
-      return res.status(400).render("login", { error: error });
+      return res
+        .status(400)
+        .render("login", { title: "Login Page", error: error });
     }
   });
 

@@ -7,18 +7,20 @@ router
   .route("/")
   .get(async (req, res) => {
     //code here for GET
-    return res.status(200).render("register");
+    return res.status(200).render("register", { title: "Registration Page" });
   })
   .post(async (req, res) => {
     //code here for POST
+    let data = req.body;
+    data = validation.sanitize(data);
     try {
-      let firstName = req.body.firstNameInput;
-      let lastName = req.body.lastNameInput;
-      let email = req.body.emailAddressInput;
-      let userName = req.body.userNameInput;
-      let dateOfBirth = req.body.dateOfBirthInput;
-      let password = req.body.passwordInput;
-      let confirmPassword = req.body.confirmPasswordInput;
+      let firstName = data.firstNameInput;
+      let lastName = data.lastNameInput;
+      let email = data.emailAddressInput;
+      let userName = data.userNameInput;
+      let dateOfBirth = data.dateOfBirthInput;
+      let password = data.passwordInput;
+      let confirmPassword = data.confirmPasswordInput;
 
       // Error Checking
       //* Null validations
@@ -73,7 +75,9 @@ router
       if (status) return res.status(200).redirect("/login");
       else return res.status(500).json({ error: "Internal server error" });
     } catch (error) {
-      return res.status(400).render("register", { error: error });
+      return res
+        .status(400)
+        .render("register", { title: "Registation Page", error: error });
     }
   });
 

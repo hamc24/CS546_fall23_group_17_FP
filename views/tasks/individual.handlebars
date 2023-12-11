@@ -8,7 +8,12 @@
   <p>Task due date: {{task.dateDue}}</p>
   <p>Task due time: {{task.timeDue}}</p>
   <p>Task max contributors: {{task.maxContributors}}</p>
-  <div class="comment-div">
+  
+
+  {{! FOR THIS SECTION WE WILL NEED TO ADD A FORM TO SUBMIT 
+  COMMENTS }}
+  {{#if accepted}}
+    <div class="comment-div">
     <p>Comments:</p>
     <ul>
       {{#if task.comments.length}}
@@ -18,11 +23,21 @@
       {{/if}}
     </ul>
   </div>
+    <form id="add-comment" action="/tasks/{{id}}" method="POST">
+      <p><label for="commentInput">Add Comment:</label></p>
+      <textarea id="commentInput" name="commentInput" rows="4" cols="50"></textarea>
+      <br>
+      <input type="submit" value="Submit">
+    </form>
+  {{else}}
+    <form id="join-task" action="/tasks/{{id}}" method="POST">
+      <input type="hidden" id="joinSubmission" name="joinSubmission" value="fired">
+      <input type="submit" value="Join this Task">
+    </form>
+  {{/if}}
 
-  {{! FOR THIS SECTION WE WILL NEED TO ADD A FORM TO SUBMIT 
-  COMMENTS }}
 
-  <a href="/tasks/tasks" tasks>
+  <a href="/tasks/tasks">
     Click here to return to tasks!
   </a>
   <br />
