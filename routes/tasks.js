@@ -5,13 +5,15 @@ import validation from "../validation.js";
 import * as users from "../data/users.js";
 
 router.route("/create").get(async (req, res) => {
-  if (req.session.user) return res.status(200).render("tasks/create", {});
+  if (req.session.user)
+    return res.status(200).render("tasks/create", { title: "Create Task" });
 
   return res.status(400).redirect("/");
 });
 
 router.route("/create").post(async (req, res) => {
-  if (!req.session.user) return res.status(200).render("/", {});
+  if (!req.session.user)
+    return res.status(200).render("/", { title: "Create Task" });
 
   let data = req.body;
   data = validation.sanitize(data);
@@ -93,12 +95,15 @@ router.route("/create").post(async (req, res) => {
     );
     return res.status(200).redirect("/tasks/all");
   } catch (error) {
-    return res.status(400).render("tasks/create", { error: error });
+    return res
+      .status(400)
+      .render("tasks/create", { title: "Create Task", error: error });
   }
 });
 
 router.route("/tasks").get(async (req, res) => {
-  if (req.session.user) return res.status(200).render("tasks/tasks", {});
+  if (req.session.user)
+    return res.status(200).render("tasks/tasks", { title: "Tasks" });
 
   return res.status(400).redirect("/");
 });
@@ -106,6 +111,7 @@ router.route("/tasks").get(async (req, res) => {
 router.route("/all").get(async (req, res) => {
   if (req.session.user)
     return res.status(200).render("tasks/all", {
+      title: "All Tasks",
       taskList: await userData.getTasks(req.session.user._id),
     });
 
@@ -115,6 +121,7 @@ router.route("/all").get(async (req, res) => {
 router.route("/public").get(async (req, res) => {
   if (req.session.user)
     return res.status(200).render("tasks/public", {
+      title: "Public Tasks",
       taskList: await userData.getPublicTasks(req.session.user._id),
     });
 
@@ -124,6 +131,7 @@ router.route("/public").get(async (req, res) => {
 router.route("/private").get(async (req, res) => {
   if (req.session.user)
     return res.status(200).render("tasks/private", {
+      title: "Private Tasks",
       taskList: await userData.getPrivateTasks(req.session.user._id),
     });
 
@@ -133,43 +141,101 @@ router.route("/private").get(async (req, res) => {
 router.route("/forum").get(async (req, res) => {
   if (req.session.user)
     return res.status(200).render("tasks/forum", {
+      title: "Public Task Forum",
       taskList: await taskData.getAllTasks(),
     });
 
   return res.status(400).redirect("/");
 });
 
-router.route("/:id").get(async (req, res) => {
-  if (req.session.user) {
-    let task;
-    try {
-      task = await taskData.getTaskByID(req.params.id);
-    } catch (error) {
-      return res.status(404).render("error", { error: e });
-    }
-
-    if (task.publicPost == false) {
-      //If private
-      if (task.creatorId.localeCompare(req.session.user._id) == 0) {
-        // Check if creatorId = sessionUserId
-        return res.status(200).render("tasks/individual", {
-          id: req.params.id,
-          task: task,
-        });
-      } else {
+router
+  .route("/:id")
+  .get(async (req, res) => {
+    if (req.session.user) {
+      let task;
+      try {
+        task = await taskData.getTaskByID(req.params.id);
+      } catch (error) {
         return res
-          .status(403)
-          .render("error", { error: "You don't have access to this task" });
+          .status(404)
+          .render("error", { title: "Error Page", error: e });
       }
-    } else {
-      return res.status(200).render("tasks/individual", {
-        id: req.params.id,
-        task: task,
-      });
-    }
-  }
 
-  return res.status(400).redirect("/");
-});
+      if (task.publicPost == false) {
+        //If private
+        if (task.creatorId.localeCompare(req.session.user._id) == 0) {
+          // Check if creatorId = sessionUserId
+          return res.status(200).render("tasks/individual", {
+            title: task.taskName,
+            id: req.params.id,
+            task: task,
+            accepted: true,
+          });
+        } else {
+          return res.status(403).render("error", {
+            title: "Error Page",
+            error: "You don't have access to this task",
+          });
+        }
+      } else {
+        //Get current user
+        let user = await userData.getUserByID(req.session.user._id.toString());
+        // Check if user has accepted public post and show comment box if true
+        if (user.tasks.includes(req.params.id)) {
+          return res.status(200).render("tasks/individual", {
+            title: task.taskName,
+            id: req.params.id,
+            task: task,
+            accepted: true,
+          });
+        } else {
+          return res.status(200).render("tasks/individual", {
+            title: task.taskName,
+            id: req.params.id,
+            task: task,
+            accepted: false,
+          });
+        }
+      }
+    }
+
+    return res.status(400).redirect("/");
+  })
+  .post(async (req, res) => {
+    if (!req.session.user)
+      return res.status(200).render("/", { title: "Create Task" });
+
+    let data = req.body;
+    data = validation.sanitize(data);
+
+    // If Join buttom was pressed
+    if (data.joinSubmission) {
+      try {
+        await userData.addTaskToUser(
+          req.session.user._id.toString(),
+          req.params.id
+        );
+      } catch (e) {
+        return res.render("error", { title: "Error Page", error: e });
+      }
+      return res.status(400).redirect(`/tasks/${req.params.id}`);
+    }
+
+    if (data.commentInput) {
+      let comment = data.commentInput;
+      validation.checkNull(comment);
+      comment = validation.checkString(comment, "Comment");
+      try {
+        await taskData.addComment(
+          req.session.user._id.toString(),
+          req.params.id,
+          comment
+        );
+      } catch (e) {
+        return res.render("error", { title: "Error Page", error: e });
+      }
+      return res.status(400).redirect(`/tasks/${req.params.id}`);
+    }
+  });
 
 export default router;

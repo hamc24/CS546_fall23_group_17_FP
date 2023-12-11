@@ -8,6 +8,9 @@
         {{#each taskList}}
           <li>
             <a href="/tasks/{{this._id}}">{{this.taskName}}</a>
+            <ul>
+              <li> Posted by: {{this.creator}}</li>
+            </ul>
           </li>
         {{/each}}
       {{/if}}
@@ -15,7 +18,7 @@
 
   </div>
 
-  <a href="/tasks/tasks" tasks>
+  <a href="/tasks/tasks">
     Click here to return to tasks!
   </a>
   <br />

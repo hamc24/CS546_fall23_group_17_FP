@@ -55,6 +55,22 @@ app.get("/", async (req, res, next) => {
   } catch (error) {}
 });
 
+app.get("/login", (req, res, next) => {
+  if (req.session.user) {
+    return res.redirect("/users");
+  } else {
+    next();
+  }
+});
+
+app.get("/register", (req, res, next) => {
+  if (req.session.user) {
+    return res.redirect("/users");
+  } else {
+    next();
+  }
+});
+
 configRoutes(app);
 
 app.listen(3000, () => {
