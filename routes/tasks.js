@@ -170,6 +170,7 @@ router
             id: req.params.id,
             task: task,
             accepted: true,
+            creator: true,
           });
         } else {
           return res.status(403).render("error", {
@@ -182,12 +183,23 @@ router
         let user = await userData.getUserByID(req.session.user._id.toString());
         // Check if user has accepted public post and show comment box if true
         if (user.tasks.includes(req.params.id)) {
-          return res.status(200).render("tasks/individual", {
-            title: task.taskName,
-            id: req.params.id,
-            task: task,
-            accepted: true,
-          });
+          if (user._id.toString().localeCompare(task.creatorId) == 0) {
+            return res.status(200).render("tasks/individual", {
+              title: task.taskName,
+              id: req.params.id,
+              task: task,
+              accepted: true,
+              creator: true,
+            });
+          } else {
+            return res.status(200).render("tasks/individual", {
+              title: task.taskName,
+              id: req.params.id,
+              task: task,
+              accepted: true,
+              creator: false,
+            });
+          }
         } else {
           return res.status(200).render("tasks/individual", {
             title: task.taskName,
@@ -208,10 +220,35 @@ router
     let data = req.body;
     data = validation.sanitize(data);
 
-    // If Join buttom was pressed
+    // If Join button was pressed
     if (data.joinSubmission) {
       try {
         await userData.addTaskToUser(
+          req.session.user._id.toString(),
+          req.params.id
+        );
+      } catch (e) {
+        return res.render("error", { title: "Error Page", error: e });
+      }
+      return res.status(400).redirect(`/tasks/${req.params.id}`);
+    }
+
+    // If delete button was pressed
+    if (data.deleteSubmission) {
+      try {
+        await taskData.deleteTask(
+          req.session.user._id.toString(),
+          req.params.id
+        );
+      } catch (e) {
+        return res.render("error", { title: "Error Page", error: e });
+      }
+      return res.status(400).redirect(`/tasks/tasks`);
+    }
+
+    if (data.leaveSubmission) {
+      try {
+        await userData.removeTaskFromUser(
           req.session.user._id.toString(),
           req.params.id
         );

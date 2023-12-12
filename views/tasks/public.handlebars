@@ -1,5 +1,16 @@
 <h1>All Accepted Public Tasks</h1>
 <main>
+  {{!-- THIS FORM NEEDS TO BE HANDLED WITH A SCRIPT 
+  REFERENCE: https://www.geeksforgeeks.org/how-to-sort-an-html-list-using-javascript/ --}}
+  <form action="/tasks/all" method="POST">
+    <label for="sort-option">Sort By:</label>
+    <select id="sort-option" name="sort-option">
+      <option value="task">Task Name</option>
+      <option value="date">Date Due</option>
+      <option value="contributor">Max Amount of Contributors</option>
+    </select>
+    <input type="submit" value="Submit">
+  </form>
   <ul>
     {{#each taskList}}
       <li>

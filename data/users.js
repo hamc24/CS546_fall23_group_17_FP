@@ -195,6 +195,34 @@ const addTaskToUser = async (userId, taskId) => {
   if (!pushed) throw "Error: Couldn't update user tasklist";
 };
 
+const removeTaskFromUser = async (userId, taskId) => {
+  //Check Null
+  validation.checkNull(userId);
+  validation.checkNull(taskId);
+
+  //Check Id
+  userId = validation.checkId(userId);
+  taskId = validation.checkId(taskId);
+
+  //Get collections
+  const userCollection = await users();
+  const taskCollection = await tasks();
+
+  // From the user collection, delete the task from tasks list
+  let updatedUser = await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $pull: { tasks: taskId } }
+  );
+  if (!updatedUser) throw "Error: User update failed";
+
+  // From the task collection, delete userId from contributors and decrement contributor count
+  let updatedTask = await taskCollection.updateOne(
+    { _id: new ObjectId(taskId) },
+    { $pull: { contributors: userId }, $inc: { numContributors: -1 } }
+  );
+  if (!updatedTask) throw "Error: Task update failed";
+};
+
 // Function for getting all tasks for a user
 const getTasks = async (userId) => {
   validation.checkNull(userId);
@@ -281,6 +309,7 @@ export default {
   remove,
   updateUser,
   addTaskToUser,
+  removeTaskFromUser,
   getTasks,
   getPublicTasks,
   getPrivateTasks,

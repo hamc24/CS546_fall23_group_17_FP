@@ -29,6 +29,19 @@
       <br>
       <input type="submit" value="Submit">
     </form>
+
+    {{!-- Need to have leave task button and delete task button --}}
+    {{#if creator}}
+      <form id="delete-task" action="/tasks/{{id}}" method="POST">
+      <input type="hidden" id="deleteSubmission" name="deleteSubmission" value="fired">
+      <input type="submit" value="Delete this Task">
+    </form>
+    {{else}}
+      <form id="leave-task" action="/tasks/{{id}}" method="POST">
+        <input type="hidden" id="leaveSubmission" name="leaveSubmission" value="fired">
+        <input type="submit" value="Leave this Task">
+      </form>
+    {{/if}}
   {{else}}
     <form id="join-task" action="/tasks/{{id}}" method="POST">
       <input type="hidden" id="joinSubmission" name="joinSubmission" value="fired">
