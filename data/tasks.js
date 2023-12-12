@@ -113,25 +113,32 @@ const getAllTasks = async () => {
   return taskList;
 };
 
-const deleteTask = async (id) => {
+const deleteTask = async (userId, taskId) => {
   //Todo
   //* Start Validation
-  validation.checkNull(id);
-  id = validation.checkId(id);
+  validation.checkNull(userId);
+  validation.checkNull(taskId);
+  userId = validation.checkId(userId);
+  taskId = validation.checkId(taskId);
 
   //* Get collections
   const taskCollection = await tasks();
   const userCollection = await users();
 
+  //* Check and see if userId = creatorId
+  let task = await getTaskByID(taskId);
+  if (userId.localeCompare(task.creatorId) != 0)
+    throw "Error: User is not the creator of the task!";
+
   //* Delete the task from taskCollection
   let deletedTask = await taskCollection.findOneAndDelete({
-    _id: new ObjectId(id),
+    _id: new ObjectId(taskId),
   });
   if (!deletedTask) throw "Error: Task couldn't be deleted";
 
   //* Go through all users and delete taskId from task list if they have it
-  await userCollection.updateMany({}, { $pull: { tasks: id } });
-  return { task: id, deleted: true };
+  await userCollection.updateMany({}, { $pull: { tasks: taskId } });
+  return { task: taskId, deleted: true };
 };
 // Update the status of a
 const updateStatus = async (id, statusString) => {
