@@ -12,8 +12,11 @@ router
   .post(async (req, res) => {
     //code here for POST
     try {
-      let email = req.body.emailAddressInput;
-      let password = req.body.passwordInput;
+      let body = req.body;
+      body = validation.sanitize(body);
+
+      let email = body.emailAddressInput;
+      let password = body.passwordInput;
 
       validation.checkNull(email);
       validation.checkNull(password);
