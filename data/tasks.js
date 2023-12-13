@@ -3,8 +3,6 @@ import { ObjectId } from "mongodb";
 import { tasks, users } from "../config/mongoCollections.js";
 import { userData } from "./index.js";
 
-var commentID = 0;
-
 // Create a new task
 const create = async (
   taskName,
@@ -194,9 +192,10 @@ const addComment = async (userId, taskId, message) => {
   let fullMSG = `${fullName} ${datetime}: ${message}`;
 
   const taskCollection = await tasks();
+  let commentId = Math.random().toString().slice(2)
   let updatedTask = await taskCollection.updateOne(
     { _id: new ObjectId(taskId) },
-    { $push: { comments: {_id: commentID++, msg: fullMSG, flagged: false, resolved: false} } }
+    { $push: { comments: {_id: commentId, msg: fullMSG, flagged: false, resolved: false} } }
   );
 };
 
@@ -215,7 +214,7 @@ const updateComment = async (taskId, commentId, flagged, resolved) => {
   let updatedTask = await taskCollection.updateOne(
     {
       _id: new ObjectId(taskId),
-      "comments._id": Number(commentId)
+      "comments._id": commentId
     },
     {
       $set:
