@@ -109,13 +109,13 @@ router.route("/tasks").get(async (req, res) => {
 });
 
 router.route("/all").get(async (req, res) => {
-  if (req.session.user)
-    return res.status(200).render("tasks/all", {
-      title: "All Tasks",
-      taskList: await userData.getTasks(req.session.user._id),
-    });
+  if (!req.session.user)
+    return res.status(400).redirect("/");
 
-  return res.status(400).redirect("/");
+  return res.status(200).render("tasks/all", {
+    title: "All Tasks",
+    taskList: await userData.getTasks(req.session.user._id),
+  });
 });
 
 router.route("/public").get(async (req, res) => {
@@ -230,7 +230,7 @@ router
       } catch (e) {
         return res.render("error", { title: "Error Page", error: e });
       }
-      return res.status(400).redirect(`/tasks/${req.params.id}`);
+      return res.status(200).redirect(`/tasks/${req.params.id}`);
     }
 
     // If delete button was pressed
@@ -243,7 +243,7 @@ router
       } catch (e) {
         return res.render("error", { title: "Error Page", error: e });
       }
-      return res.status(400).redirect(`/tasks/tasks`);
+      return res.status(200).redirect(`/tasks/tasks`);
     }
 
     if (data.leaveSubmission) {
@@ -255,7 +255,7 @@ router
       } catch (e) {
         return res.render("error", { title: "Error Page", error: e });
       }
-      return res.status(400).redirect(`/tasks/${req.params.id}`);
+      return res.status(200).redirect(`/tasks/${req.params.id}`);
     }
 
     if (data.commentInput) {
@@ -271,7 +271,41 @@ router
       } catch (e) {
         return res.render("error", { title: "Error Page", error: e });
       }
-      return res.status(400).redirect(`/tasks/${req.params.id}`);
+      return res.status(200).redirect(`/tasks/${req.params.id}`);
+    }
+
+    // If a request was sent to flag a comment.
+    if (data.flag) {
+      let commentID = data.commentID;
+      validation.checkNull(commentID);
+      try {
+        await taskData.updateComment(
+          req.params.id,
+          commentID,
+          true,
+          false
+        );
+      } catch (e) {
+        return res.render("error", { title: "Error Page", error: e });
+      }
+      return res.status(200).redirect(`/tasks/${req.params.id}`);
+    }
+
+    // If a request was sent to resolve a comment.
+    if (data.resolve) {
+      let commentID = data.commentID;
+      validation.checkNull(commentID);
+      try {
+        await taskData.updateComment(
+          req.params.id,
+          commentID,
+          false,
+          true
+        );
+      } catch (e) {
+        return res.render("error", { title: "Error Page", error: e });
+      }
+      return res.status(200).redirect(`/tasks/${req.params.id}`);
     }
   });
 

@@ -67,7 +67,7 @@ const create = async (
     publicPost: publicPost,
     dateDue: dateDue,
     timeDue: timeDue,
-    maxContributors,
+    maxContributors: maxContributors,
     contributors: [creatorId],
     unauthorized: [],
     numContributors: 1,
@@ -194,7 +194,34 @@ const addComment = async (userId, taskId, message) => {
   const taskCollection = await tasks();
   let updatedTask = await taskCollection.updateOne(
     { _id: new ObjectId(taskId) },
-    { $push: { comments: fullMSG } }
+    { $push: { comments: {_id: Math.random().toString().slice(2), msg: fullMSG, flagged: false, resolved: false} } }
+  );
+};
+
+const updateComment = async (taskId, commentId, flagged, resolved) => {
+  validation.checkNull(taskId);
+  validation.checkNull(commentId);
+  validation.checkNull(flagged);
+  validation.checkNull(resolved);
+
+  validation.checkString(taskId);
+  validation.checkString(commentId);
+
+  taskId = validation.checkId(taskId);
+
+  const taskCollection = await tasks();
+  let updatedTask = await taskCollection.updateOne(
+    {
+      _id: new ObjectId(taskId),
+      "comments._id": commentId
+    },
+    {
+      $set:
+      {
+      "comments.$.flagged" : flagged,
+      "comments.$.resolved" : resolved
+      }
+    }
   );
 };
 
@@ -205,4 +232,5 @@ export default {
   getAllTasks,
   updateStatus,
   addComment,
+  updateComment
 };
