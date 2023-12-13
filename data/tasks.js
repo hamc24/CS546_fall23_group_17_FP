@@ -192,10 +192,9 @@ const addComment = async (userId, taskId, message) => {
   let fullMSG = `${fullName} ${datetime}: ${message}`;
 
   const taskCollection = await tasks();
-  let commentId = Math.random().toString().slice(2)
   let updatedTask = await taskCollection.updateOne(
     { _id: new ObjectId(taskId) },
-    { $push: { comments: {_id: commentId, msg: fullMSG, flagged: false, resolved: false} } }
+    { $push: { comments: {_id: Math.random().toString().slice(2), msg: fullMSG, flagged: false, resolved: false} } }
   );
 };
 
