@@ -3,6 +3,8 @@ import { ObjectId } from "mongodb";
 import { tasks, users } from "../config/mongoCollections.js";
 import { userData } from "./index.js";
 
+var commentID = 0;
+
 // Create a new task
 const create = async (
   taskName,
@@ -67,7 +69,7 @@ const create = async (
     publicPost: publicPost,
     dateDue: dateDue,
     timeDue: timeDue,
-    maxContributors,
+    maxContributors: maxContributors,
     contributors: [creatorId],
     unauthorized: [],
     numContributors: 1,
@@ -194,7 +196,34 @@ const addComment = async (userId, taskId, message) => {
   const taskCollection = await tasks();
   let updatedTask = await taskCollection.updateOne(
     { _id: new ObjectId(taskId) },
-    { $push: { comments: fullMSG } }
+    { $push: { comments: {_id: commentID++, msg: fullMSG, flagged: false, resolved: false} } }
+  );
+};
+
+const updateComment = async (taskId, commentId, flagged, resolved) => {
+  validation.checkNull(taskId);
+  validation.checkNull(commentId);
+  validation.checkNull(flagged);
+  validation.checkNull(resolved);
+
+  validation.checkString(taskId);
+  validation.checkString(commentId);
+
+  taskId = validation.checkId(taskId);
+
+  const taskCollection = await tasks();
+  let updatedTask = await taskCollection.updateOne(
+    {
+      _id: new ObjectId(taskId),
+      "comments._id": Number(commentId)
+    },
+    {
+      $set:
+      {
+      "comments.$.flagged" : flagged,
+      "comments.$.resolved" : resolved
+      }
+    }
   );
 };
 
@@ -205,4 +234,5 @@ export default {
   getAllTasks,
   updateStatus,
   addComment,
+  updateComment
 };

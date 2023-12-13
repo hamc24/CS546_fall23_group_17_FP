@@ -62,3 +62,7 @@ p.error, h1.error {
 label {
 	font-weight: bold;
 }
+
+i.flagged, i.resolved {
+	color: #a00
+}

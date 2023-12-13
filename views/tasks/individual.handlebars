@@ -18,7 +18,25 @@
     <ul>
       {{#if task.comments.length}}
         {{#each task.comments}}
-          <li>{{this}}</li>
+          <li>
+            {{this.msg}}
+            {{#if this.flagged}}
+              <i class='flagged'> Flagged! </i>
+              <form id="resolve-comment" action="/tasks/{{../id}}" method="POST">
+                <input type="submit" id="resolve" name="resolve" value="Resolve this flagged comment.">
+                <input type="hidden" id="commentID" name="commentID" value={{this._id}}>
+              </form>
+            {{else}}
+              {{#if this.resolved}}
+                <i class='resolved'> Resolved! </i>
+              {{else}}
+                <form id="flag-comment" action="/tasks/{{../id}}" method="POST">
+                  <input type="submit" id="flag" name="flag" value="Flag this comment.">
+                  <input type="hidden" id="commentID" name="commentID" value={{this._id}}>
+                </form>
+              {{/if}}
+            {{/if}}
+          </li>
         {{/each}}
       {{/if}}
     </ul>
