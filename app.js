@@ -32,6 +32,20 @@ app.use(
   })
 );
 
+const rewriteUnsupportedBrowserMethods = (req, res, next) => {
+  // If the user posts to the server with a property called _method, rewrite the request's method
+  // To be that method; so if they post _method=PUT you can now allow browsers to POST to a route that gets
+  // rewritten in this middleware to a PUT route
+  if (req.body && req.body._method) {
+    req.method = req.body._method;
+    delete req.body._method;
+  }
+
+  // let the next middleware run:
+  next();
+};
+app.use(rewriteUnsupportedBrowserMethods);
+
 app.use(async (req, res, next) => {
   let currTime = new Date().toUTCString();
   let reqMethod = req.method;
@@ -44,6 +58,8 @@ app.use(async (req, res, next) => {
   console.log(`[${currTime}]: ${reqMethod} ${reqRoute} (${auth})`);
   next();
 });
+
+
 
 app.get("/", async (req, res, next) => {
   try {
@@ -71,6 +87,16 @@ app.get("/register", (req, res, next) => {
   }
 });
 
+
+
+
+app.use('/schedule',async (req, res, next) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  } else {
+    next();
+  }
+});
 configRoutes(app);
 
 app.listen(3000, () => {

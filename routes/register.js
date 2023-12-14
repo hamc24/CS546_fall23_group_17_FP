@@ -47,7 +47,7 @@ router
       //* Name length check
       if (firstName.length < 2 || firstName.length > 25)
         throw "Error: First name is too short or too long";
-      if (lastName.length < 2 || firstName.length > 25)
+      if (lastName.length < 2 || lastName.length > 25)
         throw "Error: Last name is too short or too long";
 
       // Validate Email
@@ -77,7 +77,7 @@ router
     } catch (error) {
       return res
         .status(400)
-        .render("register", { title: "Registation Page", error: error });
+        .render("register", { title: "Registation Page", error: error,data:data });
     }
   });
 

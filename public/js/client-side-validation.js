@@ -1,13 +1,16 @@
-// (function () {
-//   const sanitize = (body) => {
-//     for (let element in body) body[element] = xss(body[element]);
-//     return body;
-//   };
 
-// const { type } = require("express/lib/response");
+(function () {
+  const sanitize = (body) => {
+    for (let element in body) body[element] = xss(body[element]);
+    return body;
+  };
 
-// })();
+
+})();
 let errorlist = [];
+
+console.log("AAAA!!!");
+
 
 
 function checkNum(val){
@@ -173,7 +176,7 @@ function checkRegister(){
         validateDate($('#dateOfBirthInput').val());
         validateBirthday($('#dateOfBirthInput').val());
     }catch(e){
-        addStyle(false, $('#dateOfBirthInput'),e)
+        addStyle(true, $('#dateOfBirthInput'),e)
     }
     
 
@@ -206,7 +209,8 @@ function checkRegister(){
     if($('#confirmPasswordInput').val()){
         addStyle(($('#confirmPasswordInput').val() !== $('#passwordInput').val())?true:false, $('#confirmPasswordInput'), "400: confirm password input is not the same as password input");
     }
-    if (errorlist.length>0){    
+    if (errorlist.length>0){  
+      $(".error").empty();  
         for (let item of errorlist){
             li = `<li class = "error"> ${item} </li>`;
             $('#errorList').append(li);
@@ -242,7 +246,8 @@ function checkLogin(){
         addStyle($('#passwordInput').val().length < 8 || !special || !capital || !numbers, $('#passwordInput'), "400:invalid password. There needs to be more than 8 characters and contains at least one uppercase character, one number one special characte");
     }
     console.log(errorlist);
-    if (errorlist.length>0){    
+    if (errorlist.length>0){
+      $(".error").empty();    
         for (let item of errorlist){
             li = `<li class = "error"> ${item} </li>`;
             $('#errorList').append(li);
@@ -297,7 +302,8 @@ function checkTask(){
 
 
 
-    if (errorlist.length>0){    
+    if (errorlist.length>0){  
+        $(".error").empty();  
         for (let item of errorlist){
             li = `<li class = "error"> ${item} </li>`;
             $('#errorList').append(li);

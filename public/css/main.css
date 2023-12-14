@@ -66,3 +66,41 @@ label {
 i.flagged, i.resolved {
 	color: #a00
 }
+
+.errorInput {
+	border: 3px solid red;
+	background-color: #eee;
+    
+}
+
+.error{
+	color: #a00
+}
+
+.tableFixHead {
+	overflow-y: auto; 
+	height: 500px; 
+  }
+  .tableFixHead thead th {
+	position: sticky; 
+	top: 0px; 
+  }
+  table {
+	border-collapse: collapse;
+	width: 100%;
+  }
+  th,
+  td {
+	padding: 8px 16px;
+	border: 1px solid #ccc;
+  }
+  th {
+	background: #eee;
+  }
+
+  .fill {
+	background-color: grey;
+  }
+  .real {
+	background-color: white;
+  }

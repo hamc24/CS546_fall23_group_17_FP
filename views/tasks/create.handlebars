@@ -3,7 +3,7 @@
   <p>
     Please create a new task.
   </p>
-  <form id="create-form" action="/tasks/create" method="POST">
+  <form id="create-form" action="/tasks/create" method="POST" onsubmit="return checkTask()">
     <label for="nameInput">
       Please enter the task's name:
       <br />
@@ -79,6 +79,8 @@
       <input type="reset" value="Reset" />
     </label>
   </form>
+  <ul id="errorList">        
+  </ul>
   <p class="error">
     {{error}}
   </p>

@@ -97,7 +97,7 @@ router.route("/create").post(async (req, res) => {
   } catch (error) {
     return res
       .status(400)
-      .render("tasks/create", { title: "Create Task", error: error });
+      .render("tasks/create", { title: "Create Task", error: error ,data:data});
   }
 });
 

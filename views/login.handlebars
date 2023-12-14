@@ -1,7 +1,7 @@
     <h1>Login</h1>
     <main>
         <p>Please log in to your user account.</p>
-        <form id=login-form action=/login method=POST>
+        <form id="login-form" action="/login" method="post" onsubmit="return checkLogin()">
             <label for="emailAddressInput"> Please enter your email address:
                 <br>
                 <input type=email name="emailAddressInput" id="emailAddressInput"/>
@@ -14,13 +14,15 @@
             <br>
             <label> Submit:
                 <br>
-                <input type=submit value="Login!" />
+                <input type="submit" value="Login!" />
             </label>
         </form>
-        <p class=error>
+        <ul id="errorList">        
+        </ul>
+        <p class="error">
             {{error}}
         </p>
-        <a href=/register>
+        <a href="/register">
             Click here to register!
         </a>
     </main>

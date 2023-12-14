@@ -1,0 +1,52 @@
+<main>
+    <form id="selectScheduleTime" action="/schedule" method="post">
+        <label for="startDateInput">
+            Please enter schedule satrt / end date:
+            <br>
+            <input type=date name="startDateInput" id="startDateInput" value = {{startDate}}>
+        </label>
+        <label for="EndDateInput">
+            Please enter schedule satrt / end date:
+            <br>
+            <input type=date name="EndDateInput" id="EndDateInput" value = {{endDate}}>
+        </label>
+        <br>
+        <label for="StartAMInput">
+            Please enter AM schedule time span:
+            <br>
+            <input type=time name="StartAMInput" id="StartAMInput" value = "08:00">
+        </label>
+        <label for="EndAMInput">
+            To:
+            <input type=time name="EndAMInput" id="EndAMInput" value = "12:00">
+        </label>
+        <br>
+        <label for="StartPMInput">
+            Please enter AM schedule time span:
+            <br>
+            <input type=time name="StartPMInput" id="StartPMInput" value ="14:00">
+        </label>
+        <label for="EndPMInput">
+            To:
+            <input type=time name="EndPMInput" id="EndPMInput" value = "18:00">
+        </label>
+        <br>
+        
+        <select name="selectInput" id="selectInput">
+            <option value="manually">Generate a schedule manually</option>
+            <option value="oneClick">Generate a schedule with one click</option>
+        </select>
+        <input type="submit" value="submit">
+        <input type="reset" value="reset">
+    
+    </form>
+    {{#if hasErrors}}
+    <ul class="errorList">
+    {{#each errorList}}
+        <li>
+        <p  class="error">{{ this }}</p>
+        </li>
+        {{/each}}
+    </ul>           
+    {{/if}}
+</main>
