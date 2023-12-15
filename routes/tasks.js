@@ -111,7 +111,7 @@ router.route("/tasks").get(async (req, res) => {
 router.route("/all").get(async (req, res) => {
   if (!req.session.user) return res.status(400).redirect("/");
 
-  return res.status(200).render("tasks/all", {
+  return res.status(200).render("tasks/view", {
     title: "All Tasks",
     taskList: await userData.getTasks(req.session.user._id),
   });
@@ -119,7 +119,7 @@ router.route("/all").get(async (req, res) => {
 
 router.route("/public").get(async (req, res) => {
   if (req.session.user)
-    return res.status(200).render("tasks/public", {
+    return res.status(200).render("tasks/view", {
       title: "Public Tasks",
       taskList: await userData.getPublicTasks(req.session.user._id),
     });
@@ -129,7 +129,7 @@ router.route("/public").get(async (req, res) => {
 
 router.route("/private").get(async (req, res) => {
   if (req.session.user)
-    return res.status(200).render("tasks/private", {
+    return res.status(200).render("tasks/view", {
       title: "Private Tasks",
       taskList: await userData.getPrivateTasks(req.session.user._id),
     });
@@ -139,7 +139,7 @@ router.route("/private").get(async (req, res) => {
 
 router.route("/forum").get(async (req, res) => {
   if (req.session.user)
-    return res.status(200).render("tasks/forum", {
+    return res.status(200).render("tasks/view", {
       title: "Public Task Forum",
       taskList: await taskData.getAllTasks(),
     });
