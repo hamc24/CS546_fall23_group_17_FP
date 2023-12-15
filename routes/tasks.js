@@ -4,102 +4,103 @@ import { userData, taskData } from "../data/index.js";
 import validation from "../validation.js";
 import * as users from "../data/users.js"; //
 
-router.route("/create").get(async (req, res) => {
-  if (req.session.user)
-    return res.status(200).render("tasks/create", { title: "Create Task" });
+router
+  .route("/create")
+  .get(async (req, res) => {
+    if (req.session.user)
+      return res.status(200).render("tasks/create", { title: "Create Task" });
 
-  return res.status(400).redirect("/");
-});
+    return res.status(400).redirect("/");
+  })
+  .post(async (req, res) => {
+    if (!req.session.user)
+      return res.status(200).render("/", { title: "Create Task" });
 
-router.route("/create").post(async (req, res) => {
-  if (!req.session.user)
-    return res.status(200).render("/", { title: "Create Task" });
+    let data = req.body;
+    data = validation.sanitize(data);
+    let errorlist = [];
+    try {
+      let taskName = data.nameInput;
+      let description = data.descriptionInput;
+      let creatorId = req.session.user._id.toString();
+      let creator = req.session.user.userName;
+      let publicPost = data.publicPostInput;
+      let dateDue = data.dateDueInput;
+      let timeDue = data.timeDueInput;
+      let maxContributors = data.maxContributorInput;
+      let durationH = data.durationInputH;
+      let durationM = data.durationInputM;
 
-  let data = req.body;
-  data = validation.sanitize(data);
-  let errorlist = [];
-  try {
-    let taskName = data.nameInput;
-    let description = data.descriptionInput;
-    let creatorId = req.session.user._id.toString();
-    let creator = req.session.user.userName;
-    let publicPost = data.publicPostInput;
-    let dateDue = data.dateDueInput;
-    let timeDue = data.timeDueInput;
-    let maxContributors = data.maxContributorInput;
-    let durationH = data.durationInputH;
-    let durationM = data.durationInputM;
+      //* Validate Null
+      validation.checkNull(taskName);
+      validation.checkNull(description);
+      validation.checkId(creatorId);
+      validation.checkNull(creator);
+      validation.checkNull(publicPost);
+      validation.checkNull(dateDue);
+      validation.checkNull(timeDue);
+      validation.checkNull(maxContributors);
+      validation.checkNull(durationH);
+      validation.checkNull(durationM);
 
-    //* Validate Null
-    validation.checkNull(taskName);
-    validation.checkNull(description);
-    validation.checkId(creatorId);
-    validation.checkNull(creator);
-    validation.checkNull(publicPost);
-    validation.checkNull(dateDue);
-    validation.checkNull(timeDue);
-    validation.checkNull(maxContributors);
-    validation.checkNull(durationH);
-    validation.checkNull(durationM);
+      //* Validate String
+      taskName = validation.checkString(taskName);
+      description = validation.checkString(description);
+      creatorId = validation.checkId(creatorId);
+      creator = validation.checkString(creator);
+      publicPost = validation.checkString(publicPost);
+      dateDue = validation.checkString(dateDue);
+      timeDue = validation.checkString(timeDue);
+      maxContributors = validation.checkString(maxContributors);
+      durationH = validation.checkString(durationH);
+      durationM = validation.checkString(durationM);
 
-    //* Validate String
-    taskName = validation.checkString(taskName);
-    description = validation.checkString(description);
-    creatorId = validation.checkId(creatorId);
-    creator = validation.checkString(creator);
-    publicPost = validation.checkString(publicPost);
-    dateDue = validation.checkString(dateDue);
-    timeDue = validation.checkString(timeDue);
-    maxContributors = validation.checkString(maxContributors);
-    durationH = validation.checkString(durationH);
-    durationM = validation.checkString(durationM);
+      if (taskName.length < 2 || taskName.length > 50)
+        throw "Error: Task Name is too short or too long";
+      if (description.length < 15 || description.length > 250)
+        throw "Error: Description is too short or too long";
+      creatorId = validation.checkId(creatorId, "Creator ID");
+      creator = validation.checkString(creator, "Creator Name"); //? Forgot if we have to turn this into a string...
+      dateDue = validation.checkString(dateDue, "Date Due");
+      timeDue = validation.checkString(timeDue, "Time Due");
 
-    if (taskName.length < 2 || taskName.length > 50)
-      throw "Error: Task Name is too short or too long";
-    if (description.length < 15 || description.length > 250)
-      throw "Error: Description is too short or too long";
-    creatorId = validation.checkId(creatorId, "Creator ID");
-    creator = validation.checkString(creator, "Creator Name"); //? Forgot if we have to turn this into a string...
-    dateDue = validation.checkString(dateDue, "Date Due");
-    timeDue = validation.checkString(timeDue, "Time Due");
+      //Date validation
+      validation.validateDate(dateDue);
+      validation.compareDate(dateDue);
 
-    //Date validation
-    validation.validateDate(dateDue);
-    validation.compareDate(dateDue);
+      //Time validation
+      validation.validateTime(timeDue);
+      if (durationH > 24 || durationH < 0)
+        throw "Error: Task Duration hour cannot be more than 24 hours long and less than 0";
+      if (durationM > 60 || durationM < 0)
+        throw "Error: Task Duration minutes cannot exceed 60 mins or be less than 0";
 
-    //Time validation
-    validation.validateTime(timeDue);
-    if (durationH > 24 || durationH < 0)
-      throw "Error: Task Duration hour cannot be more than 24 hours long and less than 0";
-    if (durationM > 60 || durationM < 0)
-      throw "Error: Task Duration minutes cannot exceed 60 mins or be less than 0";
+      maxContributors = Number(maxContributors);
+      durationH = Number(durationH);
+      durationM = Number(durationM);
 
-    maxContributors = Number(maxContributors);
-    durationH = Number(durationH);
-    durationM = Number(durationM);
+      if (publicPost == "public") publicPost = true;
+      else publicPost = false;
 
-    if (publicPost == "public") publicPost = true;
-    else publicPost = false;
-
-    const create = await taskData.create(
-      taskName,
-      description,
-      creatorId,
-      creator,
-      publicPost,
-      dateDue,
-      timeDue,
-      durationH,
-      durationM,
-      maxContributors
-    );
-    return res.status(200).redirect("/tasks/all");
-  } catch (error) {
-    return res
-      .status(400)
-      .render("tasks/create", { title: "Create Task", error: error });
-  }
-});
+      const create = await taskData.create(
+        taskName,
+        description,
+        creatorId,
+        creator,
+        publicPost,
+        dateDue,
+        timeDue,
+        durationH,
+        durationM,
+        maxContributors
+      );
+      return res.status(200).redirect("/tasks/all");
+    } catch (error) {
+      return res
+        .status(400)
+        .render("tasks/create", { title: "Create Task", error: error });
+    }
+  });
 
 router.route("/tasks").get(async (req, res) => {
   if (req.session.user)
