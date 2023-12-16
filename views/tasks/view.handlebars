@@ -12,27 +12,17 @@
   <ul id=list>
     {{#each taskList}}
       <li>
-        <text class="name">
-          {{this.taskName}}
-        </text>
-        <br>
-        Due:
-        <text class="date">
-          {{this.dateDue}}
-        </text>
-        <text class="time">
-          {{this.timeDue}}
-        </text>
-        <br>
-        Max Contributors:
-        <text class="contributors">
-          {{this.maxContributors}}
-        </text>
-        <br>
-        <a href="/tasks/{{this._id}}">
-          Click here to go to this task!
-        </a>
-        <p></p>
+        {{this.taskName}}
+        <ul>
+          <li class="name">Due: {{this.dateDue}}</li>
+          <li class="date">Max Contributors: {{this.maxContributors}}</li>
+          <li class="creator">Posted By: {{this.creator}}</li>
+          <li class="contributors">
+            <a href="/tasks/{{this._id}}">
+              Click here to go to this task!
+            </a>
+          </li>
+        </ul>
       </li>
     {{/each}}
   </ul>
