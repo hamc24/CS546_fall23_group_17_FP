@@ -37,7 +37,7 @@
             run = true;
             while (run) {
                 run = false;
-                li = list.getElementsByTagName("LI");
+                li = document.getElementsByClassName("LI");
                 let names = document.getElementsByClassName('name');
                 // Loop traversing through all the list items
                 for (i = 0; i < (li.length - 1); i++) {
@@ -61,14 +61,14 @@
             run = true;
             while (run) {
                 run = false;
-                li = list.getElementsByTagName("LI");
+                li = document.getElementsByClassName("LI");
                 let dates = document.getElementsByClassName("date");
                 let times = document.getElementsByClassName("time");
                 // Loop traversing through all the list items
                 for (i = 0; i < (li.length - 1); i++) {
                     stop = false;
-                    let time1 = getTimeVal(dates[i].innerHTML + " " + times[i].innerHTML);
-                    let time2 = getTimeVal(dates[i + 1].innerHTML + " " + times[i + 1].innerHTML);
+                    let time1 = getTimeVal(dates[i].innerHTML.split(" ")[2] + " \n" + times[i].innerHTML.split(" ")[2]);
+                    let time2 = getTimeVal(dates[i + 1].innerHTML.split(" ")[2] + " \n" + times[i + 1].innerHTML.split(" ")[2]);
                     if (time1 > time2) {
                         stop = true;
                         break;
@@ -88,12 +88,12 @@
             run = true;
             while (run) {
                 run = false;
-                li = list.getElementsByTagName("LI");
+                li = document.getElementsByClassName("LI");
                 let contributors = document.getElementsByClassName("contributors");
                 // Loop traversing through all the list items
                 for (i = 0; i < (li.length - 1); i++) {
                     stop = false;
-                    if (Number(contributors[i].innerHTML) > Number(contributors[i + 1].innerHTML)) {
+                    if (Number(contributors[i].innerHTML.split(" ")[2]) > Number(contributors[i + 1].innerHTML.split(" ")[2])) {
                         stop = true;
                         break;
                     }

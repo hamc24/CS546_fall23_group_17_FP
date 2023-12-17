@@ -11,17 +11,15 @@
   </form>
   <ul id=list>
     {{#each taskList}}
-      <li>
-        {{this.taskName}}
-        <ul>
-          <li class="name">Due: {{this.dateDue}}</li>
-          <li class="date">Max Contributors: {{this.maxContributors}}</li>
-          <li class="creator">Posted By: {{this.creator}}</li>
-          <li class="contributors">
-            <a href="/tasks/{{this._id}}">
-              Click here to go to this task!
+      <li class='LI'>
+        <a class="name" href="/tasks/{{this._id}}">
+              {{this.taskName}}
             </a>
-          </li>
+        <ul>
+          <li class="date">Date Due: {{this.dateDue}}</li>
+          <li class="time">Time Due: {{this.timeDue}}</li>
+          <li class="contributors">Max Contributors: {{this.maxContributors}}</li>
+          <li class="creator">Posted By: {{this.creator}}</li>
         </ul>
       </li>
     {{/each}}

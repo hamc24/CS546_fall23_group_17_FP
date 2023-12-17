@@ -141,7 +141,7 @@ router.route("/forum").get(async (req, res) => {
   if (req.session.user)
     return res.status(200).render("tasks/view", {
       title: "Public Task Forum",
-      taskList: await taskData.getAllTasks(),
+      taskList: await taskData.getNonBlackListedTasks(req.session.user._id),
     });
 
   return res.status(400).redirect("/");
