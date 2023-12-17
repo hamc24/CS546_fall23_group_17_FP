@@ -117,7 +117,12 @@ const getNonBlackListedTasks = async (userId) => {
   let user = await userData.getUserByID(userId);
   const taskCollection = await tasks();
 
-  const taskList = await taskCollection.find({ publicPost: true, unauthorized: {$not: {$elemMatch: {$eq: userId}}} }).toArray();
+  const taskList = await taskCollection
+    .find({
+      publicPost: true,
+      unauthorized: { $not: { $elemMatch: { $eq: userId } } },
+    })
+    .toArray();
   if (!taskList) throw "Error: Could not get all tasks";
   return taskList;
 };
@@ -278,12 +283,17 @@ const blackListUser = async (userId, taskId) => {
     { _id: new ObjectId(taskId) },
     {
       $push: {
-        unauthorized: {
-          _id: userId,
-        },
+        unauthorized: userId,
       },
     }
   );
+  // If user is in the task remove from contributors list and decrement
+  // numContributors by 1
+  let userTasks = await userData.getTasks(userId);
+  let userTasksId = userTasks.map((x) => x._id.toString());
+  if (userTasksId.includes(taskId)) {
+    await userData.removeTaskFromUser(userId, taskId);
+  }
 };
 
 const whiteListUser = async (userId, taskId) => {
