@@ -154,9 +154,10 @@ router
       let task;
       let contributors;
       try {
+        req.params.id = validation.checkString(req.params.id, "Id");
         task = await taskData.getTaskByID(req.params.id);
         contributors = await taskData.getContributorByName(req.params.id);
-      } catch (error) {
+      } catch (e) {
         return res
           .status(404)
           .render("error", { title: "Error Page", error: e });
@@ -325,6 +326,66 @@ router
       }
       return res.status(200).redirect(`/tasks/${req.params.id}`);
     }
+
+    if (data.rOBAction) {
+      validation.checkString(data.rOBAction);
+      validation.checkString(data.userSelection);
+      try {
+        if (
+          req.session.user._id.toString().localeCompare(data.userSelection) == 0
+        )
+          throw "Error: You can't remove/blacklist yourself from your own task!";
+        if (data.rOBAction.localeCompare("remove") == 0) {
+          await userData.removeTaskFromUser(data.userSelection, req.params.id);
+        } else {
+          await taskData.blackListUser(data.userSelection, req.params.id);
+        }
+      } catch (e) {
+        return res.render("error", { title: "Error Page", error: e });
+      }
+      return res.status(200).redirect(`/tasks/${req.params.id}`);
+    }
+
+    if (data.whiteList) {
+      validation.checkString(data.whiteList);
+      try {
+        await taskData.whiteListUser(data.whiteList, req.params.id);
+      } catch (e) {
+        return res.render("error", { title: "Error Page", error: e });
+      }
+      return res.status(200).redirect(`/tasks/${req.params.id}`);
+    }
   });
+
+router.route("/contributors/:id").get(async (req, res) => {
+  //Validate first
+  if (req.session.user) {
+    try {
+      req.params.id = validation.checkString(req.params.id, "Id");
+    } catch (e) {
+      return res.status(400).render("error", { title: "Error Page", error: e });
+    }
+
+    const task = await taskData.getTaskByID(req.params.id);
+    const contributors = await taskData.getContributorByName(req.params.id);
+    const newContributors = contributors.map(({ _id, firstName, lastName }) => {
+      return { _id: _id.toString(), firstName: firstName, lastName: lastName };
+    });
+    const blackList = await taskData.getUnauthorizedByName(req.params.id);
+    const newBlackList = blackList.map(({ _id, firstName, lastName }) => {
+      return { _id: _id.toString(), firstName: firstName, lastName: lastName };
+    });
+
+    return res.status(200).render("tasks/contributors", {
+      title: `Contributors for ${task.taskName}`,
+      id: req.params.id,
+      task: task,
+      contributors: newContributors,
+      unauthorized: newBlackList,
+    });
+  }
+
+  return res.status(400).redirect("/");
+});
 
 export default router;
