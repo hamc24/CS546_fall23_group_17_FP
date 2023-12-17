@@ -8,7 +8,7 @@ body {
 }
 
 body {
-	background: #999999;
+	background: #96fdff;
 	font-family: Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
@@ -22,7 +22,7 @@ h3,
 h4,
 h5,
 h6 {
-	color: #000;
+	color: #036914;
 	margin-bottom: 5px;
 }
 
@@ -61,4 +61,8 @@ p.error, h1.error {
 
 label {
 	font-weight: bold;
+}
+
+i.flagged, i.resolved {
+	color: #a00
 }

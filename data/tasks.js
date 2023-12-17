@@ -1,6 +1,7 @@
 import validation from "../validation.js";
 import { ObjectId } from "mongodb";
-import { tasks } from "../config/mongoCollections.js";
+import { tasks, users } from "../config/mongoCollections.js";
+import { userData } from "./index.js";
 
 // Create a new task
 const create = async (
@@ -30,6 +31,11 @@ const create = async (
   //Input validation for types
   taskName = validation.checkString(taskName, "Task Name");
   description = validation.checkString(description, "Description");
+  if (taskName.length < 2 || taskName.length > 50)
+    throw "Error: Task Name is too short or too long";
+  if (description.length < 15 || description.length > 250)
+    throw "Error: Description is too short or too long";
+
   creatorId = validation.checkId(creatorId, "Creator ID");
   creator = validation.checkString(creator, "Creator Name"); //? Forgot if we have to turn this into a string...
   if (typeof publicPost != "boolean")
@@ -61,21 +67,30 @@ const create = async (
     publicPost: publicPost,
     dateDue: dateDue,
     timeDue: timeDue,
-    maxContributors,
-    maxContributors,
-    contributors: [],
+    maxContributors: maxContributors,
+    contributors: [creatorId],
     unauthorized: [],
+    numContributors: 1,
     duration: {
       durationH: durationH,
       durationM: durationM,
     },
     status: 0,
     submitted: false,
+    comments: [],
   };
 
+  //* Add the task to the task collection
   const taskCollection = await tasks();
   const newInsertInformation = await taskCollection.insertOne(newTask);
   if (!newInsertInformation.insertedId) throw "Insert failed";
+
+  //* Update user taskList
+  const userCollection = await users();
+  const updateUser = await userCollection.updateOne(
+    { _id: new ObjectId(creatorId) },
+    { $push: { tasks: newInsertInformation.insertedId.toString() } }
+  );
   return await getTaskByID(newInsertInformation.insertedId.toString());
 };
 
@@ -93,14 +108,38 @@ const getTaskByID = async (id) => {
 // ! Note: we can get all tasks then sorting will be done through client side javascript
 const getAllTasks = async () => {
   const taskCollection = await tasks();
-  const taskList = await taskCollection
-    .find({})
-    .project({ taskName: 1 })
-    .toArray();
+  const taskList = await taskCollection.find({ publicPost: true }).toArray();
   if (!taskList) throw "Error: Could not get all tasks";
   return taskList;
 };
 
+const deleteTask = async (userId, taskId) => {
+  //Todo
+  //* Start Validation
+  validation.checkNull(userId);
+  validation.checkNull(taskId);
+  userId = validation.checkId(userId);
+  taskId = validation.checkId(taskId);
+
+  //* Get collections
+  const taskCollection = await tasks();
+  const userCollection = await users();
+
+  //* Check and see if userId = creatorId
+  let task = await getTaskByID(taskId);
+  if (userId.localeCompare(task.creatorId) != 0)
+    throw "Error: User is not the creator of the task!";
+
+  //* Delete the task from taskCollection
+  let deletedTask = await taskCollection.findOneAndDelete({
+    _id: new ObjectId(taskId),
+  });
+  if (!deletedTask) throw "Error: Task couldn't be deleted";
+
+  //* Go through all users and delete taskId from task list if they have it
+  await userCollection.updateMany({}, { $pull: { tasks: taskId } });
+  return { task: taskId, deleted: true };
+};
 // Update the status of a
 const updateStatus = async (id, statusString) => {
   //* Status has the type number, so will have to convert status string to number
@@ -130,4 +169,68 @@ const updateStatus = async (id, statusString) => {
   return updateInfo;
 };
 
-export default { create, getAllTasks, updateStatus };
+const addComment = async (userId, taskId, message) => {
+  validation.checkNull(userId);
+  validation.checkNull(taskId);
+  validation.checkNull(message);
+
+  validation.checkString(userId);
+  validation.checkString(taskId);
+  validation.checkString(message);
+
+  userId = validation.checkId(userId);
+  taskId = validation.checkId(taskId);
+
+  let user = await userData.getUserByID(userId);
+  let fullName = `${user.firstName} ${user.lastName}`;
+
+  let currentdate = new Date();
+  let datetime = `${currentdate.getDate()}/${
+    currentdate.getMonth() + 1
+  }/${currentdate.getFullYear()} (${currentdate.getHours()}:${currentdate.getMinutes()})`;
+
+  let fullMSG = `${fullName} ${datetime}: ${message}`;
+
+  const taskCollection = await tasks();
+  let updatedTask = await taskCollection.updateOne(
+    { _id: new ObjectId(taskId) },
+    { $push: { comments: {_id: Math.random().toString().slice(2), msg: fullMSG, flagged: false, resolved: false} } }
+  );
+};
+
+const updateComment = async (taskId, commentId, flagged, resolved) => {
+  validation.checkNull(taskId);
+  validation.checkNull(commentId);
+  validation.checkNull(flagged);
+  validation.checkNull(resolved);
+
+  validation.checkString(taskId);
+  validation.checkString(commentId);
+
+  taskId = validation.checkId(taskId);
+
+  const taskCollection = await tasks();
+  let updatedTask = await taskCollection.updateOne(
+    {
+      _id: new ObjectId(taskId),
+      "comments._id": commentId
+    },
+    {
+      $set:
+      {
+      "comments.$.flagged" : flagged,
+      "comments.$.resolved" : resolved
+      }
+    }
+  );
+};
+
+export default {
+  create,
+  getTaskByID,
+  deleteTask,
+  getAllTasks,
+  updateStatus,
+  addComment,
+  updateComment
+};

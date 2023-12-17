@@ -1,26 +1,25 @@
     <h1>Login</h1>
     <main>
-        <p>Please log in to your user account.</p>
         <form id=login-form action=/login method=POST>
-            <label for="emailAddressInput"> Please enter your email address:
+            <label for="emailAddressInput"> Email address:
                 <br>
                 <input type=email name="emailAddressInput" id="emailAddressInput"/>
             </label>
             <br>
-            <label for="passwordInput"> Please enter your password:
+            <label for="passwordInput"> Password:
                 <br>
                 <input type=password name="passwordInput" id="passwordInput"/>
             </label>
             <br>
-            <label> Submit:
+            <label>
                 <br>
-                <input type=submit value="Login!" />
+                <input type=submit value="Submit!" />
             </label>
         </form>
         <p class=error>
             {{error}}
         </p>
         <a href=/register>
-            Click here to register!
+            Register Here!
         </a>
     </main>

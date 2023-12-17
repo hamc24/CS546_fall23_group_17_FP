@@ -1,54 +1,50 @@
 <h1>Register</h1>
     <main>
-        <p>
-            Please register a new user account.
-        </p>
         <form id=registration-form action=/register method=POST>
             <label for="firstNameInput">
-                Please enter your first name:
+                First name:
                 <br>
                 <input type=text name="firstNameInput" id="firstNameInput"/>
             </label>
             <br>
             <label for="lastNameInput">
-                Please enter your last name:
+                Last name:
                 <br>
                 <input type=text name="lastNameInput" id="lastNameInput"/>
             </label>
             <br>
+            <label for="dateOfBirthInput">
+                Date of Birth:
+                <br>
+                <input type=date name="dateOfBirthInput" id="dateOfBirthInput"/>
+            </label>
+            <br>
             <label for="emailAddressInput">
-                Please enter your email address:
+                E-mail address:
                 <br>
                 <input type=email name="emailAddressInput" id="emailAddressInput"/>
             </label>
             <br>
             <label for="userNameInput">
-                Please enter your user name:
+                Username:
                 <br>
                 <input type=text name="userNameInput" id="userNameInput"/>
             </label>
             <br>
-            <label for="dateOfBirthInput">
-                Please enter your date of birth:
-                <br>
-                <input type=date name="dateOfBirthInput" id="dateOfBirthInput"/>
-            </label>
-            <br>
             <label for="passwordInput">
-                Please enter your password:
+                Please enter a password at least 8 letters long, with at least one uppercase letter, one number, and one special character:
                 <br>
                 <input type=password name="passwordInput" id="passwordInput"/>
             </label>
             <br>
             <label for="confirmPasswordInput">
-                Please confirm your password:
+                Retype your password:
                 <br>
                 <input type=password name="confirmPasswordInput" id="confirmPasswordInput"/>
             </label>
             <br>
+            <br>
             <label>
-                Submit:
-                <br>
                 <input type=submit value="Register!"/>
             </label>
         </form>
@@ -56,6 +52,6 @@
             {{error}}
         </p>
         <a href=/login>
-            Already have an account? Click here to log-in
+            Already have an account? Click here to log in.
         </a>
     </main>

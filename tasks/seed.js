@@ -13,7 +13,7 @@ try {
     "Ham",
     "cham@stevens.edu",
     "hamc24",
-    "03/22/2002",
+    "2002-03-22",
     "SomePassword123!"
   );
   let patrick = await userData.create(
@@ -21,7 +21,7 @@ try {
     "Hill",
     "phill@stevens.edu",
     "graffixnyc",
-    "05/11/1977",
+    "1977-05-11",
     "Cs546Prof?*"
   );
   let changTask1 = await taskData.create(
@@ -30,19 +30,65 @@ try {
     chang._id.toString(),
     ` ${chang.firstName} ${chang.lastName}`,
     false,
-    "12/17/2023",
+    "2023-12-31",
     "11:59 PM",
+    3,
+    30,
+    10
+  );
+
+  let patrickTask1 = await taskData.create(
+    "CS546 Office Hours",
+    "Weekly Office Hours that are hosted at 4pm. Come if you have any questions, or not",
+    patrick._id.toString(),
+    ` ${patrick.firstName} ${patrick.lastName}`,
+    true,
+    "2023-12-31",
+    "4:00 PM",
     3,
     30,
     4
   );
+
   console.log(chang);
   console.log(patrick);
   console.log(changTask1);
+  console.log(patrickTask1);
 
-  console.log(
-    await taskData.updateStatus(changTask1._id.toString(), "revision required")
+  await userData.addTaskToUser(
+    chang._id.toString(),
+    patrickTask1._id.toString()
   );
+
+  console.log(await userData.getUserByID(chang._id.toString()));
+  console.log(await taskData.getTaskByID(patrickTask1._id.toString()));
+  console.log(await userData.getTasks(chang._id.toString()));
+
+  console.log(await taskData.deleteTask(patrickTask1._id.toString()));
+  await taskData.addComment(
+    chang._id.toString(),
+    changTask1._id.toString(),
+    "Where are the handlebars?"
+  );
+  await taskData.addComment(
+    chang._id.toString(),
+    changTask1._id.toString(),
+    "Where are the input validations?"
+  );
+  await taskData.addComment(
+    chang._id.toString(),
+    changTask1._id.toString(),
+    "Where is the CSS?"
+  );
+  await taskData.addComment(
+    chang._id.toString(),
+    changTask1._id.toString(),
+    "What a mess...?"
+  );
+
+  // console.log(
+  //   await taskData.updateStatus(changTask1._id.toString(), "revision required")
+  // );
 } catch (error) {
   console.log(error);
 }

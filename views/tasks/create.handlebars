@@ -1,0 +1,93 @@
+<h1>{{title}}</h1>
+<main>
+  <form id="create-form" action="/tasks/create" method="POST">
+    <label for="nameInput">
+      Name:
+      <br />
+      <input type="text" name="nameInput" id="nameInput" />
+    </label>
+    <br />
+    <label for="descriptionInput">
+      Description:
+      <br />
+      <input type="text" name="descriptionInput" id="descriptionInput" />
+    </label>
+    <br />
+    <label for="publicPostInput">
+      Type:
+      <br />
+      <select name="publicPostInput" id="publicPostInput">
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+      </select>
+    </label>
+    <br />
+    <label for="dateDueInput">
+      Due Date:
+      <br />
+      <input type="date" name="dateDueInput" id="dateDueInput" />
+    </label>
+    <br />
+    <label for="timeDueInput">
+      Due Time:
+      <br />
+      <input type="text" name="timeDueInput" id="timeDueInput" />
+    </label>
+    <br />
+    <label for="maxContributorInput">
+      Max contributors:
+      <br />
+      <input
+        type="number"
+        name="maxContributorInput"
+        id="maxContributorInput"
+        min="1"
+      />
+    </label>
+    <br />
+    <label for="durationInputH">
+      Duration in Hours:
+      <br />
+      <input
+        type="number"
+        name="durationInputH"
+        id="durationInputH"
+        min="0"
+        max="24"
+      />
+    </label>
+    <br />
+    <label for="durationInputM">
+      Duration in Additional Minutes:
+      <br />
+      <input
+        type="number"
+        name="durationInputM"
+        id="durationInputM"
+        min="0"
+        max="60"
+      />
+    </label>
+    <br />
+    <label>
+      Submit:
+      <br />
+      <input type="submit" value="Create!" />
+      <input type="reset" value="Reset" />
+    </label>
+  </form>
+  <p class="error">
+    {{error}}
+  </p>
+  <a href="/tasks/tasks">
+    Return to Tasks
+  </a>
+  <br />
+  <a href="/users">
+    Return to Users
+  </a>
+  <br />
+  <a href="/logout">
+    Log Out
+  </a>
+</main>

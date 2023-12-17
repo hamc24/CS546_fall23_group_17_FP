@@ -1,19 +1,22 @@
-import { Router } from 'express';
+import { Router } from "express";
 const router = Router();
-import { userData } from '../data/index.js';
-import validation from '../validation.js';
-import * as users from '../data/users.js';
+import { userData } from "../data/index.js";
+import validation from "../validation.js";
+import * as users from "../data/users.js";
 
-router.route('/').get(async (req, res) => {
+router.route("/").get(async (req, res) => {
   //Todo
   if (req.session.user)
-    return res.status(200).render('users', {
+    return res.status(200).render("users", {
+      title: `Home Page`,
+      firstName: req.session.user.firstName,
+      lastName: req.session.user.lastName,
       userName: req.session.user.userName,
       email: req.session.user.email,
-      dateOfBirth: req.session.user.dateOfBirth
+      dateOfBirth: req.session.user.dateOfBirth,
     });
 
-  return res.status(400).redirect('/');
+  return res.status(400).redirect("/");
 });
 
 export default router;

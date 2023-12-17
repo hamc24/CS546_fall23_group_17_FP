@@ -1,0 +1,32 @@
+<h1>Tasks Forum</h1>
+<main>
+  <div class="public-tasks">
+    <h2>Public Posts:</h2>
+
+    <ul>
+      {{#if taskList.length}}
+        {{#each taskList}}
+          <li>
+            <a href="/tasks/{{this._id}}">{{this.taskName}}</a>
+            <ul>
+              <li> Posted by: {{this.creator}}</li>
+            </ul>
+          </li>
+        {{/each}}
+      {{/if}}
+    </ul>
+
+  </div>
+
+  <a href="/tasks/tasks">
+    Return to Tasks
+  </a>
+  <br />
+  <a href="/users">
+    Return to Users
+  </a>
+  <br />
+  <a href="/logout">
+    Log Out
+  </a>
+</main>
