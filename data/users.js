@@ -160,6 +160,9 @@ const addTaskToUser = async (userId, taskId) => {
   if (!task) throw `Error: Couldn't find task`;
   if (task.contributors.includes(userId))
     throw "Error: User is already a Contributor";
+  // IF user in blackList
+  if (task.unauthorized.includes(userId))
+    throw "Error: User is blacklisted from this task";
 
   // Check if it is a private task, if so check if creatorId is the userId
   if (!task.publicPost) {
