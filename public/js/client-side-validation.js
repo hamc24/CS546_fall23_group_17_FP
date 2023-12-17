@@ -3,11 +3,8 @@
     for (let element in body) body[element] = xss(body[element]);
     return body;
   };
-})();
 
-let errorlist = [];
-
-console.log("AAAA!!!");
+  let errorlist = [];
 
 function checkNum(val) {
   if (typeof val != "number") {
@@ -439,7 +436,7 @@ function checkTask() {
   let co = Number($("#maxContributorInput").val().trim());
   console.log("typeof(dh)", typeof dh, dh);
   console.log("typeof(dh)", typeof dm, dm);
-  console.log("typeof(dh)", typeof db, db);
+  console.log("typeof(dh)", typeof co, co);
 
   addStyle(
     !checkNum(dh) || dh < 0 || dh > 24,
@@ -467,3 +464,58 @@ function checkTask() {
   }
   return true;
 }
+
+  let login = document.getElementById("login-form");
+  let register = document.getElementById("registration-form");
+  let create = document.getElementById("create-form");
+
+  if (login) {
+    login.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!checkLogin())
+        for (let errors of errorlist) {
+          let error = document.createElement('p');
+          error.classList.add('error');
+          error.innerHTML = errors;
+          login.appendChild(error);
+        }
+        else
+          login.submit();
+    }
+    );
+  }
+
+  else if (register) {
+    register.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!checkRegister())
+        for (let errors of errorlist) {
+          let error = document.createElement('p');
+          error.classList.add('error');
+          error.innerHTML = errors;
+          register.appendChild(error);
+        }
+        else
+          register.submit();
+    }
+    );
+  }
+
+  else if (create) {
+    create.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!checkTask())
+        for (let errors of errorlist) {
+          let error = document.createElement('p');
+          error.classList.add('error');
+          error.innerHTML = errors;
+          create.appendChild(error);
+        }
+        else
+          create.submit();
+    }
+    );
+  }
+})();
+
+
