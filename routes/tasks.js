@@ -2,7 +2,6 @@ import { Router } from "express";
 const router = Router();
 import { userData, taskData } from "../data/index.js";
 import validation from "../validation.js";
-import * as users from "../data/users.js"; //
 
 router
   .route("/create")
@@ -23,7 +22,7 @@ router
       let taskName = data.nameInput;
       let description = data.descriptionInput;
       let creatorId = req.session.user._id.toString();
-      let creator = req.session.user.userName;
+      let creator = `${req.session.user.firstName} ${req.session.user.lastName}`;
       let publicPost = data.publicPostInput;
       let dateDue = data.dateDueInput;
       let timeDue = data.timeDueInput;
@@ -153,22 +152,25 @@ router
   .get(async (req, res) => {
     if (req.session.user) {
       let task;
+      let contributors;
       try {
         task = await taskData.getTaskByID(req.params.id);
+        contributors = await taskData.getContributorByName(req.params.id);
       } catch (error) {
         return res
           .status(404)
           .render("error", { title: "Error Page", error: e });
       }
 
+      //If private
       if (task.publicPost == false) {
-        //If private
+        // Check if creatorId = sessionUserId
         if (task.creatorId.localeCompare(req.session.user._id) == 0) {
-          // Check if creatorId = sessionUserId
           return res.status(200).render("tasks/individual", {
             title: task.taskName,
             id: req.params.id,
             task: task,
+            contributors: contributors,
             accepted: true,
             creator: true,
           });
@@ -178,6 +180,7 @@ router
             error: "You don't have access to this task",
           });
         }
+        //If public
       } else {
         //Get current user
         let user = await userData.getUserByID(req.session.user._id.toString());
@@ -188,6 +191,7 @@ router
               title: task.taskName,
               id: req.params.id,
               task: task,
+              contributors: contributors,
               accepted: true,
               creator: true,
             });
@@ -196,6 +200,7 @@ router
               title: task.taskName,
               id: req.params.id,
               task: task,
+              contributors: contributors,
               accepted: true,
               creator: false,
             });
@@ -205,6 +210,7 @@ router
             title: task.taskName,
             id: req.params.id,
             task: task,
+            contributors: contributors,
             accepted: false,
           });
         }

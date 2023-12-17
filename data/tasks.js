@@ -194,7 +194,16 @@ const addComment = async (userId, taskId, message) => {
   const taskCollection = await tasks();
   let updatedTask = await taskCollection.updateOne(
     { _id: new ObjectId(taskId) },
-    { $push: { comments: {_id: Math.random().toString().slice(2), msg: fullMSG, flagged: false, resolved: false} } }
+    {
+      $push: {
+        comments: {
+          _id: Math.random().toString().slice(2),
+          msg: fullMSG,
+          flagged: false,
+          resolved: false,
+        },
+      },
+    }
   );
 };
 
@@ -213,16 +222,34 @@ const updateComment = async (taskId, commentId, flagged, resolved) => {
   let updatedTask = await taskCollection.updateOne(
     {
       _id: new ObjectId(taskId),
-      "comments._id": commentId
+      "comments._id": commentId,
     },
     {
-      $set:
-      {
-      "comments.$.flagged" : flagged,
-      "comments.$.resolved" : resolved
-      }
+      $set: {
+        "comments.$.flagged": flagged,
+        "comments.$.resolved": resolved,
+      },
     }
   );
+};
+
+//Returns a list of Contributor Names in a given task
+const getContributorByName = async (taskId) => {
+  const task = await getTaskByID(taskId);
+  const userCollection = await users();
+
+  //* get the list of contributors (In id form)
+  let contributors = task.contributors;
+  let contributorsToId = contributors.map((x) => new ObjectId(x));
+
+  //* Search for ids in userCollection and return the found user's name
+  let userList = await userCollection
+    .find({ _id: { $in: contributorsToId } })
+    .project({ _id: 0, firstName: 1, lastName: 1 })
+    .toArray();
+
+  if (!userList) throw "Error: Users could not be found";
+  return userList;
 };
 
 export default {
@@ -232,5 +259,6 @@ export default {
   getAllTasks,
   updateStatus,
   addComment,
-  updateComment
+  updateComment,
+  getContributorByName,
 };
