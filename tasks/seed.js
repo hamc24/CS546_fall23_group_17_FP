@@ -131,12 +131,23 @@ try {
     atillaTask1._id.toString()
   );
 
+  await userData.addTaskToUser(
+    chang._id.toString(),
+    atillaTask2._id.toString()
+  );
+
   // Deleting one task that a user has created
   console.log(
     await taskData.deleteTask(
       patrick._id.toString(),
       patrickTask1._id.toString()
     )
+  );
+
+  //Black listing chang from atillatask1
+  await taskData.blackListUser(
+    chang._id.toString(),
+    atillaTask1._id.toString()
   );
 
   // Inserting Comments

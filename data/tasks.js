@@ -283,16 +283,16 @@ const blackListUser = async (userId, taskId) => {
     { _id: new ObjectId(taskId) },
     {
       $push: {
-        unauthorized: {
-          _id: userId,
-        },
+        unauthorized: userId,
       },
     }
   );
-  // If user is in the task
+  // If user is in the task remove from contributors list and decrement
+  // numContributors by 1
   let userTasks = await userData.getTasks(userId);
-  if (userTasks.includes(taskId)) {
-    await userData.removeTaskFromUser(userId);
+  let userTasksId = userTasks.map((x) => x._id.toString());
+  if (userTasksId.includes(taskId)) {
+    await userData.removeTaskFromUser(userId, taskId);
   }
 };
 
