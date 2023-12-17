@@ -162,6 +162,8 @@ router
           .render("error", { title: "Error Page", error: e });
       }
 
+      let statusStrings = ["In progress.", "Revision required.", "Resolved."];
+
       //If private
       if (task.publicPost == false) {
         // Check if creatorId = sessionUserId
@@ -173,6 +175,7 @@ router
             contributors: contributors,
             accepted: true,
             creator: true,
+            status: statusStrings[task.status],
           });
         } else {
           return res.status(403).render("error", {
@@ -194,6 +197,7 @@ router
               contributors: contributors,
               accepted: true,
               creator: true,
+              status: statusStrings[task.status],
             });
           } else {
             return res.status(200).render("tasks/individual", {
@@ -203,6 +207,7 @@ router
               contributors: contributors,
               accepted: true,
               creator: false,
+              status: statusStrings[task.status],
             });
           }
         } else {
@@ -266,8 +271,9 @@ router
 
     //If comment was inserted
     if (data.commentInput) {
+      let comment;
       try {
-        let comment = data.commentInput;
+        comment = data.commentInput;
         validation.checkNull(comment);
         comment = validation.checkString(comment, "Comment");
       } catch (error) {
@@ -303,6 +309,17 @@ router
       validation.checkNull(commentID);
       try {
         await taskData.updateComment(req.params.id, commentID, false, true);
+      } catch (e) {
+        return res.render("error", { title: "Error Page", error: e });
+      }
+      return res.status(200).redirect(`/tasks/${req.params.id}`);
+    }
+
+    // If a request was sent to resolve a comment.
+    if (data.progressOption) {
+      validation.checkString(data.progressOption);
+      try {
+        await taskData.updateStatus(req.params.id, data.progressOption);
       } catch (e) {
         return res.render("error", { title: "Error Page", error: e });
       }
