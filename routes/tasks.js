@@ -102,9 +102,33 @@ router
   });
 
 router.route("/tasks").get(async (req, res) => {
-  if (req.session.user)
-    return res.status(200).render("tasks/tasks", { title: "Tasks" });
 
+  if (req.session.user)
+    {
+      let schedules = [];
+      try       
+      {
+        schedules = await taskData.getSchedule();
+      } catch (e)
+      {
+        console.log(e);
+      }
+      //[
+        // {
+        //   date: "May 30 2002",
+        //   time: "14:30",
+        //   task: "Clean tables"
+        // },
+        // {
+        //   date: "May 30 2004",
+        //   time: "5:30",
+        //   task: "Rake leaves"
+        // } 
+      //]
+      return res.status(200).render("tasks/tasks", { title: "Tasks", Schedule: "Schedule", schedules: schedules});
+    }
+    
+    
   return res.status(400).redirect("/");
 });
 

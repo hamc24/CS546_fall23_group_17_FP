@@ -27,4 +27,30 @@
   <a href="/logout">
     Click here to logout!
   </a>
+
+  <h1>{{Schedule}}</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Task</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each schedules}}
+            <tr>
+            <td class="date">{{this.date}}</td>
+            <td class="time">{{this.time}}</td>
+            <td class="task">{{this.task}}</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+
+    <br />
+    <a href="/users">
+        Return to Users
+    </a>
+    <br />
 </main>

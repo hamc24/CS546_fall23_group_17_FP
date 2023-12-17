@@ -342,6 +342,32 @@ const whiteListUser = async (userId, taskId) => {
     throw "Error: Removing user from black list couldn't be done";
 };
 
+const getSchedule = async () =>
+{
+  const taskCollection = await tasks();
+  const taskList = await taskCollection.find({}).toArray();
+  console.log(taskList);
+  if (taskList.length)
+  {
+    const ObjectList = taskList.map(task => {
+      return {
+        date: task.dateDue,
+        time: task.timeDue,
+        task: task.taskName
+      }
+    });
+    return ObjectList.sort((a, b) => {
+      const d1 = new Date (a.date + " " + a.time);
+      const d2 = new Date (b.date + " " + b.time);
+      return d1.getTime() - d2.getTime();
+    });
+  }
+  else
+  {
+    throw new Error("Add a task!");
+  }
+}
+
 export default {
   create,
   getTaskByID,
@@ -355,4 +381,5 @@ export default {
   getUnauthorizedByName,
   blackListUser,
   whiteListUser,
+  getSchedule
 };
