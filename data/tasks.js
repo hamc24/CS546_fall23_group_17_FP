@@ -113,6 +113,15 @@ const getAllTasks = async () => {
   return taskList;
 };
 
+const getNonBlackListedTasks = async (userId) => {
+  let user = await userData.getUserByID(userId);
+  const taskCollection = await tasks();
+
+  const taskList = await taskCollection.find({ publicPost: true, unauthorized: {$not: {$elemMatch: {$eq: userId}}} }).toArray();
+  if (!taskList) throw "Error: Could not get all tasks";
+  return taskList;
+};
+
 const deleteTask = async (userId, taskId) => {
   //Todo
   //* Start Validation
@@ -252,13 +261,66 @@ const getContributorByName = async (taskId) => {
   return userList;
 };
 
+const blackListUser = async (userId, taskId) => {
+  validation.checkNull(userId);
+  validation.checkNull(taskId);
+
+  validation.checkString(userId);
+  validation.checkString(taskId);
+
+  userId = validation.checkId(userId);
+  taskId = validation.checkId(taskId);
+
+  let user = await userData.getUserByID(userId);
+
+  const taskCollection = await tasks();
+  let updatedTask = await taskCollection.updateOne(
+    { _id: new ObjectId(taskId) },
+    {
+      $push: {
+        unauthorized: {
+          _id: userId,
+        },
+      },
+    }
+  );
+};
+
+const whiteListUser = async (userId, taskId) => {
+  validation.checkNull(userId);
+  validation.checkNull(taskId);
+
+  validation.checkString(userId);
+  validation.checkString(taskId);
+
+  userId = validation.checkId(userId);
+  taskId = validation.checkId(taskId);
+
+  let user = await userData.getUserByID(userId);
+
+  const taskCollection = await tasks();
+  let updatedTask = await taskCollection.updateOne(
+    { _id: new ObjectId(taskId) },
+    {
+      $pull: {
+        unauthorized: {
+          _id: userId,
+        },
+      },
+    }
+  );
+};
+
 export default {
   create,
   getTaskByID,
   deleteTask,
   getAllTasks,
+  getNonBlackListedTasks,
   updateStatus,
   addComment,
   updateComment,
   getContributorByName,
+  blackListUser,
+  whiteListUser,
 };
