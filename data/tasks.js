@@ -259,11 +259,30 @@ const getContributorByName = async (taskId) => {
   //* Search for ids in userCollection and return the found user's name
   let userList = await userCollection
     .find({ _id: { $in: contributorsToId } })
-    .project({ _id: 0, firstName: 1, lastName: 1 })
+    .project({ _id: 1, firstName: 1, lastName: 1 })
     .toArray();
 
   if (!userList) throw "Error: Users could not be found";
   return userList;
+};
+
+//Returns a list of Contributor Names in a given task
+const getUnauthorizedByName = async (taskId) => {
+  const task = await getTaskByID(taskId);
+  const userCollection = await users();
+
+  //* get the list of contributors (In id form)
+  let unauthorized = task.unauthorized;
+  let unauthorizedToId = unauthorized.map((x) => new ObjectId(x));
+
+  //* Search for ids in userCollection and return the found user's name
+  let whiteList = await userCollection
+    .find({ _id: { $in: unauthorizedToId } })
+    .project({ _id: 1, firstName: 1, lastName: 1 })
+    .toArray();
+
+  if (!whiteList) throw "Error: Users could not be found";
+  return whiteList;
 };
 
 const blackListUser = async (userId, taskId) => {
@@ -314,11 +333,13 @@ const whiteListUser = async (userId, taskId) => {
     {
       $pull: {
         unauthorized: {
-          _id: userId,
+          $eq: userId,
         },
       },
     }
   );
+  if (!updatedTask)
+    throw "Error: Removing user from black list couldn't be done";
 };
 
 const getSchedule = async () =>
@@ -357,6 +378,7 @@ export default {
   addComment,
   updateComment,
   getContributorByName,
+  getUnauthorizedByName,
   blackListUser,
   whiteListUser,
   getSchedule

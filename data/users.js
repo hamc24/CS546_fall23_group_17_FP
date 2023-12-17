@@ -291,10 +291,10 @@ const loginUser = async (email, password) => {
   validation.validatePassword(password);
 
   let user = await userCollection.findOne({ email: email });
-  if (user == null) throw "User with email " + email + " doesn't exist.";
+  if (user == null) throw "Incorrect User Name or Password";
 
   let authenticated = await bcrypt.compare(password, user.hashedPass);
-  if (!authenticated) throw "Password is invalid.";
+  if (!authenticated) throw "Incorrect User Name or Password";
 
   return {
     _id: user._id,

@@ -15,6 +15,9 @@
       <li>{{this.firstName}} {{this.lastName}}</li>
     {{/each}}
   </ul>
+  {{#if creator}}
+    <a href="/tasks/contributors/{{id}}">Edit Contributors</a>
+  {{/if}}
 
   
   {{! FOR THIS SECTION WE WILL NEED TO ADD A FORM TO SUBMIT 

@@ -1,0 +1,54 @@
+<main>
+    <h1>Manage Contributors</h1>
+    <p>Remove or BlackList a User from task.<p>
+    <form name="removeOrBL" action="/tasks/{{id}}" method="post">
+        <label for="rOBAction">Select Action:</label>
+        <select name="rOBAction" id="rOBAction">
+            <option value="remove">Remove</option>
+            <option value="blackList">Blacklist</option>
+        </select>
+        <label for="userSelection">Select User:</label>
+        <select name="userSelection" id="userSelection">
+            {{#each contributors}}
+                <option value={{this._id }}>{{this.firstName}} {{this.lastName}}</option>
+            {{/each}}
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+
+    <p>List of blacklisted Users</p>
+    <ul>
+        {{#each unauthorized}}
+            <li>
+                {{this.firstName}} {{this.lastName}}
+            </li>
+        {{/each}}
+    </ul>
+
+    <form name="whiteList" action="/tasks/{{id}}" method="post">
+        <label for="whiteList">Select User to Remove BlackList:</label>
+        <select name="whiteList" id="whiteList">
+            {{#each unauthorized}}
+                <option value={{this._id }}>{{this.firstName}} {{this.lastName}}</option>
+            {{/each}}
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+
+
+    <a href="/tasks/{{task._id}}">
+        Click here to return to "{{title}}"
+    </a>
+    <br>
+    <a href="/tasks/tasks">
+        Click here to return to tasks!
+    </a>
+    <br />
+    <a href="/users">
+        Click here to return to users!
+    </a>
+    <br />
+    <a href="/logout">
+        Click here to logout!
+    </a>
+</main>
