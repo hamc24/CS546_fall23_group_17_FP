@@ -77,7 +77,7 @@ i.flagged, i.resolved {
 	color: #a00
 }
 
-.tableFixHead {
+.tableFixHead .tasks{
 	overflow-y: auto; 
 	height: 500px; 
   }

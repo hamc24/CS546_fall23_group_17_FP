@@ -19,4 +19,3 @@ const getCollectionFn = (collection) => {
 export const users = getCollectionFn('users');
 export const tasks = getCollectionFn('tasks');
 export const comments = getCollectionFn('comments');
-export const schedules = getCollectionFn('schedules');

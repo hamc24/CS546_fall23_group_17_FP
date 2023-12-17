@@ -14,7 +14,7 @@ const create = async (
   timeDue,
   durationH,
   durationM,
-  maxContributors
+  maxContributors,
 ) => {
   //Validate Null
   validation.checkNull(taskName);

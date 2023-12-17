@@ -1,46 +1,65 @@
 <main>
-    <form id="selectScheduleTime" action="/schedule" method="post">
-        <label for="startDateInput">
-            Please enter schedule satrt / end date:
-            <br>
-            <input type=date name="startDateInput" id="startDateInput" value = {{startDate}}>
-        </label>
-        <label for="EndDateInput">
-            Please enter schedule satrt / end date:
-            <br>
-            <input type=date name="EndDateInput" id="EndDateInput" value = {{endDate}}>
-        </label>
-        <br>
-        <label for="StartAMInput">
-            Please enter AM schedule time span:
-            <br>
-            <input type=time name="StartAMInput" id="StartAMInput" value = "08:00">
-        </label>
-        <label for="EndAMInput">
-            To:
-            <input type=time name="EndAMInput" id="EndAMInput" value = "12:00">
-        </label>
-        <br>
-        <label for="StartPMInput">
-            Please enter AM schedule time span:
-            <br>
-            <input type=time name="StartPMInput" id="StartPMInput" value ="14:00">
-        </label>
-        <label for="EndPMInput">
-            To:
-            <input type=time name="EndPMInput" id="EndPMInput" value = "18:00">
-        </label>
-        <br>
-        
-        <select name="selectInput" id="selectInput">
-            <option value="manually">Generate a schedule manually</option>
-            <option value="oneClick">Generate a schedule with one click</option>
-        </select>
-        <input type="submit" value="submit">
-        <input type="reset" value="reset">
+    <div id="createForm">
+
     
-    </form>
-    {{#if hasErrors}}
+        <form id="selectScheduleTime" action="/schedule" method="post">
+
+            <label for="nameInput">
+                Please enter schedule name:
+                <input type=text name="nameInput" id="nameInput" value = "Schedule01">
+            </label>
+            <br>
+
+            <label for="startDateInput">
+                Please enter schedule satrt / end date:
+                <br>
+                <input type=date name="startDateInput" id="startDateInput" value = {{startDate}}>
+            </label>
+            <label for="EndDateInput">
+                Please enter schedule satrt / end date:
+                <br>
+                <input type=date name="EndDateInput" id="EndDateInput" value = {{endDate}}>
+            </label>
+            <br>
+            <label for="StartAMInput">
+                Please enter AM schedule time span:
+                <br>
+                <input type=time name="StartAMInput" id="StartAMInput" value = "08:00">
+            </label>
+            <label for="EndAMInput">
+                To:
+                <input type=time name="EndAMInput" id="EndAMInput" value = "12:00">
+            </label>
+            <br>
+            <label for="StartPMInput">
+                Please enter AM schedule time span:
+                <br>
+                <input type=time name="StartPMInput" id="StartPMInput" value ="14:00">
+            </label>
+            <label for="EndPMInput">
+                To:
+                <input type=time name="EndPMInput" id="EndPMInput" value = "18:00">
+            </label>
+            <br>
+            
+            <select name="selectInput" id="selectInput">
+                <option value="manually">Generate a schedule manually</option>
+                <option value="oneClick">Generate a schedule with one click</option>
+            </select>
+
+            
+            <input type="submit" value="submit">
+            <input type="reset" value="reset">
+        
+        </form>
+        <ul class="error" hidden>
+
+        </ul>
+        <a href="/" id="viewSch">view current schedules</a>
+    </div>
+
+
+        {{!-- {{#if hasErrors}}
     <ul class="errorList">
     {{#each errorList}}
         <li>
@@ -48,5 +67,62 @@
         </li>
         {{/each}}
     </ul>           
-    {{/if}}
+    {{/if}} --}}
+
+
+
+        
+      <table class="tasks" hidden>
+        <thead >
+          <tr>
+            <th>Tasks<br><a href='/' id="taskCell">put back here</a></th>
+          </tr>
+        </thead>
+        <tbody class="tasks">
+        </tbody>
+      </table>
+    
+    
+    
+      <table  class="schedule" hidden>
+        <thead>
+          <tr>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tueday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+      
+      <a href="/" id="deleteSch" hidden>Delete this schedule</a>
+      <div class="deleteDiv" hidden>Are you sure?
+        
+        <a href="/" id="confirmDel">Yes</a>
+        <a href="/" id="noDel">No</a>
+       
+
+      </div>
+      
+    <ul id="switch">
+      
+    </ul>
+    <footer><a href="/users">Back to users</a></footer>
+    
+    <footer id="dateFooter"></footer>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+    ></script>
+    <script src="/public/js/createManually.js">
+    </script>
+
+
+
 </main>

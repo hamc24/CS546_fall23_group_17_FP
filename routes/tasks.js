@@ -91,7 +91,7 @@ router.route("/create").post(async (req, res) => {
       timeDue,
       durationH,
       durationM,
-      maxContributors
+      maxContributors,
     );
     return res.status(200).redirect("/tasks/all");
   } catch (error) {

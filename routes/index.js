@@ -13,13 +13,10 @@ const constructorMethod = (app) => {
   app.use("/register", register);
   app.use("/schedule", schedule);
 
-  app.use("*", (req, res) => {
-    if (req.session.user) {
-      return res.redirect("/users");
-    } else {
-      return res.redirect("/login");
-    }
+  app.use('*', (req, res) => {
+    res.status(404).json({error: 'Route Not found'});
   });
+
 };
 
 export default constructorMethod;

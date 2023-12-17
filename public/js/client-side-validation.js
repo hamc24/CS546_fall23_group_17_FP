@@ -288,12 +288,12 @@ function checkTask(){
 
 
 
-    let dh = ($('#durationInputH').val().trim());
-    let dm = ($('#durationInputM').val().trim());
-    let co = ($('#maxContributorInput').val().trim());
-    console.log("typeof(dh)",typeof(dh));
-    console.log("typeof(dh)",typeof(dm));
-    console.log("typeof(dh)",typeof(db));
+    let dh = Number(($('#durationInputH').val().trim()));
+    let dm =  Number(($('#durationInputM').val().trim()));
+    let co =  Number(($('#maxContributorInput').val().trim()));
+    console.log("typeof(dh)",typeof(dh),dh);
+    console.log("typeof(dh)",typeof(dm),dm);
+    console.log("typeof(dh)",typeof(db),db);
 
     addStyle(!checkNum(dh) || dh<0 || dh>24, $('#durationInputH'), "Task Duration hour cannot be more than 24 hours long and less than 0");
     addStyle(!checkNum(dm) ||dm<0 || dm>60, $('#durationInputM'), "Task Duration minutes cannot exceed 60 mins or be less than 0");
