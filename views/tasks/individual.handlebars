@@ -22,17 +22,17 @@
             {{this.msg}}
             {{#if this.flagged}}
               <i class='flagged'> Flagged! </i>
-              <form id="resolve-comment" action="/tasks/{{../id}}" method="POST">
+              <form name="resolve-comment" action="/tasks/{{../id}}" method="POST">
                 <input type="submit" id="resolve" name="resolve" value="Resolve this flagged comment.">
-                <input type="hidden" id="commentID" name="commentID" value={{this._id}}>
+                <input type="hidden" name="commentID" value={{this._id}}>
               </form>
             {{else}}
               {{#if this.resolved}}
                 <i class='resolved'> Resolved! </i>
               {{else}}
-                <form id="flag-comment" action="/tasks/{{../id}}" method="POST">
+                <form name="flag-comment" action="/tasks/{{../id}}" method="POST">
                   <input type="submit" id="flag" name="flag" value="Flag this comment.">
-                  <input type="hidden" id="commentID" name="commentID" value={{this._id}}>
+                  <input type="hidden" name="commentID" value={{this._id}}>
                 </form>
               {{/if}}
             {{/if}}
