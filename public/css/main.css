@@ -63,6 +63,6 @@ label {
 	font-weight: bold;
 }
 
-i.flagged, i.resolved {
+i.flagged, i.resolved, i.progress {
 	color: #a00
 }

@@ -7,6 +7,7 @@
   <p>Task public status: {{task.publicPost}}</p>
   <p>Task due date: {{task.dateDue}}</p>
   <p>Task due time: {{task.timeDue}}</p>
+  <p>Task progress status: <i class="progress">{{status}}</i></p>
   <p>Task max contributors: {{task.maxContributors}}</p>
   <p>Contributors:</p>
   <ul>
@@ -63,6 +64,15 @@
       <input type="hidden" id="deleteSubmission" name="deleteSubmission" value="fired">
       <input type="submit" value="Delete this Task">
     </form>
+    <form id="update-Progress" action="/tasks/{{id}}" method="POST">
+    <label for="update-Progress">Update task progress status:</label>
+    <select id="progressOption" name="progressOption">
+      <option value="in progress">In Progress</option>
+      <option value="revision required">Revision Required</option>
+      <option value="resolved">Resolved</option>
+    </select>
+    <input type="submit" id="submit" value="Change Status">
+  </form>
     {{else}}
       <form id="leave-task" action="/tasks/{{id}}" method="POST">
         <input type="hidden" id="leaveSubmission" name="leaveSubmission" value="fired">
