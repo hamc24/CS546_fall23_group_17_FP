@@ -66,3 +66,30 @@ label {
 i.flagged, i.resolved, i.progress {
 	color: #a00
 }
+
+table 
+{
+	width: 100%;
+}
+  
+table, th, td 
+{
+	border: 1px solid #06591b;
+	border-collapse: collapse;
+}
+  
+th, td 
+{
+	padding: 2px 4px;
+}
+
+.date, .time
+{
+	width: 200px;
+	text-align: center;
+}
+
+.task
+{
+	width: calc(100% - 200px);
+}
