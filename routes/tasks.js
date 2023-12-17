@@ -271,8 +271,9 @@ router
 
     //If comment was inserted
     if (data.commentInput) {
+      let comment;
       try {
-        let comment = data.commentInput;
+        comment = data.commentInput;
         validation.checkNull(comment);
         comment = validation.checkString(comment, "Comment");
       } catch (error) {
