@@ -8,8 +8,8 @@
   <p>Task due date: {{task.dateDue}}</p>
   <p>Task due time: {{task.timeDue}}</p>
   <p>Task max contributors: {{task.maxContributors}}</p>
+  <p>Contributors:</p>
   <ul>
-    Contributors:
     {{#each contributors}}
       <li>{{this.firstName}} {{this.lastName}}</li>
     {{/each}}
