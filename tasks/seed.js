@@ -164,6 +164,7 @@ try {
   console.log(
     await taskData.updateStatus(changTask1._id.toString(), "revision required")
   );
+  console.log(await taskData.getContributorByName(atillaTask1._id.toString()));
 } catch (error) {
   console.log(error);
 }
