@@ -127,11 +127,12 @@ router.route("/mahually")
 router.route("/:schName")
     .delete(async(req,res)=>{
         let userId = req.session.user._id;
-        const bool = await scheduleData.deleteSch(userId,parseInt(req.params.id,schName));
+        console.log("param??",req.params.schName);
+        const bool = await scheduleData.deleteSch(userId,req.params.schName);
         return res.status(200).json(bool);
 
     })
-router.route("auto")
+router.route("/auto")
     .post(async(req,res)=>{
         const data = req.body;
         if (!data || Object.keys(data).length === 0){

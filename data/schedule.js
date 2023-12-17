@@ -262,22 +262,29 @@ const deleteSch= async(userId,schName)=>{
     userId = validation.checkId(userId);
 
     //Find user then get the tasks that they have
-    let user = await getUserByID(userId);
+    let user = await userData.getUserByID(userId);
     
     let userTasks = user.tasks.map(function (id) {
     return new ObjectId(id);
     });
     const taskCollection = await tasks();
-    let foundtasks = await taskCollection
-    .find({ _id: { $in: userTasks }, "schedule.name": schName })
-    .toArray();
     
+    console.log("schName??",userTasks,schName);
+
+
+    let foundtasks = await taskCollection
+    .find({ _id: { $in: userTasks } })
+    .toArray();
+
+    
+    foundtasks = foundtasks.filter((item) => {return (item.schedule && item.schedule[schName])});
+    console.log("tasks that this sch:",foundtasks,typeof(foundtasks));
     if(foundtasks){
         for(let item of foundtasks){
             let newSch =item.schedule;
             delete newSch[schName];
             const updatedInfo = await taskCollection.findOneAndUpdate(
-                {_id:new ObjectId(item.taskId)},
+                {_id:new ObjectId(item._id)},
                 {$set: {schedule:newSch}},
                 {returnDocument: 'after'}
             );
@@ -344,34 +351,37 @@ const getVievSch= async(userId)=>{
         
 }; 
 
-const aotoGenerate= async(schName, stDt, edDt, tasks)=>{
-    for(let item of tasks){
-        validation.checkNull(taskId);
-        taskId = validation.checkId(taskId);
-        const taskCollection = await tasks();
-        const oneTask = await taskCollection.findOne({_id: new ObjectId(taskId)});
-        if (oneTask === null) throw 'No task with that id';
-        
-        let taskSchedule ={}
-        let oneSch = {schTime:item.schTime,stDt:stDt,edDt:edDt};
-        if(oneTask.schedule){
-            taskSchedule = oneTask.schedule;
-            taskSchedule[schName] = oneSch;
-        }else{
-            taskSchedule[schName]=oneSch;
-        }
-        
+const aotoGenerate= async(schName, stDt, edDt, taskList)=>{
+    for(let item of taskList){
 
-        
-        const updatedInfo = await taskCollection.findOneAndUpdate(
-                {_id:new ObjectId(item.taskId)},
-                {$set: {schedule:taskSchedule}},
-                {returnDocument: 'after'}
-            );
-            if (!updatedInfo) {
-                throw 'could not add to schedule successfully';
+
+
+            // validation.checkNull(item.taskId);
+            // taskId = validation.checkId(item.taskId);
+            const taskCollection = await tasks();
+            const oneTask = await taskCollection.findOne({_id: item.taskId});
+            if (oneTask === null) throw 'No task with that id';
+            
+            let taskSchedule ={}
+            let oneSch = {schTime:item.schTime,stDt:stDt,edDt:edDt};
+            if(oneTask.schedule){
+                taskSchedule = oneTask.schedule;
+                taskSchedule[schName] = oneSch;
+            }else{
+                taskSchedule[schName]=oneSch;
             }
-            return true;
+            
+        
+            
+            const updatedInfo = await taskCollection.findOneAndUpdate(
+                    {_id:new ObjectId(item.taskId)},
+                    {$set: {schedule:taskSchedule}},
+                    {returnDocument: 'after'}
+                );
+                if (!updatedInfo) {
+                    throw 'could not add to schedule successfully';
+                }
+                return true;
     };
 }
 

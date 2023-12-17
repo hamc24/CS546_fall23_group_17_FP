@@ -13,17 +13,15 @@ $(function(){
 
         let oneDay = 86400000;
         $(".schedule tbody").empty();
-        
-        
-        tasks.sort(function(a,b){return b["schTime"]-a["schTime"]})
-        function addTasks(dayNum,days){
-            for(let item of tasks){
-                if(days<item["schTime"]<days+oneDay){
-                    $(`.cell #${dayNum}`).append(`<a href='/tasks/${item.taskId}'  id='${item.taskId}'class='atask' schTime=${item["schTime"]}>${item.taskName})</a>`);
+       // function addTasks(dayNum,days){
+        //     for(let item of tasks){
+        //         if(days<item["schTime"]<days+oneDay){
+        //             $(`.cell #${dayNum}`).append(`<a href='/tasks/${item.taskId}'  id='${item.taskId}'class='atask' schTime=${item["schTime"]}>${item.taskName})</a>`);
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
+
         console.log("sssstDt:",stDt,"eeeedDt:",edDt)
         let requestConfig = {
             method: 'POST',
@@ -41,7 +39,7 @@ $(function(){
             let endDate = data.strEnd;
             let full = data.full; 
             let dayNum = 0;
-            let days = stDt;
+            let days = Number(stDt);
             let isFill =0;
             if(fillStart !== 0){
                 isFill =1;
@@ -64,10 +62,9 @@ $(function(){
                     }
                 
                     for(let i = 0; i<7-fillStart; i++){
-                        $("#schTr00").append(`<td class='real' days='${days}' id='${dayNum}'></td>`);
+                        $("#schTr00").append(`<td class='real'><a href='/schedule' id='${dayNum}' class='cell' days='${days}' ></a></td>`);
                         days +=oneDay;
                         dayNum+=1;
-                        addTasks(dayNum,days);
                     }
                 }
 
@@ -75,10 +72,9 @@ $(function(){
                 for (let i = 0; i < full-isFill; i++){
                     schedule.find('tbody').append(`<tr id='schTrMid${i}'></tr>`);
                     for(let c = 0; c<7; c++){
-                        $(`#schTrMid${i}`).append(`<td class='real' days='${days}' id='${dayNum}'></td>`);
+                        $(`#schTrMid${i}`).append(`<td class='real'><a href='/schedule' id='${dayNum}' class='cell' days='${days}'></a></td>`);
                         days +=oneDay;
                         dayNum+=1;
-                        addTasks(dayNum,days);
 
 
                     }
@@ -86,19 +82,34 @@ $(function(){
                 if(fillEnd !== 0){
                     schedule.find('tbody').append("<tr id='schTrEnd'></tr>");
                     for (let i = 0; i < 7-fillEnd; i++){
-                        $("#schTrEnd").append(`<td class='real' days='${days}' id='${dayNum}'></td>`);
+                        $("#schTrEnd").append(`<td class='real'><a href='/schedule' id='${dayNum}' class='cell' days='${days}'></a></td>`);
                         days +=oneDay;
                         dayNum+=1;
-                        addTasks(dayNum,days);
                     }
 
-
+                }
                     for(let i = 0; i<fillEnd; i++){
                         $("#schTrEnd").append(`<td class='fill'></td>`);
                     }
 
-                }
-        })
+
+                    tasks.sort(function(a,b){return b["schTime"]-a["schTime"]})
+
+                    for (let i=0; i<full*7-fillStart-fillEnd +1 ; i++){
+                        
+                        
+                        let days = Number($("#"+i).attr('days'));
+                        while(tasks[0] && days+oneDay > tasks[0].schTime && days <= tasks[0].schTime){
+                            console.log("tasklist[0]",tasks[0]);
+                            let real = $("#"+i).closest('td');            
+            
+                            real.append(`<br><a href='/tasks/${tasks[0].taskId}'  schtime='${tasks[0].schTime}' id='${tasks[0].taskId}'class='atask' >${tasks[0].taskName}</a>`)
+                            
+                            tasks.shift();
+                        }
+                        
+                    }
+    })
         schedule.show();
         
     
@@ -108,72 +119,79 @@ $(function(){
 
 
 
-    $("#viewSch").on('click',function(event){
+    $("#viewSch").on('click',function (event){
         event.preventDefault();
-        console.log("viewwwww");
+        function loadPage(){
+            console.log("viewwwww");
 
-        $(".tasks tbody").empty();
-        $("#taskCell").hide();
-        
-        createForm.hide();
-        deleteSch.show();
-        let allSch = {};
-        $.ajax({type:'GET',url:'/schedule/viewSch',success:function(data){
-            allSch = data;
-            $.each(Object.keys(data),function(i,item){
-                $("#switch").append(`<li><a class='schList' href='/schedule' id='${item}'>${item}</a></li>`);
-            });
-            $("#switch").find('.schList').on('click', function(event){
-                event.preventDefault();
-                let schName = $(this).html();
-                let sch01 = data[$(this).html()];
+            $("#switch").empty();
+            $("#tasks tbody").empty();
+            $("#schedule tbody").empty();
+            deleteDiv.hide();
+            $("#confirmDel").hide();
+            $("#noDel").hide();
+            deleteSch.show();
+            $(".tasks tbody").empty();
+            $("#taskCell").hide();
+            
+            createForm.hide();
+            deleteSch.show();
+            let allSch = {};
+            $.ajax({type:'GET',url:'/schedule/viewSch',success:function(data){
+                allSch = data;
+                $.each(Object.keys(data),function(i,item){
+                    $("#switch").append(`<li><a class='schList' href='/schedule' id='${item}'>${item}</a></li>`);
+                });
+                $("#switch").find('.schList').on('click', function(event){
+                    event.preventDefault();
+                    let schName = $(this).html();
+                    let sch01 = data[$(this).html()];
+                    let stDt = sch01["stDt"];
+                    let edDt = sch01["edDt"];
+                    let tasks = sch01["tasks"];
+                    fillCalendar(stDt,edDt,tasks,schName);
+                });
+                let sch01 = data[Object.keys(data)[0]]
                 let stDt = sch01["stDt"];
                 let edDt = sch01["edDt"];
                 let tasks = sch01["tasks"];
-                fillCalendar(stDt,edDt,tasks,schName);
-            });
-            let sch01 = data[Object.keys(data)[0]]
-            let stDt = sch01["stDt"];
-            let edDt = sch01["edDt"];
-            let tasks = sch01["tasks"];
-            fillCalendar(stDt,edDt,tasks,Object.keys(data)[0])        
-                    
-            }});
-            
-        deleteSch.on('click',function(event){
-            event.preventDefault()
-            deleteDiv.show();
-            deleteSch.hide();
-            $("#noDel").on('click', function(event){
-                event.preventDefault();
-                deleteDiv.hide();
-                deleteSch.show();
-            });
-            $("#confirmDel").on('click', function(event){
-                event.preventDefault()
-                let schName = $(".schedule thead").attr('name');
+                fillCalendar(stDt,edDt,tasks,Object.keys(data)[0])        
+                        
+                }});
                 
-                $.ajax({type:'DELETE',url:'/schedule/'+schName,success:function(data){
+            deleteSch.on('click',function(event){
+                event.preventDefault()
+                $("#deleteDiv").show();
+                $("#confirmDel").show();
+                $("#noDel").show();
+                deleteSch.hide();
+                $("#noDel").on('click', function(event){
+                    event.preventDefault();
+                    deleteDiv.hide();
+                    $("#confirmDel").hide();
+                    $("#noDel").hide();
+                    deleteSch.show();
+                });
+                $("#confirmDel").on('click', function(event){
+                    event.preventDefault()
+                    let schName = $(".schedule thead").attr('name');
                     
-                    if (data === true){
-                        $(".schList #schName").remove();
-                        delete allSch[schName];
-                        if(Object.keys(allSch).length>0){
-                            let sch01 = allSch[Object.keys(data)[0]]
-                            let stDt = sch01[stDt];
-                            let edDt = sch01[edDt];
-                            let tasks = sch01[tasks];
-                            fillCalendar(stDt,edDt,tasks,Object.keys(data)[0])
+                    $.ajax({type:'DELETE',url:'/schedule/'+schName,success:function(data){
+                        
+                        if (data === true){
+                            loadPage();
+                            }
                         }
-                    }
-                }})
-                deleteDiv.hide();
-                deleteSch.show();
+                    })
+                    
+                })
             })
-        })
-        tasks.show();
-        
-        
+            tasks.show();
+            
+            
+        }
+        loadPage()
+
     })
 
 
@@ -218,7 +236,7 @@ $(function(){
                 let fillStart = data.fillStart;
                 let fillEnd = data.fillEnd;
                 let fullHour = data.fullHour;
-                let durationDay = data.durationDay;
+                let durationDays = data.durationDays;
                 let stDt = data.stDt;
                 let edDt = data.edDt;
                 let taskList = data.taskList;
@@ -435,18 +453,16 @@ $(function(){
                     let fillStart = data.fillStart;
                     let fillEnd = data.fillEnd;
                     let fullHour = data.fullHour;
-                    let durationDay = data.durationDay;
+                    let durationDays = data.durationDays;
                     let stDt = data.stDt;
                     let edDt = data.edDt;
                     let taskList = data.taskList;
                     let oneDay = 86400000;
-
                     $(".schedule tbody").empty();
                     $(".tasks tbody").empty();
 
                             
-                    tasks.sort(function(a,b){return b["duetime"]-a["duetime"]})
-
+                    
 
 
                     
@@ -495,18 +511,26 @@ $(function(){
                     }
 
                     taskList.sort(function(a,b){return a["dueTime"]-b["dueTime"]})
+                    console.log("sorted TaskList:", taskList);
                     let autoSch=[];
-                    for (let i=0; i<durationDay+1; i++){
-                        let hours = $("#"+i).attr('hours');
-                        let days = $("#"+i).attr('days');
+                    console.log(durationDays);
+
+
+
+                    for (let i=0; i<durationDays+1; i++){
                         
-                        if(hours>=item.duration.stamp){
-                            
-                            $("#"+i).append(`<br><a href='/tasks/${taskList[0].taskId}' duration='${taskList[0].duration}' duetime='${taskList[0].dueTime}' id='${taskList[0].taskId}'class='atask' days='${days}'>${taskList[0].taskName}(${Math.floor(Number(taskList[0].duration)/3600000)}:${Math.floor(Number(taskList[0].duration)%3600000/60000)})</a>`)
-                            
+                        let hours = Number($("#"+i).attr('hours'));
+                        let days = Number($("#"+i).attr('days'));
+                        console.log("hours",hours,"days",days);
+                        while(taskList[0] && hours>=taskList[0].duration.stamp){
+                            console.log("tasklist[0]",taskList[0]);
+                            let real = $("#"+i).closest('td');
+                            real.append(`<br><a href='/tasks/${taskList[0].taskId}' duration='${taskList[0].duration.stamp}' duetime='${taskList[0].dueTime}' id='${taskList[0].taskId}'class='atask' days='${days}'>${taskList[0].taskName}(${Math.floor(Number(taskList[0].duration.stamp)/3600000)}:${Math.floor(Number(taskList[0].duration.stamp)%3600000/60000)})</a>`)
+
                             autoSch.push({taskId: taskList[0].taskId, schTime: days});
-                            days+=duration;
-                            hours -=duration;
+                            console.log("autoSch",autoSch);
+                            days+=taskList[0].duration.stamp;
+                            hours -=taskList[0].duration.stamp;
                             
                             taskList.shift();
                         }
@@ -519,10 +543,15 @@ $(function(){
                         edDt:edDt,
                         tasks:autoSch
                     }
+
+
                     let requestConfig = {
-                        method: 'PATCH',
+                        method: 'POST',
                         url: 'schedule/auto',
                         data:autoSchObj};
+
+
+                        console.log(requestConfig);
                     $.ajax(requestConfig).then(function (responseMessage){
                         console.log(responseMessage)
                     })
@@ -581,6 +610,7 @@ $(function(){
                                 method: 'PATCH',
                                 url: 'schedule/auto',
                                 data:plan};
+                                console.log(requestConfig);
                             $.ajax(requestConfig).then(function (responseMessage){
                                 if (responseMessage === true){
                                     
