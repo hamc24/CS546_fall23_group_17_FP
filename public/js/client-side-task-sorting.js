@@ -107,5 +107,29 @@
                 }
             }
         }
+
+        else if (option == "priority") {
+            run = true;
+            while (run) {
+                run = false;
+                li = document.getElementsByClassName("LI");
+                let priorities = document.getElementsByClassName("priority");
+                // Loop traversing through all the list items
+                for (i = 0; i < (li.length - 1); i++) {
+                    stop = false;
+                    if (Number(priorities[i].innerHTML.split(" ")[2]) < Number(priorities[i + 1].innerHTML.split(" ")[2])) {
+                        stop = true;
+                        break;
+                    }
+                }
+                /* If the current item is smaller than
+                the next item then adding it after
+                it using insertBefore() method */
+                if (stop) {
+                    li[i].parentNode.insertBefore(li[i + 1], li[i]);
+                    run = true;
+                }
+            }
+        }
     }
 )})();
