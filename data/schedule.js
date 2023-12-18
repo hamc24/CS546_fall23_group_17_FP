@@ -190,7 +190,6 @@ const createFill=async(userId,startDate,endDate,startAM,endAM,startPM,endPM)=>{
 
 
 const addSchedule= async(taskId,schName,stDt,edDt,schTime)=>{
-    console.log("all",taskId,schName,stDt,edDt,schTime);
     validation.checkNull(taskId); 
     validation.checkNull(schName); 
     validation.checkNull(stDt); 
@@ -228,9 +227,6 @@ const addSchedule= async(taskId,schName,stDt,edDt,schTime)=>{
 const changeTime= async(taskId,schName,daysAfter)=>{
     validation.checkNull(taskId);
     taskId = validation.checkId(taskId);
-    console.log("changeTime,taskId,",typeof(taskId));
-    console.log("changeTime,taskId,",typeof(schName));
-    console.log("changeTime,taskId,",typeof(daysAfter));
 
     validation.checkNull(schName);
     schName = validation.checkString(schName);
@@ -378,7 +374,6 @@ const autoGenerate= async(schName, stDt, edDt, taskList)=>{
     schName = validation.checkString(schName);
     stDt = validation.checkString(schName);
     edDt = validation.checkString(schName);
-    console.log("autoGenerate",typeof(schName),typeof(stDt),typeof(taskList),)
     for(let item of taskList){
         
         const taskCollection = await tasks();

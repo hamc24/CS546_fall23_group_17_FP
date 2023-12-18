@@ -30,7 +30,6 @@ $(function(){
     
     
     function validateDate(date) {
-        //console.log(date);
         date = date.split("-");
         if (date.length != 3) throw "Error: date is not valid (not long enough)";
         let month = date[1];
@@ -96,7 +95,6 @@ $(function(){
         let minute = splitTime[1]
       
         // Checking hour so that it is formatted correctly
-        console.log(hour.length);
         if (hour.length !=2) {
           throw "Error: invalid Hour";
         
@@ -199,7 +197,6 @@ $(function(){
         //     }
         // }
 
-        console.log("sssstDt:",stDt,"eeeedDt:",edDt)
         let requestConfig = {
             method: 'POST',
             url: '/schedule/calculateFill',
@@ -209,7 +206,6 @@ $(function(){
             }
             };
         $.ajax(requestConfig).then(function(data){
-            console.log("viewCalendatData:",data);
             let fillStart= data.fillStart;
             let fillEnd = data.fillEnd; 
             let startDate = data.strSt; 
@@ -271,13 +267,11 @@ $(function(){
 
 
                     tasks.sort(function(a,b){return a["schTime"]-b["schTime"]})
-                    console.log("show tasks:",tasks);
                     for (let i=0; i<full*7-fillStart-fillEnd ; i++){
                         
                         
                         let days = Number($("#"+i).attr('days'));
                         while(tasks[0] && days+oneDay > tasks[0].schTime && days <= tasks[0].schTime){
-                            console.log("tasklist[0]",tasks[0]);
                             let real = $("#"+i).closest('td');            
             
                             real.append(`<br><a href='/tasks/${tasks[0].taskId}'  schtime='${tasks[0].schTime}' id='${tasks[0].taskId}'class='atask' >${tasks[0].taskName}</a>`)
@@ -301,7 +295,6 @@ $(function(){
     $("#viewSch").on('click',function (event){
         event.preventDefault();
         function loadPage(){
-            console.log("viewwwww");
 
             $("#switch").empty();
             
@@ -316,7 +309,6 @@ $(function(){
             deleteSch.show();
             let allSch = {};
             $.ajax({type:'GET',url:'/schedule/viewSch',success:function(data){
-                console.log("viewSchData:",data);
                 allSch = data;
                 $.each(Object.keys(data),function(i,item){
                     $("#switch").append(`<li><a class='schList' href='/schedule' id='${item}'>${item}</a></li>`);
@@ -441,10 +433,6 @@ $(function(){
                 };
             
             $.ajax(requestConfig).then(function(data){
-                if (data.err){
-                    console.log(data);
-                }
-                console.log("backend create sch data:",data);
                 let full = data.full;
                 let fillStart = data.fillStart;
                 let fillEnd = data.fillEnd;
@@ -537,7 +525,6 @@ $(function(){
                                 alert("Time for this day is not enough!")
                             }
                             if(real.children().length > 1){
-                                console.log("findSch",real.children().length);
 
                                 let schStart = Number($(this).attr('days'));
                                 real.find(".atask").map((item)=>{
@@ -560,10 +547,6 @@ $(function(){
                                     cell.html(`${Math.floor(Number(dur)/3600000)}:${Math.floor(Number(dur)%3600000/60000)}`);
                                     trTask.remove();
 
-                                    // console.log(Math.floor(Number(duration)/3600000)+":"+Math.floor(Number(duration)%3600000/60000));
-                                    // console.log(`<a href='/tasks/${id}' duration='${duration}' id='${id}'class='atask' name='${taskName}' days='${dateMark}>${taskName}(${Math.floor(Number(duration)/3600000)}:${Math.floor(Number(duration)%3600000/60000)})</a>`);
-                                    // atask.attr('days',dateMark);
-                                    // real.append("<a href='/tasks/65770cdf386810e3d7ca9e88' duration='15300000' id='65770cdf386810e3d7ca9e88'class='atask' name='doing' days='1703203200000'>doing(4:15)</a>");
                                     real.append(`<br><a href='/tasks/${taskId}' duration='${duration}' id='${taskId}'class='atask' name='${taskName}' days='${dateMark}'>${taskName}(${Math.floor(Number(duration)/3600000)}:${Math.floor(Number(duration)%3600000/60000)})</a>`);
                                     tasks.find('.tasks a').off('click');
                                     schedule.find('.cell').off('click');
@@ -571,7 +554,6 @@ $(function(){
                                     bindAddEvent();
                                     bindRemoveEvent();
                                 }else{
-                                    console.log(responseMessage);
                                     alert(JSON.stringify(error));
                                 }
                                 
@@ -601,7 +583,6 @@ $(function(){
                                 method: 'PATCH',
                                 url: 'schedule/mahually',
                                 data:plan};
-                                console.log("requestConfig",requestConfig);
                             $.ajax(requestConfig).then(function (responseMessage){
                                 let hours =Number(cell.attr('hours'));
                                 let duration = Number(atask.attr('duration'));
@@ -656,10 +637,6 @@ $(function(){
                     };
                 
                 $.ajax(requestConfig).then(function(data){
-                    if (data.err){
-                        console.log(data);
-                    }
-                    console.log("data",data);
                     let full = data.full;
                     let fillStart = data.fillStart;
                     let fillEnd = data.fillEnd;
@@ -669,7 +646,6 @@ $(function(){
                     let edDt = data.edDt;
                     let taskList = data.taskList;
                     let oneDay = 86400000;
-                    console.log("autoGen_TaskList:",taskList);
                     $(".schedule tbody").empty();
                     $(".tasks tbody").empty();
 
@@ -731,14 +707,11 @@ $(function(){
                         let cell=$("#"+i)
                         let hours = Number(cell.attr('hours'));
                         let days = Number(cell.attr('days'));
-                        console.log("hours",hours,"days",days);
                         while(taskList[0] && hours>=taskList[0].duration.stamp){
-                            console.log("tasklist[0]",taskList[0]);
                             let real = cell.closest('td');
                             real.append(`<br><a href='/tasks/${taskList[0]._id}' duration='${taskList[0].duration.stamp}' dueTime='${taskList[0].dueTime}' id='${taskList[0]._id}'class='atask'  name = ${taskList[0].taskName}>${taskList[0].taskName}(${Math.floor(Number(taskList[0].duration.stamp)/3600000)}:${Math.floor(Number(taskList[0].duration.stamp)%3600000/60000)})</a>`)
 
                             autoSch.push({taskId: taskList[0]._id, schTime: days});
-                            console.log("autoSch",autoSch);
                             days+=taskList[0].duration.stamp;
                             hours -=taskList[0].duration.stamp;
                             
@@ -761,7 +734,6 @@ $(function(){
                         data:autoSchObj};
 
 
-                        console.log(requestConfig);
                     $.ajax(requestConfig).then(function (responseMessage){
                         alert(JSON.stringify(responseMessage));
                     },(error)=>{
@@ -797,7 +769,6 @@ $(function(){
                                     alert("Time for this day is not enough!")
                                 }
                                 if(real.children().length > 1){
-                                    console.log("findSch",real.children().length);
     
                                     let schStart = Number($(this).attr('days'));
                                     real.find(".atask").map((item)=>{
@@ -820,10 +791,6 @@ $(function(){
                                         cell.html(`${Math.floor(Number(dur)/3600000)}:${Math.floor(Number(dur)%3600000/60000)}`);
                                         atask.remove();
     
-                                        // console.log(Math.floor(Number(duration)/3600000)+":"+Math.floor(Number(duration)%3600000/60000));
-                                        // console.log(`<a href='/tasks/${id}' duration='${duration}' id='${id}'class='atask' name='${taskName}' days='${dateMark}>${taskName}(${Math.floor(Number(duration)/3600000)}:${Math.floor(Number(duration)%3600000/60000)})</a>`);
-                                        // atask.attr('days',dateMark);
-                                        // real.append("<a href='/tasks/65770cdf386810e3d7ca9e88' duration='15300000' id='65770cdf386810e3d7ca9e88'class='atask' name='doing' days='1703203200000'>doing(4:15)</a>");
                                         real.append(atask);
                                         tasks.find('.tasks a').off('click');
                                         schedule.find('.cell').off('click');

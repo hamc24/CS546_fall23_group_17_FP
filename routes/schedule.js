@@ -52,7 +52,6 @@ router.route("/")
         let endAM = data.endAM;
         let startPM = data.startPM;
         let endPM = data.endPM;
-        console.log("hit backend",startDate,endDate,endPM)
 
 
         validation.checkNull(startDate);
@@ -67,7 +66,6 @@ router.route("/")
         endAM = validation.checkString(endAM);
         startPM = validation.checkString(startPM);
         endPM = validation.checkString(endPM);
-        console.log("hit backend",startDate,endDate,endPM)
         try{
             const info = await scheduleData.createFill(
                 req.session.user._id,
@@ -110,7 +108,6 @@ router.route("/mahually")
         if (!data || Object.keys(data).length === 0){
             return res.status(400).json("400:There are no fields in the request body");
         }
-        console.log("manually:",data);
         let taskId=data.taskId;
         let schName = data.name;
         let schTime = data.time;

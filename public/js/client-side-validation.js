@@ -9,7 +9,6 @@
 })();
 let errorlist = [];
 
-console.log("AAAA!!!");
 
 
 
@@ -45,7 +44,6 @@ function addStyle(funcA,val,msg){
 
 
 function validateDate(date) {
-    //console.log(date);
     date = date.split("-");
     if (date.length != 3) throw "Error: date is not valid (not long enough)";
     let month = date[1];
@@ -245,7 +243,6 @@ function checkLogin(){
         let numbers = Array.from(password).filter((item) => item.match(num));
         addStyle($('#passwordInput').val().length < 8 || !special || !capital || !numbers, $('#passwordInput'), "400:invalid password. There needs to be more than 8 characters and contains at least one uppercase character, one number one special characte");
     }
-    console.log(errorlist);
     if (errorlist.length>0){
       $(".error").empty();    
         for (let item of errorlist){
@@ -291,9 +288,6 @@ function checkTask(){
     let dh = Number(($('#durationInputH').val().trim()));
     let dm =  Number(($('#durationInputM').val().trim()));
     let co =  Number(($('#maxContributorInput').val().trim()));
-    console.log("typeof(dh)",typeof(dh),dh);
-    console.log("typeof(dh)",typeof(dm),dm);
-    console.log("typeof(dh)",typeof(db),db);
 
     addStyle(!checkNum(dh) || dh<0 || dh>24, $('#durationInputH'), "Task Duration hour cannot be more than 24 hours long and less than 0");
     addStyle(!checkNum(dm) ||dm<0 || dm>60, $('#durationInputM'), "Task Duration minutes cannot exceed 60 mins or be less than 0");
