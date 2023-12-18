@@ -33,6 +33,30 @@ try {
     "1877-05-11",
     "QuackQuack123!"
   );
+  let bob = await userData.create(
+    "Bob",
+    "Johnson",
+    "bjohnson@stevens.edu",
+    "bbjohnson",
+    "1900-05-11",
+    "Iambob123!"
+  );
+  let harry = await userData.create(
+    "Harry",
+    "Potter",
+    "hpotter@gmail.com",
+    "DaBoyWhoLived",
+    "1999-05-11",
+    "FuckVoldemort123!"
+  );
+  let voldemort = await userData.create(
+    "Lord",
+    "Voldemort",
+    "voldy333@gmail.com",
+    "DaMasterWandWielder",
+    "1970-05-11",
+    "IHateHarryPotter123!"
+  );
 
   //Add tasks to user
   let changTask1 = await taskData.create(
@@ -126,6 +150,19 @@ try {
     15,
     2
   );
+  let bobTask1 = await taskData.create(
+    "Hi this is Bob",
+    "I am Bob, my brother is Rob, I like corn on the cob",
+    bob._id.toString(),
+    ` ${bob.firstName} ${bob.lastName}`,
+    true,
+    "2024-1-30",
+    "6:00 PM",
+    3,
+    0,
+    25,
+    6
+  );
 
   // Inserting public task to user's task list
   await userData.addTaskToUser(
@@ -135,6 +172,16 @@ try {
 
   await userData.addTaskToUser(
     chang._id.toString(),
+    atillaTask1._id.toString()
+  );
+
+  await userData.addTaskToUser(bob._id.toString(), atillaTask1._id.toString());
+  await userData.addTaskToUser(
+    harry._id.toString(),
+    atillaTask1._id.toString()
+  );
+  await userData.addTaskToUser(
+    voldemort._id.toString(),
     atillaTask1._id.toString()
   );
 
@@ -149,12 +196,6 @@ try {
       patrick._id.toString(),
       patrickTask1._id.toString()
     )
-  );
-
-  //Black listing chang from atillatask1
-  await taskData.blackListUser(
-    chang._id.toString(),
-    atillaTask1._id.toString()
   );
 
   // Inserting Comments
@@ -177,6 +218,18 @@ try {
     chang._id.toString(),
     changTask1._id.toString(),
     "What a mess...?"
+  );
+
+  await taskData.addComment(
+    harry._id.toString(),
+    atillaTask1._id.toString(),
+    "YO VOLDEMORT YOU BALD AS S***"
+  );
+
+  await taskData.addComment(
+    voldemort._id.toString(),
+    atillaTask1._id.toString(),
+    "MAN F*** YOU HARRY"
   );
 
   console.log(

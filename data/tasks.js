@@ -347,10 +347,10 @@ const whiteListUser = async (userId, taskId) => {
     throw "Error: Removing user from black list couldn't be done";
 };
 
-const getSchedule = async () => {
-  const taskCollection = await tasks();
-  const taskList = await taskCollection.find({}).toArray();
-  console.log(taskList);
+const getSchedule = async (userId) => {
+  validation.checkNull(userId);
+  userId = validation.checkString(userId, "ID");
+  const taskList = await userData.getTasks(userId);
   if (taskList.length) {
     const ObjectList = taskList.map((task) => {
       return {

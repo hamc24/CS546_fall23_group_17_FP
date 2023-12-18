@@ -5,18 +5,19 @@
         <form id="selectScheduleTime" action="/schedule" method="post" onsubmit="return checkSchedule()">
 
             <label for="nameInput">
-                Please enter schedule name:
+                Schedule name:
                 <input type=text name="nameInput" id="nameInput" value = "Schedule01">
             </label>
             <br>
 
             <label for="startDateInput">
-                Please enter schedule satrt / end date:
+                Schedule Start date:
                 <br>
                 <input type=date name="startDateInput" id="startDateInput" value = {{startDate}}>
             </label>
+            <br>
             <label for="EndDateInput">
-                Please enter schedule satrt / end date:
+                Schedule End date:
                 <br>
                 <input type=date name="EndDateInput" id="EndDateInput" value = {{endDate}}>
             </label>
@@ -32,7 +33,7 @@
             </label>
             <br>
             <label for="StartPMInput">
-                Please enter AM schedule time span:
+                Please enter PM schedule time span:
                 <br>
                 <input type=time name="StartPMInput" id="StartPMInput" value ="14:00">
             </label>
@@ -62,7 +63,7 @@
       <table class="tasks" hidden>
         <thead >
           <tr>
-            <th>Tasks<br><a href='/' id="taskCell">put back here</a></th>
+            <th>Tasks<br><a href='/' id="taskCell">Reset Task Assignment</a></th>
           </tr>
         </thead>
         <tbody class="tasks">
