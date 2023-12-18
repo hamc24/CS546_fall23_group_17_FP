@@ -153,3 +153,42 @@ a:active {
   background: #8d8741;
   color: white;
 }
+
+
+.errorInput {
+	border: 3px solid red;
+	background-color: #eee;
+    
+}
+
+.error{
+	color: #a00
+}
+
+.tableFixHead .tasks{
+	overflow-y: auto; 
+	height: 500px; 
+  }
+  .tableFixHead thead th {
+	position: sticky; 
+	top: 0px; 
+  }
+  table {
+	border-collapse: collapse;
+	width: 100%;
+  }
+  th,
+  td {
+	padding: 8px 16px;
+	border: 1px solid #ccc;
+  }
+  th {
+	background: #eee;
+  }
+
+  .fill {
+	background-color: grey;
+  }
+  .real {
+	background-color: white;
+  }
