@@ -133,18 +133,16 @@ td {
 
 a {
   flex: 1;
-  text-decoration: none;
   outline-color: transparent;
   text-align: center;
   line-height: 3;
-  color: black;
+  color: #daad86;
 }
 
 a:link,
 a:visited,
 a:focus {
-  background: #fbeec1;
-  color: black;
+  color: #7a5f4e;
 }
 
 a:hover {
