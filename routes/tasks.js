@@ -111,7 +111,7 @@ router.route("/tasks").get(async (req, res) => {
   if (req.session.user) {
     let schedules = [];
     try {
-      schedules = await taskData.getSchedule();
+      schedules = await taskData.getSchedule(req.session.user._id);
     } catch (e) {
       console.log(e);
     }
@@ -128,7 +128,7 @@ router.route("/tasks").get(async (req, res) => {
     // }
     //]
     return res.status(200).render("tasks/tasks", {
-      title: "Tasks",
+      title: `${req.session.user.firstName}'s tasks`,
       Schedule: "Schedule",
       schedules: schedules,
     });
