@@ -8,7 +8,7 @@ body {
 }
 
 body {
-  background: #659dbd;
+  background: #dacfc5;
   font-family: Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
@@ -26,13 +26,13 @@ h6 {
 }
 
 h1 {
-  color: #ffffff;
+  color: #000000;
   font-size: 2rem;
   text-align: center;
 }
 
 h2 {
-  color: #daad86;
+  color: #211000;
   font-size: 1.5rem;
   text-align: center;
 }
