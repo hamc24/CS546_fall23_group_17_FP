@@ -6,6 +6,7 @@
       <option value="name">Task Name</option>
       <option value="time">Time Due</option>
       <option value="contributors">Max Amount of Contributors</option>
+      <option value="priority">Task Priority</option>
     </select>
     <input type="submit" id="submit" value="Submit">
   </form>
@@ -16,6 +17,7 @@
               {{this.taskName}}
             </a>
         <ul>
+          <li class="priority">Completion Priority: {{this.priority}}</li>
           <li class="date">Date Due: {{this.dateDue}}</li>
           <li class="time">Time Due: {{this.timeDue}}</li>
           <li class="contributors">Max Contributors: {{this.maxContributors}}</li>
@@ -24,17 +26,19 @@
       </li>
     {{/each}}
   </ul>
-  <a href="/tasks/tasks">
-    Click here to return to tasks!
-  </a>
-  <br />
-  <a href="/users">
-    Click here to return to users!
-  </a>
-  <br />
-  <a href="/logout">
-    Click here to logout!
-  </a>
+  <nav class="container">
+    <a href="/tasks/create">
+      Create a Task
+    </a>
+    <br />
+    <a href="/tasks/tasks">
+      View tasks
+    </a>
+    <br />
+    <a href="/logout">
+      Log Out
+    </a>
+  </nav>
 
   <script src="/public/js/client-side-task-sorting.js">
   </script>

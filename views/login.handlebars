@@ -1,26 +1,32 @@
-    <h1>Login</h1>
+    <h1 class="login-head">Welcome To Ducks In A Row!</h1>
+    <img class="photo" src="/public/images/ducks.png" alt="Ducks in a row">
     <main>
-        <p>Please log in to your user account.</p>
-        <form id=login-form action=/login method=POST>
-            <label for="emailAddressInput"> Please enter your email address:
+        <br>
+        <div class="login">
+            <form class="login" id=login-form action=/login method=POST>
+                <label for="emailAddressInput"> Email address:
+                    <br>
+                    <input type=email name="emailAddressInput" id="emailAddressInput"/>
+                </label>
                 <br>
-                <input type=email name="emailAddressInput" id="emailAddressInput"/>
-            </label>
-            <br>
-            <label for="passwordInput"> Please enter your password:
+                <label for="passwordInput"> Password:
+                    <br>
+                    <input type=password name="passwordInput" id="passwordInput"/>
+                </label>
                 <br>
-                <input type=password name="passwordInput" id="passwordInput"/>
-            </label>
-            <br>
-            <label> Submit:
-                <br>
-                <input type=submit value="Login!" />
-            </label>
-        </form>
+                    <br>
+                    <input type=submit value="Login!" />
+                </label>
+            </form>
+        </div>
         <p class=error>
             {{error}}
         </p>
-        <a href=/register>
-            Register
-        </a>
+
+        <p class="login">Don't have an account? 
+            <a class="login" href=/register>
+                Register Here.
+            </a>
+        </p>
+       
     </main>

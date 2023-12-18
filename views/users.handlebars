@@ -1,18 +1,26 @@
-<h1>User Page</h1>
+<h1 class="register-head">User Page</h1>
 <main>
   <h2> Welcome {{firstName}} {{lastName}}! </h2>
   <p> User Name: {{userName}} </p>
   <p> Email: {{email}} </p>
   <p> Date of Birth: {{dateOfBirth}} </p>
-  <a href="/tasks/create">
-    Click here to create a task!
-  </a>
-  <br />
-  <a href="/tasks/tasks">
-    Click here to view tasks!
-  </a>
-  <br />
-  <a href="/logout">
-    Click here to logout!
-  </a>
+
+  <nav class="container">
+
+    <a href="/tasks/create">
+      Create a Task
+    </a>
+	<a href="/schedule">
+      Create a Schedule
+    </a>
+    <br />
+    <a href="/tasks/tasks">
+      View tasks
+    </a>
+    <br />
+    <a href="/logout">
+      Log Out
+    </a>
+  </nav>
+  
 </main>

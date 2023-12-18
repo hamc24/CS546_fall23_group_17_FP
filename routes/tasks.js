@@ -29,6 +29,7 @@ router
       let maxContributors = data.maxContributorInput;
       let durationH = data.durationInputH;
       let durationM = data.durationInputM;
+      let priority = data.priorityInput;
 
       //* Validate Null
       validation.checkNull(taskName);
@@ -41,6 +42,7 @@ router
       validation.checkNull(maxContributors);
       validation.checkNull(durationH);
       validation.checkNull(durationM);
+      validation.checkNull(priority);
 
       //* Validate String
       taskName = validation.checkString(taskName);
@@ -74,6 +76,9 @@ router
       if (durationM > 60 || durationM < 0)
         throw "Error: Task Duration minutes cannot exceed 60 mins or be less than 0";
 
+      if (priority < 0 || priority > 10)
+        throw "Error: priority must be a number between 0-10";
+
       maxContributors = Number(maxContributors);
       durationH = Number(durationH);
       durationM = Number(durationM);
@@ -91,7 +96,8 @@ router
         timeDue,
         durationH,
         durationM,
-        maxContributors
+        maxContributors,
+        priority
       );
       return res.status(200).redirect("/tasks/all");
     } catch (error) {
@@ -102,33 +108,32 @@ router
   });
 
 router.route("/tasks").get(async (req, res) => {
-
-  if (req.session.user)
-    {
-      let schedules = [];
-      try       
-      {
-        schedules = await taskData.getSchedule();
-      } catch (e)
-      {
-        console.log(e);
-      }
-      //[
-        // {
-        //   date: "May 30 2002",
-        //   time: "14:30",
-        //   task: "Clean tables"
-        // },
-        // {
-        //   date: "May 30 2004",
-        //   time: "5:30",
-        //   task: "Rake leaves"
-        // } 
-      //]
-      return res.status(200).render("tasks/tasks", { title: "Tasks", Schedule: "Schedule", schedules: schedules});
+  if (req.session.user) {
+    let schedules = [];
+    try {
+      schedules = await taskData.getSchedule();
+    } catch (e) {
+      console.log(e);
     }
-    
-    
+    //[
+    // {
+    //   date: "May 30 2002",
+    //   time: "14:30",
+    //   task: "Clean tables"
+    // },
+    // {
+    //   date: "May 30 2004",
+    //   time: "5:30",
+    //   task: "Rake leaves"
+    // }
+    //]
+    return res.status(200).render("tasks/tasks", {
+      title: "Tasks",
+      Schedule: "Schedule",
+      schedules: schedules,
+    });
+  }
+
   return res.status(400).redirect("/");
 });
 

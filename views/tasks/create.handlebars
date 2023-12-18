@@ -1,23 +1,23 @@
 <h1>{{title}}</h1>
 <main>
   <p>
-    Please create a new task.
+    Create a New Task Here.
   </p>
   <form id="create-form" action="/tasks/create" method="POST">
     <label for="nameInput">
-      Please enter the task's name:
+      Task Name:
       <br />
       <input type="text" name="nameInput" id="nameInput" />
     </label>
     <br />
     <label for="descriptionInput">
-      Please enter your task's description:
+      Description:
       <br />
       <input type="text" name="descriptionInput" id="descriptionInput" />
     </label>
     <br />
     <label for="publicPostInput">
-      Please select task type:
+      Type:
       <br />
       <select name="publicPostInput" id="publicPostInput">
         <option value="public">Public</option>
@@ -26,19 +26,19 @@
     </label>
     <br />
     <label for="dateDueInput">
-      Please enter your tasks's due date:
+      Due Date:
       <br />
       <input type="date" name="dateDueInput" id="dateDueInput" />
     </label>
     <br />
     <label for="timeDueInput">
-      Please enter your tasks's due time:
+      Due Time:
       <br />
       <input type="text" name="timeDueInput" id="timeDueInput" />
     </label>
     <br />
     <label for="maxContributorInput">
-      Please enter your task's max contributors:
+      Task's Max Contributors:
       <br />
       <input
         type="number"
@@ -49,7 +49,7 @@
     </label>
     <br />
     <label for="durationInputH">
-      Please enter your task's duration in hours:
+      Duration in Hours:
       <br />
       <input
         type="number"
@@ -61,7 +61,7 @@
     </label>
     <br />
     <label for="durationInputM">
-      Please enter your task's duration in additional minutes:
+      Duration in Additional Minutes:
       <br />
       <input
         type="number"
@@ -72,8 +72,19 @@
       />
     </label>
     <br />
+    <label for="priorityInput">
+      Priority number:
+      <br />
+      <input
+        type="number"
+        name="priorityInput"
+        id="priorityInput"
+        min="0"
+        max="10"
+      />
+    </label>
+    <br />
     <label>
-      Submit:
       <br />
       <input type="submit" value="Create!" />
     </label>
@@ -83,15 +94,17 @@
   <p class="error">
     {{error}}
   </p>
-  <a href="/tasks/tasks">
-    Click here to return to tasks!
-  </a>
-  <br />
-  <a href="/users">
-    Click here to return to users!
-  </a>
-  <br />
-  <a href="/logout">
-    Click here to logout!
-  </a>
+  <nav class="container">
+    <a href="/tasks/create">
+      Create a Task
+    </a>
+    <br />
+    <a href="/tasks/tasks">
+      View tasks
+    </a>
+    <br />
+    <a href="/logout">
+      Log Out
+    </a>
+  </nav>
 </main>

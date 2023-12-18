@@ -1,61 +1,63 @@
-<h1>Register</h1>
+<h1>Register a New Account</h1>
     <main>
-        <p>
-            Please register a new user account.
+        <p class="register">
         </p>
-        <form id=registration-form action=/register method=POST>
-            <label for="firstNameInput">
-                Please enter your first name:
+        <div class="register">
+            <form class="register" id=registration-form action=/register method=POST>
+                <label for="firstNameInput">
+                    First Name:
+                    <br>
+                    <input type=text name="firstNameInput" id="firstNameInput"/>
+                </label>
                 <br>
-                <input type=text name="firstNameInput" id="firstNameInput"/>
-            </label>
-            <br>
-            <label for="lastNameInput">
-                Please enter your last name:
+                <label for="lastNameInput">
+                    Last Name:
+                    <br>
+                    <input type=text name="lastNameInput" id="lastNameInput"/>
+                </label>
                 <br>
-                <input type=text name="lastNameInput" id="lastNameInput"/>
-            </label>
-            <br>
-            <label for="emailAddressInput">
-                Please enter your email address:
+                <label for="dateOfBirthInput">
+                    Date of Birth:
+                    <br>
+                    <input type=date name="dateOfBirthInput" id="dateOfBirthInput"/>
+                </label>
                 <br>
-                <input type=email name="emailAddressInput" id="emailAddressInput"/>
-            </label>
-            <br>
-            <label for="userNameInput">
-                Please enter your user name:
+                <label for="emailAddressInput">
+                    Email Address:
+                    <br>
+                    <input type=email name="emailAddressInput" id="emailAddressInput"/>
+                </label>
                 <br>
-                <input type=text name="userNameInput" id="userNameInput"/>
-            </label>
-            <br>
-            <label for="dateOfBirthInput">
-                Please enter your date of birth:
+                <label for="userNameInput">
+                    User Name:
+                    <br>
+                    <input type=text name="userNameInput" id="userNameInput"/>
+                </label>
                 <br>
-                <input type=date name="dateOfBirthInput" id="dateOfBirthInput"/>
-            </label>
-            <br>
-            <label for="passwordInput">
-                Please enter your password:
+                <label for="passwordInput">
+                    Password:
+                    <br>
+                    <input type=password name="passwordInput" id="passwordInput"/>
+                </label>
                 <br>
-                <input type=password name="passwordInput" id="passwordInput"/>
-            </label>
-            <br>
-            <label for="confirmPasswordInput">
-                Please confirm your password:
+                <label for="confirmPasswordInput">
+                    Retype Password:
+                    <br>
+                    <input type=password name="confirmPasswordInput" id="confirmPasswordInput"/>
+                </label>
                 <br>
-                <input type=password name="confirmPasswordInput" id="confirmPasswordInput"/>
-            </label>
-            <br>
-            <label>
-                Submit:
-                <br>
-                <input type=submit value="Register!"/>
-            </label>
-        </form>
+                <label>
+                    <br>
+                    <input type=submit value="Register!"/>
+                </label>
+            </form>
+        </div>
         <p class=error>
             {{error}}
         </p>
-        <a href=/login>
-            Already have an account? Click here to log-in
-        </a>
+        <p class="register">Already have an account? 
+            <a href=/login>
+                Click Here to Log In.
+            </a>
+        </p>
     </main>
