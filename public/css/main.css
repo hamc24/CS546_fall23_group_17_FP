@@ -22,32 +22,39 @@ h3,
 h4,
 h5,
 h6 {
-  color: #ffffff;
   margin-bottom: 5px;
 }
 
 h1 {
+  color: #ffffff;
   font-size: 2rem;
+  text-align: center;
 }
 
 h2 {
+  color: #daad86;
   font-size: 1.5rem;
+  text-align: center;
 }
 
 h3 {
   font-size: 1.5rem;
+  text-align: center;
 }
 
 h4 {
   font-size: 1.25rem;
+  text-align: center;
 }
 
 h5 {
   font-size: 1.15rem;
+  text-align: center;
 }
 
 h6 {
   font-size: 1.05rem;
+  text-align: center;
 }
 
 p {
@@ -111,10 +118,38 @@ td {
   text-align: center;
 }
 
-h1.login-head {
+.login {
   text-align: center;
 }
 
-.login {
+.register {
   text-align: center;
+}
+
+.container {
+  display: flex;
+  gap: 0.625%;
+}
+
+a {
+  flex: 1;
+  outline-color: transparent;
+  text-align: center;
+  line-height: 3;
+  color: #daad86;
+}
+
+a:link,
+a:visited,
+a:focus {
+  color: #7a5f4e;
+}
+
+a:hover {
+  background: #bc986a;
+}
+
+a:active {
+  background: #8d8741;
+  color: white;
 }
