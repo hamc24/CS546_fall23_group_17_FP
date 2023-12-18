@@ -53,7 +53,10 @@ function toWeek(day){
 
 
 const calculateFill=async(stDt,edDt)=>{
-
+    validation.checkNull(stDt);   
+    validation.checkNull(edDt);
+    stDt=validation.checkString(stDt);
+    edDt=validation.checkString(edDt);
     
     function toWeek(day){
         if (day == "Sunday"){
@@ -106,6 +109,13 @@ const calculateFill=async(stDt,edDt)=>{
 }
 
 const createFill=async(userId,startDate,endDate,startAM,endAM,startPM,endPM)=>{
+    validation.checkNull(userId);  
+    validation.checkNull(startDate);  
+    validation.checkNull(endDate);  
+    validation.checkNull(startAM);  
+    validation.checkNull(endAM);  
+    validation.checkNull(startPM);  
+    validation.checkNull(endPM);  
     startDate = validation.checkString(startDate);
     endDate = validation.checkString(endDate);
     startAM = validation.checkString(startAM);
@@ -161,7 +171,6 @@ const createFill=async(userId,startDate,endDate,startAM,endAM,startPM,endPM)=>{
         item.dueTime=duetime;
         changeDur.push(item);
     })
-
     let info = {
         full:full,
         fillStart:fillStart,
@@ -181,12 +190,20 @@ const createFill=async(userId,startDate,endDate,startAM,endAM,startPM,endPM)=>{
 
 
 const addSchedule= async(taskId,schName,stDt,edDt,schTime)=>{
-    validation.checkNull(taskId);
+    console.log("all",taskId,schName,stDt,edDt,schTime);
+    validation.checkNull(taskId); 
+    validation.checkNull(schName); 
+    validation.checkNull(stDt); 
+    validation.checkNull(edDt); 
+    validation.checkNull(schTime); 
     taskId = validation.checkId(taskId);
+    schName = validation.checkString(schName);
+    stDt = validation.checkString(stDt);
+    edDt = validation.checkString(edDt);
+    schTime = validation.checkString(schTime);
     const taskCollection = await tasks();
     const oneTask = await taskCollection.findOne({_id: new ObjectId(taskId)});
     if (oneTask === null) throw 'No task with that id';
-    
     let taskSchedule ={}
     let oneSch = {schTime:schTime,stDt:stDt,edDt:edDt};
     if(oneTask.schedule){
@@ -211,7 +228,9 @@ const addSchedule= async(taskId,schName,stDt,edDt,schTime)=>{
 const changeTime= async(taskId,schName,daysAfter)=>{
     validation.checkNull(taskId);
     taskId = validation.checkId(taskId);
-    
+    console.log("changeTime,taskId,",typeof(taskId));
+    console.log("changeTime,taskId,",typeof(schName));
+    console.log("changeTime,taskId,",typeof(daysAfter));
 
     validation.checkNull(schName);
     schName = validation.checkString(schName);
@@ -269,7 +288,6 @@ const deleteSch= async(userId,schName)=>{
     });
     const taskCollection = await tasks();
     
-    console.log("schName??",userTasks,schName);
 
 
     let foundtasks = await taskCollection
@@ -278,7 +296,6 @@ const deleteSch= async(userId,schName)=>{
 
     
     foundtasks = foundtasks.filter((item) => {return (item.schedule && item.schedule[schName])});
-    console.log("tasks that this sch:",foundtasks,typeof(foundtasks));
     if(foundtasks){
         for(let item of foundtasks){
             let newSch =item.schedule;
@@ -351,38 +368,45 @@ const getVievSch= async(userId)=>{
         
 }; 
 
-const aotoGenerate= async(schName, stDt, edDt, taskList)=>{
-    for(let item of taskList){
-
-
-
-            // validation.checkNull(item.taskId);
-            // taskId = validation.checkId(item.taskId);
-            const taskCollection = await tasks();
-            const oneTask = await taskCollection.findOne({_id: item.taskId});
-            if (oneTask === null) throw 'No task with that id';
-            
-            let taskSchedule ={}
-            let oneSch = {schTime:item.schTime,stDt:stDt,edDt:edDt};
-            if(oneTask.schedule){
-                taskSchedule = oneTask.schedule;
-                taskSchedule[schName] = oneSch;
-            }else{
-                taskSchedule[schName]=oneSch;
-            }
-            
-        
-            
-            const updatedInfo = await taskCollection.findOneAndUpdate(
-                    {_id:new ObjectId(item.taskId)},
-                    {$set: {schedule:taskSchedule}},
-                    {returnDocument: 'after'}
-                );
-                if (!updatedInfo) {
-                    throw 'could not add to schedule successfully';
-                }
-                return true;
+const autoGenerate= async(schName, stDt, edDt, taskList)=>{
+    validation.checkNull(schName);
+    validation.checkNull(stDt);
+    validation.checkNull(edDt);
+    if (typeof(taskList) != "object" || taskList===null){
+        throw "taskList is not a object";
     };
+    schName = validation.checkString(schName);
+    stDt = validation.checkString(schName);
+    edDt = validation.checkString(schName);
+    console.log("autoGenerate",typeof(schName),typeof(stDt),typeof(taskList),)
+    for(let item of taskList){
+        
+        const taskCollection = await tasks();
+        const oneTask = await taskCollection.findOne({_id: new ObjectId(item.taskId)});
+        if (oneTask === null) throw 'No task with that id';
+        
+        let taskSchedule ={}
+        let oneSch = {schTime:item.schTime,stDt:stDt,edDt:edDt};
+        if(oneTask.schedule){
+            taskSchedule = oneTask.schedule;
+            taskSchedule[schName] = oneSch;
+        }else{
+            taskSchedule[schName]=oneSch;
+        }
+        
+    
+        
+        const updatedInfo = await taskCollection.findOneAndUpdate(
+                {_id:new ObjectId(item.taskId)},
+                {$set: {schedule:taskSchedule}},
+                {returnDocument: 'after'}
+            );
+            if (!updatedInfo) {
+                throw 'could not add to schedule successfully';
+            }
+                
+    };
+    return true;
 }
 
 
@@ -401,5 +425,5 @@ export default {
     changeTime,
     remove,
     deleteSch,
-    aotoGenerate
+    autoGenerate
   };

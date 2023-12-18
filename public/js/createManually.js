@@ -1,12 +1,189 @@
 $(function(){
+
     let errorList=[];
-    let error = $("#error");
+    let error = $("#errorList");
     let tasks = $(".tasks");
     let schedule = $(".schedule");
     let createForm=$("#createForm");
-    let deleteSch=$("#deleteSch")
+    let deleteSch=$("#deleteSch");
     let deleteDiv = $("#deleteDiv");
+    let confirmDel = $("#confirmDel");
+    let noDel = $("#noDel");
 
+    function checkStr(val){
+        
+        if(!val || !typeof(val) == "string" || val.trim().length == 0){
+            return false;
+        }else{
+            return true
+        }
+    }
+    
+    function addStyle(funcA,val,msg){
+        if(funcA){
+            val.addClass('errorInput');
+            errorlist.push(msg);
+        }else{
+            val.removeClass('errorInput');
+        }
+    }
+    
+    
+    function validateDate(date) {
+        //console.log(date);
+        date = date.split("-");
+        if (date.length != 3) throw "Error: date is not valid (not long enough)";
+        let month = date[1];
+        let day = date[2];
+        let year = date[0];
+        if (
+          parseInt(month) != month ||
+          parseInt(day) != day ||
+          parseInt(year) != year
+        )
+          throw "Error: date is not valid (did not match)";
+        if (month < 1 || month > 12)
+          throw `Error: date is not valid (has to be 1-12 but was ${month})`;
+        if (day < 1) throw "Error: date is invalid";
+        if (month == 4 || month == 6 || month == 9 || month == 11) {
+          if (day > 30) {
+            throw `Error: the ${month}th month only has 30 days`;
+          }
+        } else if (month == 2) {
+          if (day > 29 && year%100 != 0 && year%400 == 0) {
+            throw `Error: the ${month}th month in leap year only has 29 days`;
+          }else{
+            if(day > 28 )throw `Error: the ${month}th month only has 28 days`
+          }
+        } else {
+          if (day > 31) {
+            throw "Error: date can have more than 31 days";
+          }
+        }
+        if (year.length > 4 && year.length < 0)
+          throw "Error: year has to be a number greater than 0 but less than 5";
+      }
+  
+      
+      function compareDate(date) {
+        date = date.split("-");
+        let month = date[1];
+        let day = date[2];
+        let year = date[0];
+      
+        let today = new Date();
+        let dd = String(today.getDate()).padStart(2, "0");
+        var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+        var yyyy = today.getFullYear();
+      
+        if (yyyy > year) {
+          throw "Error: date has to be in the future";
+        } else if (yyyy == year) {
+          if (mm > month) {
+            throw "Error: date has to be in the future";
+          } else if (mm == month) {
+            if (dd > day) {
+              throw "Error: date has to be in the future";
+            }
+          }
+        }
+      }
+    
+      function validateTime(time) {
+        let splitTime = time.split(":");
+        if (splitTime.length != 2) throw "Error: invalid time";
+        let hour = splitTime[0];
+        let minute = splitTime[1]
+      
+        // Checking hour so that it is formatted correctly
+        console.log(hour.length);
+        if (hour.length !=2) {
+          throw "Error: invalid Hour";
+        
+        }
+      
+        if (minute.length != 2 ) throw "Error: invalid time";
+      
+        if (parseInt(hour) != hour || parseInt(minute) != minute)
+          throw "Error: invalid time";
+      
+        if (hour < 1 || hour > 24) throw "Error: Invalid time";
+        if (minute < 0 || minute > 59) throw "Error: Invalid time";
+      }
+
+      
+
+
+
+
+    function checkSch(){
+        
+            $('#errorList').empty();
+            errorlist = [];
+            addStyle(!checkStr($('#nameInput').val()), $('#nameInput'), "nameInput must be strings");
+              if(checkStr($('#nameInput').val())){
+                addStyle(($('#nameInput').val().trim().length<2 || $('#nameInput').val().trim().length>25), $('#nameInput'), "schedule name must be 2-25 characters");
+              }
+          
+              if(!checkStr($('#startDateInput').val()) || !checkStr($('#EndDateInput').val()) || !checkStr($('#StartAMInput').val())|| !checkStr($('#EndAMInput').val())|| !checkStr($('#StartPMInput').val())|| !checkStr($('#EndPMInput').val()) ){
+                errorlist.push("time input must be strings")
+              }else{
+          
+              
+                try{
+                  validateDate($('#startDateInput').val());
+                  compareDate($('#startDateInput').val());
+                }catch(e){
+                    addStyle(true, $('#startDateInput'),e)
+                }
+                  try{
+                    validateDate($('#EndDateInput').val());
+                    compareDate($('#EndDateInput').val());
+                }catch(e){
+                    addStyle(true, $('#EndDateInput'),e)
+                }
+          
+                try{
+                  
+                  validateTime($('#StartAMInput').val());
+                }catch(e){
+                    addStyle(true, $('#StartAMInput'),e)
+                }
+                
+                try{
+                  
+                    validateTime($('#EndAMInput').val());
+                }catch(e){
+                    addStyle(true, $('#EndAMInput'),e)
+                }
+                try{
+                  
+                    validateTime($('#StartPMInput').val());
+                }catch(e){
+                    addStyle(true, $('#StartPMInput'),e)
+                }
+                try{
+                  
+                    validateTime($('#EndPMInput').val());
+                }catch(e){
+                    addStyle(true, $('#EndPMInput'),e)
+                }
+          
+              }
+          
+            if (errorlist.length>0){  
+                for (let item of errorlist){
+                    li = `<li class = "error"> ${item} </li>`;
+                    $('#errorList').append(li);
+                           
+                }
+                return false; 
+            }
+            return true;
+          
+          
+          
+    }
 
 
     function fillCalendar(stDt,edDt,tasks,schName){
@@ -93,9 +270,9 @@ $(function(){
                     }
 
 
-                    tasks.sort(function(a,b){return b["schTime"]-a["schTime"]})
-
-                    for (let i=0; i<full*7-fillStart-fillEnd +1 ; i++){
+                    tasks.sort(function(a,b){return a["schTime"]-b["schTime"]})
+                    console.log("show tasks:",tasks);
+                    for (let i=0; i<full*7-fillStart-fillEnd ; i++){
                         
                         
                         let days = Number($("#"+i).attr('days'));
@@ -109,6 +286,8 @@ $(function(){
                         }
                         
                     }
+    },(error)=>{
+        alert(JSON.stringify(error));
     })
         schedule.show();
         
@@ -125,11 +304,10 @@ $(function(){
             console.log("viewwwww");
 
             $("#switch").empty();
-            $("#tasks tbody").empty();
-            $("#schedule tbody").empty();
+            
             deleteDiv.hide();
-            $("#confirmDel").hide();
-            $("#noDel").hide();
+            confirmDel.hide();
+            noDel.hide();
             deleteSch.show();
             $(".tasks tbody").empty();
             $("#taskCell").hide();
@@ -138,10 +316,13 @@ $(function(){
             deleteSch.show();
             let allSch = {};
             $.ajax({type:'GET',url:'/schedule/viewSch',success:function(data){
+                console.log("viewSchData:",data);
                 allSch = data;
                 $.each(Object.keys(data),function(i,item){
                     $("#switch").append(`<li><a class='schList' href='/schedule' id='${item}'>${item}</a></li>`);
                 });
+
+                // function changeSchView(){}
                 $("#switch").find('.schList').on('click', function(event){
                     event.preventDefault();
                     let schName = $(this).html();
@@ -157,46 +338,78 @@ $(function(){
                 let tasks = sch01["tasks"];
                 fillCalendar(stDt,edDt,tasks,Object.keys(data)[0])        
                         
-                }});
+                },error:function(data){
+                        alert(JSON.stringify(data));
+                    }          
+            });
+            
                 
             deleteSch.on('click',function(event){
                 event.preventDefault()
                 $("#deleteDiv").show();
-                $("#confirmDel").show();
-                $("#noDel").show();
+                confirmDel.show();
+                noDel.show();
                 deleteSch.hide();
-                $("#noDel").on('click', function(event){
+                noDel.on('click', function(event){
                     event.preventDefault();
                     deleteDiv.hide();
-                    $("#confirmDel").hide();
-                    $("#noDel").hide();
+                    confirmDel.hide();
+                    noDel.hide();
                     deleteSch.show();
                 });
-                $("#confirmDel").on('click', function(event){
+                confirmDel.on('click', function(event){
                     event.preventDefault()
                     let schName = $(".schedule thead").attr('name');
                     
-                    $.ajax({type:'DELETE',url:'/schedule/'+schName,success:function(data){
+                    // $.ajax({type:'DELETE',url:'/schedule/'+schName,success:function(data){
                         
-                        if (data === true){
+                    //     if (data === true){
+                    //         deleteSch.off('click');
+                    //         confirmDel.off('click');
+                    //         loadPage();
+                    //         }
+                    //     },error:function(data){
+                    //         alert(JSON.stringify(data));
+                    //     }
+                    // })
+                    $.ajax({type:'DELETE',url:'/schedule/'+schName}).then(function(data){
+                        
+                        
+                            deleteSch.off('click');
+                            confirmDel.off('click');
                             loadPage();
-                            }
-                        }
+                            
+                        },(error)=>{
+                            alert(JSON.stringify(error));
+                        })
+                        
                     })
                     
-                })
+                
             })
+        }
+        loadPage();
             tasks.show();
             
             
-        }
-        loadPage()
+        
 
     })
 
 
     $("#selectScheduleTime").submit(function (event) {
         event.preventDefault();
+
+
+
+
+        if(checkSch()){
+
+
+
+
+
+
         error.empty();
         deleteSch.hide();
         deleteDiv.hide();
@@ -340,7 +553,7 @@ $(function(){
                                 data:plan};
                             $.ajax(requestConfig).then(function (responseMessage){
                                 if (responseMessage){
-                                    
+                                    alert(JSON.stringify(responseMessage));
                                     
                                     let dur =cell.attr('hours') -duration;
                                     cell.attr('hours',dur);
@@ -359,7 +572,7 @@ $(function(){
                                     bindRemoveEvent();
                                 }else{
                                     console.log(responseMessage);
-                                    alert(responseMessage[Object.keys(responseMessage)[0]]);
+                                    alert(JSON.stringify(error));
                                 }
                                 
                             })
@@ -390,30 +603,26 @@ $(function(){
                                 data:plan};
                                 console.log("requestConfig",requestConfig);
                             $.ajax(requestConfig).then(function (responseMessage){
-                                console.log("callback done!!");
-                                if (responseMessage===true){
-                                    console.log("responseMessage",responseMessage);
-                                    let hours =Number(cell.attr('hours'));
-                                    let duration = Number(atask.attr('duration'));
-                                    let dur =hours +duration;                
-                                                
-                                    cell.attr('hours',dur)
-                                    cell.html(`${Math.floor(Number(dur)/3600000)}:${Math.floor(Number(dur)%3600000/60000)}`);
+                                let hours =Number(cell.attr('hours'));
+                                let duration = Number(atask.attr('duration'));
+                                let dur =hours +duration;                
+                                            
+                                cell.attr('hours',dur)
+                                cell.html(`${Math.floor(Number(dur)/3600000)}:${Math.floor(Number(dur)%3600000/60000)}`);
 
-                                    atask.remove();
+                                atask.remove();
 
-                                    $(".tasks tbody").append(`<tr><td><a href='/tasks/${taskId}' duration='${duration}' id='${taskId}'class='atask' name='${taskName}' >${taskName}(${Math.floor(Number(duration)/3600000)}:${Math.floor(Number(duration)%3600000/60000)})</a></td></tr>`);
-                                    schedule.find('.atask').off('click');
-                                    $('#taskCell').off('click');
+                                $(".tasks tbody").append(`<tr><td><a href='/tasks/${taskId}' duration='${duration}' id='${taskId}'class='atask' name='${taskName}' >${taskName}(${Math.floor(Number(duration)/3600000)}:${Math.floor(Number(duration)%3600000/60000)})</a></td></tr>`);
+                                schedule.find('.atask').off('click');
+                                $('#taskCell').off('click');
 
-                                    // event.stopPropagation();
-                                    bindAddEvent();
-                                    bindRemoveEvent();
-                                }else{
-                                    console.log(responseMessage);
-                                    alert(responseMessage[Object.keys(responseMessage)[0]]);
-                                }
+                                // event.stopPropagation();
+                                bindAddEvent();
+                                bindRemoveEvent();
+                               
                                 
+                            },(error)=>{
+                                alert(JSON.stringify(error));
                             })
                         })
                         
@@ -421,6 +630,8 @@ $(function(){
                 }
                 bindAddEvent();
                 bindRemoveEvent();
+            },(error)=>{
+                alert(JSON.stringify(error));
             })
             tasks.show();
             schedule.show();
@@ -458,6 +669,7 @@ $(function(){
                     let edDt = data.edDt;
                     let taskList = data.taskList;
                     let oneDay = 86400000;
+                    console.log("autoGen_TaskList:",taskList);
                     $(".schedule tbody").empty();
                     $(".tasks tbody").empty();
 
@@ -511,23 +723,21 @@ $(function(){
                     }
 
                     taskList.sort(function(a,b){return a["dueTime"]-b["dueTime"]})
-                    console.log("sorted TaskList:", taskList);
                     let autoSch=[];
-                    console.log(durationDays);
 
 
 
                     for (let i=0; i<durationDays+1; i++){
-                        
-                        let hours = Number($("#"+i).attr('hours'));
-                        let days = Number($("#"+i).attr('days'));
+                        let cell=$("#"+i)
+                        let hours = Number(cell.attr('hours'));
+                        let days = Number(cell.attr('days'));
                         console.log("hours",hours,"days",days);
                         while(taskList[0] && hours>=taskList[0].duration.stamp){
                             console.log("tasklist[0]",taskList[0]);
-                            let real = $("#"+i).closest('td');
-                            real.append(`<br><a href='/tasks/${taskList[0].taskId}' duration='${taskList[0].duration.stamp}' duetime='${taskList[0].dueTime}' id='${taskList[0].taskId}'class='atask' days='${days}'>${taskList[0].taskName}(${Math.floor(Number(taskList[0].duration.stamp)/3600000)}:${Math.floor(Number(taskList[0].duration.stamp)%3600000/60000)})</a>`)
+                            let real = cell.closest('td');
+                            real.append(`<br><a href='/tasks/${taskList[0]._id}' duration='${taskList[0].duration.stamp}' dueTime='${taskList[0].dueTime}' id='${taskList[0]._id}'class='atask'  name = ${taskList[0].taskName}>${taskList[0].taskName}(${Math.floor(Number(taskList[0].duration.stamp)/3600000)}:${Math.floor(Number(taskList[0].duration.stamp)%3600000/60000)})</a>`)
 
-                            autoSch.push({taskId: taskList[0].taskId, schTime: days});
+                            autoSch.push({taskId: taskList[0]._id, schTime: days});
                             console.log("autoSch",autoSch);
                             days+=taskList[0].duration.stamp;
                             hours -=taskList[0].duration.stamp;
@@ -535,16 +745,16 @@ $(function(){
                             taskList.shift();
                         }
                         
-                        $("#"+i).attr('hours',hours);
+                        cell.attr('hours',hours);
+                        cell.html(`${Math.floor(Number(hours)/3600000)}:${Math.floor(Number(hours)%3600000/60000)}`)
                     }
+                    
                     let autoSchObj ={
                         schName:schName,
                         stDt:stDt,
                         edDt:edDt,
                         tasks:autoSch
                     }
-
-
                     let requestConfig = {
                         method: 'POST',
                         url: 'schedule/auto',
@@ -553,96 +763,95 @@ $(function(){
 
                         console.log(requestConfig);
                     $.ajax(requestConfig).then(function (responseMessage){
-                        console.log(responseMessage)
+                        alert(JSON.stringify(responseMessage));
+                    },(error)=>{
+                        alert(JSON.stringify(error));
                     })
                     
 
-                    // let cell =$(".cell");
-                    // $.each(cell, function(i,item){
-                    //     let count = 0;
-                        
-                    //     while(cell.attr('hours')<taskList[0].duration && cell.attr('days') < taskList[0].dueTime){
-                    //         item.append(`<br><a href='/tasks/${taskList[0].id}' duration='${taskList[0].duration}' id='${taskList[0].id}'class='atask' name='${taskList[0].taskName}' days='${cell.attr('days')}'>${taskList[0].taskName}(${Math.floor(Number(taskList[0].duration)/3600000)}:${Math.floor(Number(taskList[0].duration)%3600000/60000)})</a>`);
-                    //         let dur =cell.attr('hours') -= duration;
-                    //         cell.attr('hours',dur);
-                    //         count +=1;
-                    //         taskList.shift()
-                    //     }
-                    //     cell.val(`${dur/3600000}:${dur%3600000}`);
-                    // })
-                    
-
-                    schedule.find('.schedule .atask').on('click',function(event){
-                        event.preventDefault();
-                        let atask=$(this);
-                        let cell = $(this).closest('tb').find('.cell');
-                        let hours =cell.attr('hours')
-                        let duration = atask.attr('duration');
-                        let dueTime = atask.attr('dueTime');
-                        let taskId = atask.attr('id');
-                        schedule.find('.cell').on('click',function(event){
+                    function bindAddEvent(){ 
+                        // $('#taskCell').off('click'); 
+                        // $("a:acrive").off('click');              
+                        $('.atask').on('click',function(event){
                             event.preventDefault();
-
-                            let afterCell = $(this);
-                            let daysAfter = Number($(this).attr('days'));
-                            let tb = $(this).closest('tb');
+                            let atask = $(this);
+                            let taskId = atask.attr('id');
+                            let plan = {taskId:taskId,name:schName,stDt:stDt,edDt:edDt};
                             
-                            let hoursAfter = Number(afterCell.attr('hours'))
-
-                            if (dueTime>daysAfter){
-                                alert("schedule time must not later than dueTime!")
-                            }
-                            let real = afterCell.closest('td');
-                            let dur =hoursAfter-duration;
-                            if (dur<0){
-                                alert("Time for this day is not enough!")
-                            }
-                            
-                            if(real.children().length > 1){
-
-                                real.find(".atask").map((item)=>{
-                                    daysAfter += Number(item.attr('duration'));
-                                })}
-
-
-                            let plan = {taskId:taskId,schName:schName,daysAfter:daysAfter};
-                            let requestConfig = {
-                                method: 'PATCH',
-                                url: 'schedule/auto',
-                                data:plan};
-                                console.log(requestConfig);
-                            $.ajax(requestConfig).then(function (responseMessage){
-                                if (responseMessage === true){
-                                    
-                    
-                                    var duration = atask.attr('duration');
-                                    hours -= duration;
-                                    cell.attr('hours',hours);
-                                    cell.attr('hours',hours);
-                                    cell.val(`${dur/3600000}:${dur%3600000}`);
-
-
-                                    hoursAfter -= duration;
-                                    afterCell.attr('hours',hoursAfter);
-                                    
-                                    atask.remove(); 
-
-
-                                    real.append(`<br><a href='/tasks/${taskList[0].taskId}' duration='${taskList[0].duration}' duetime='${taskList[0].dueTime}' id='${taskList[0].taskId}'class='atask' days='${daysAfter}'>${taskList[0].taskName}(${Math.floor(Number(taskList[0].duration)/3600000)}:${Math.floor(Number(taskList[0].duration)%3600000/60000)})</a>`)
-                                }else{
-                                    console.log(responseMessage);
-                                    alert(responseMessage[Object.keys(responseMessage)[0]]);
+                            let duration = Number(atask.attr('duration'));
+                            let dueTime =Number(atask.attr('detime'));
+    
+                        
+                            $('.cell').on('click',function(event){
+                                event.preventDefault();
+                                let cell = $(this);
+                                // tasks.find('.tasks a').off('click');
+                                // eventA.stopPropagation();
+                                let dateMark = Number(cell.attr('days'));
+                                if (dueTime>dateMark){
+                                    alert("schedule time must not later than dueTime!")
                                 }
+                                let real = cell.closest('td');
+                                let dur =Number(cell.attr('hours')) -duration;
+                                if (dur<0){
+                                    alert("Time for this day is not enough!")
+                                }
+                                if(real.children().length > 1){
+                                    console.log("findSch",real.children().length);
+    
+                                    let schStart = Number($(this).attr('days'));
+                                    real.find(".atask").map((item)=>{
+                                        schStart += Number(item.attr('duration'));
+                                    })
+                                    plan["time"] = schStart;
+                                }else{
+                                    plan["time"] =$(this).attr('days');
+                                }
+                                let requestConfig = {
+                                    method: 'POST',
+                                    url: 'schedule/mahually',
+                                    data:plan};
+                                $.ajax(requestConfig).then(function (responseMessage){
+                                    if (responseMessage){
+                                        
+                                        
+                                        let dur =cell.attr('hours') -duration;
+                                        cell.attr('hours',dur);
+                                        cell.html(`${Math.floor(Number(dur)/3600000)}:${Math.floor(Number(dur)%3600000/60000)}`);
+                                        atask.remove();
+    
+                                        // console.log(Math.floor(Number(duration)/3600000)+":"+Math.floor(Number(duration)%3600000/60000));
+                                        // console.log(`<a href='/tasks/${id}' duration='${duration}' id='${id}'class='atask' name='${taskName}' days='${dateMark}>${taskName}(${Math.floor(Number(duration)/3600000)}:${Math.floor(Number(duration)%3600000/60000)})</a>`);
+                                        // atask.attr('days',dateMark);
+                                        // real.append("<a href='/tasks/65770cdf386810e3d7ca9e88' duration='15300000' id='65770cdf386810e3d7ca9e88'class='atask' name='doing' days='1703203200000'>doing(4:15)</a>");
+                                        real.append(atask);
+                                        tasks.find('.tasks a').off('click');
+                                        schedule.find('.cell').off('click');
+                                        // event.stopPropagation();
+                                        bindAddEvent();
+                                    }else{
+                                        alert(JSON.stringify(error));
+                                    }
+                                    
+                                })
+                    
                                 
                             })
+                            // event.stopPropagation();
+                            // bindAddEvent();
+                            
+                                
                         })
-                    })
+                    }
+                    bindAddEvent();
                 
                     schedule.show();
                     tasks.hide();
             
                     createForm.hide();
                 
+                },(error)=>{
+                    alert(JSON.stringify(error));
                 })
             }else{
                 alert("select must be manually or one click!");
@@ -650,6 +859,10 @@ $(function(){
 
         }
             $.each(errorList,function(data){error.append(`<li>${data}</li>`);})
-    })   
+        }else{
+            alert("input invalid")
+        }
+    
+        })   
 
 });

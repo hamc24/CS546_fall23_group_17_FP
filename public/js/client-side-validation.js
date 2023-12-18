@@ -313,4 +313,73 @@ function checkTask(){
     }
     return true;
 }
+ 
+function checkSchedule(){
+  $('#errorList').empty();
+  errorlist = [];
+  addStyle(!checkStr($('#nameInput').val()), $('#nameInput'), "nameInput must be strings");
+    if(checkStr($('#nameInput').val())){
+      addStyle(($('#nameInput').val().trim().length<2 || $('#nameInput').val().trim().length>25), $('#nameInput'), "schedule name must be 2-25 characters");
+    }
+
+    if(!checkStr($('#startDateInput').val()) || !checkStr($('#EndDateInput').val()) || !checkStr($('#StartAMInput').val())|| !checkStr($('#EndAMInput').val())|| !checkStr($('#StartPMInput').val())|| !checkStr($('#EndPMInput').val()) ){
+      errorlist.push("time input must be strings")
+    }else{
+
+    
+      try{
+        validateDate($('#startDateInput').val());
+        compareDate($('#startDateInput').val());
+      }catch(e){
+          addStyle(true, $('#startDateInput'),e)
+      }
+        try{
+          validateDate($('#EndDateInput').val());
+          compareDate($('#EndDateInput').val());
+      }catch(e){
+          addStyle(true, $('#EndDateInput'),e)
+      }
+
+      try{
+        
+        validateTime($('#StartAMInput').val());
+      }catch(e){
+          addStyle(true, $('#StartAMInput'),e)
+      }
+      
+      try{
+        
+          validateTime($('#EndAMInput').val());
+      }catch(e){
+          addStyle(true, $('#EndAMInput'),e)
+      }
+      try{
+        
+          validateTime($('#StartPMInput').val());
+      }catch(e){
+          addStyle(true, $('#StartPMInput'),e)
+      }
+      try{
+        
+          validateTime($('#EndPMInput').val());
+      }catch(e){
+          addStyle(true, $('#EndPMInput'),e)
+      }
+
+    }
+
+  if (errorlist.length>0){  
+      $(".error").empty();  
+      for (let item of errorlist){
+          li = `<li class = "error"> ${item} </li>`;
+          $('#errorList').append(li);
+                 
+      }
+      return false; 
+  }
+  return true;
+
+
+}
+
 

@@ -2,7 +2,7 @@
     <div id="createForm">
 
     
-        <form id="selectScheduleTime" action="/schedule" method="post">
+        <form id="selectScheduleTime" action="/schedule" method="post" onsubmit="return checkSchedule()">
 
             <label for="nameInput">
                 Please enter schedule name:
@@ -52,26 +52,13 @@
             <input type="reset" value="reset">
         
         </form>
-        <ul class="error" hidden>
+        <ul id="errorList"  hidden>
 
         </ul>
         <a href="/" id="viewSch">view current schedules</a>
     </div>
 
-
-        {{!-- {{#if hasErrors}}
-    <ul class="errorList">
-    {{#each errorList}}
-        <li>
-        <p  class="error">{{ this }}</p>
-        </li>
-        {{/each}}
-    </ul>           
-    {{/if}} --}}
-
-
-
-        
+       
       <table class="tasks" hidden>
         <thead >
           <tr>
@@ -118,10 +105,7 @@
     <footer id="dateFooter"></footer>
 
 
-    <script src="https://code.jquery.com/jquery-3.5.1.js"
-    ></script>
-    <script src="/public/js/createManually.js">
-    </script>
+   
 
 
 
