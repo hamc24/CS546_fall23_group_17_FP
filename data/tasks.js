@@ -14,7 +14,8 @@ const create = async (
   timeDue,
   durationH,
   durationM,
-  maxContributors
+  maxContributors,
+  priority
 ) => {
   //Validate Null
   validation.checkNull(taskName);
@@ -27,6 +28,7 @@ const create = async (
   validation.checkNull(durationH);
   validation.checkNull(durationM);
   validation.checkNull(maxContributors);
+  validation.checkNull(priority);
 
   //Input validation for types
   taskName = validation.checkString(taskName, "Task Name");
@@ -57,6 +59,8 @@ const create = async (
     throw "Error: Task Duration hour cannot be more than 24 hours long and less than 0";
   if (durationM > 60 || durationM < 0)
     throw "Error: Task Duration minutes cannot exceed 60 mins or be less than 0";
+  if (priority < 0 || priority > 10)
+    throw "Error: priority must be a number between 0-10";
 
   //Create user obj to put into collection
   let newTask = {
@@ -75,6 +79,7 @@ const create = async (
       durationH: durationH,
       durationM: durationM,
     },
+    priority: priority,
     status: 0,
     submitted: false,
     comments: [],
@@ -342,31 +347,27 @@ const whiteListUser = async (userId, taskId) => {
     throw "Error: Removing user from black list couldn't be done";
 };
 
-const getSchedule = async () =>
-{
+const getSchedule = async () => {
   const taskCollection = await tasks();
   const taskList = await taskCollection.find({}).toArray();
   console.log(taskList);
-  if (taskList.length)
-  {
-    const ObjectList = taskList.map(task => {
+  if (taskList.length) {
+    const ObjectList = taskList.map((task) => {
       return {
         date: task.dateDue,
         time: task.timeDue,
-        task: task.taskName
-      }
+        task: task.taskName,
+      };
     });
     return ObjectList.sort((a, b) => {
-      const d1 = new Date (a.date + " " + a.time);
-      const d2 = new Date (b.date + " " + b.time);
+      const d1 = new Date(a.date + " " + a.time);
+      const d2 = new Date(b.date + " " + b.time);
       return d1.getTime() - d2.getTime();
     });
-  }
-  else
-  {
+  } else {
     throw new Error("Add a task!");
   }
-}
+};
 
 export default {
   create,
@@ -381,5 +382,5 @@ export default {
   getUnauthorizedByName,
   blackListUser,
   whiteListUser,
-  getSchedule
+  getSchedule,
 };

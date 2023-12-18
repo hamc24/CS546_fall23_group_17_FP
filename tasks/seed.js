@@ -45,6 +45,7 @@ try {
     "11:59 PM",
     3,
     30,
+    10,
     10
   );
   let changTask2 = await taskData.create(
@@ -57,7 +58,8 @@ try {
     "11:59 PM",
     2,
     20,
-    10
+    10,
+    2
   );
   let patrickTask1 = await taskData.create(
     "CS546 Office Hours",
@@ -69,6 +71,7 @@ try {
     "4:00 PM",
     3,
     30,
+    4,
     4
   );
   let patrickTask2 = await taskData.create(
@@ -81,7 +84,8 @@ try {
     "4:00 PM",
     3,
     0,
-    25
+    25,
+    6
   );
   let atillaTask1 = await taskData.create(
     "Flock Party 2024 Volunteering",
@@ -93,7 +97,8 @@ try {
     "3:00 PM",
     5,
     0,
-    100
+    100,
+    9
   );
   let atillaTask2 = await taskData.create(
     "Annual Quack off on the Hudson",
@@ -105,7 +110,8 @@ try {
     "7:00 PM",
     1,
     30,
-    10
+    10,
+    1
   );
   let atillaTask3 = await taskData.create(
     "Christmas Dinner with Favardin",
@@ -117,7 +123,8 @@ try {
     "7:00 PM",
     2,
     30,
-    15
+    15,
+    2
   );
 
   // Inserting public task to user's task list
