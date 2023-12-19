@@ -3,7 +3,7 @@ const router = Router();
 
 router.route("/").get(async (req, res) => {
   //Todo
-  if (req.session.user)
+  if (req.session.user){
     return res.status(200).render("users", {
       title: `Home Page`,
       firstName: req.session.user.firstName,
@@ -12,8 +12,10 @@ router.route("/").get(async (req, res) => {
       email: req.session.user.email,
       dateOfBirth: req.session.user.dateOfBirth,
     });
-
-  return res.status(400).redirect("/");
+    }else{
+      return res.status(400).redirect("/");
+    }
+  
 });
 
 export default router;

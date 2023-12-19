@@ -94,12 +94,26 @@ const calculateFill = async (stDt, edDt) => {
   let fillEnd = 6 - toWeek(endDay);
   let durationDays = date.subtract(endObj, startObj).toDays();
   let full = (fillStart + fillEnd + durationDays + 1) / 7;
+
+  let oneDay = 86400000;
+  let i=Number(stDt)+oneDay;
+  let n=Number(edDt)+oneDay;
+  
+  let calendarDays = [];
+  while(i<=n){
+    let dateDay = date.format(new Date(i), "DD") ;
+    calendarDays.push(dateDay);
+    i+=oneDay;
+  }
+  
+
   let data = {
     fillStart: fillStart,
     fillEnd: fillEnd,
     strSt: strSt,
     strEnd: strEnd,
     full: full,
+    calendarDays:calendarDays
   };
   return data;
 };
@@ -156,7 +170,15 @@ const createFill = async (
   let fillEnd = 6 - toWeek(endDay);
   let durationDays = date.subtract(endtObj, startObj).toDays();
   let full = (fillStart + fillEnd + durationDays + 1) / 7;
-
+  let oneDay = 86400000;
+  let i=Number(stDt);
+  let n=Number(edDt);
+  let calendarDays = [];
+  while(i<=n){
+    let dateDay = date.format(new Date(i), "DD") ;
+    calendarDays.push(dateDay);
+    i+=oneDay;
+  }
   let fullHour = numEPM - numSAM - (numSPM - numEAM);
   const inComplete = await getTasks(userId);
   let changeDur = [];
@@ -183,12 +205,12 @@ const createFill = async (
     stDt: stDt,
     edDt: edDt,
     taskList: changeDur,
+    calendarDays:calendarDays
   };
   return info;
 };
 
 const addSchedule = async (taskId, schName, stDt, edDt, schTime) => {
-  console.log("addSch:", taskId, schName, stDt, edDt, schTime);
   validation.checkNull(taskId);
   validation.checkNull(schName);
   validation.checkNull(stDt);
@@ -357,7 +379,6 @@ const getVievSch = async (userId) => {
 };
 
 const autoGenerate = async (schName, stDt, edDt, taskList) => {
-  console.log("autoGen", schName, stDt, edDt, taskList);
   validation.checkNull(schName);
   validation.checkNull(stDt);
   validation.checkNull(edDt);
@@ -365,8 +386,8 @@ const autoGenerate = async (schName, stDt, edDt, taskList) => {
     throw "taskList is not a object";
   }
   schName = validation.checkString(schName);
-  stDt = validation.checkString(schName);
-  edDt = validation.checkString(schName);
+  stDt = validation.checkString(stDt);
+  edDt = validation.checkString(edDt);
   for (let item of taskList) {
     const taskCollection = await tasks();
     const oneTask = await taskCollection.findOne({
