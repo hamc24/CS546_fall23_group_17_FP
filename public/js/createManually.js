@@ -831,6 +831,8 @@ $(function () {
                   $(".atask").on("click", function (event) {
                     event.preventDefault();
                     let atask = $(this);
+                    let cellBefore = atask.closest("td").find('.cell');
+                    let idBefore = cellBefore.attr('id');
                     let taskId = atask.attr("id");
                     let plan = {
                       taskId: taskId,
@@ -851,6 +853,7 @@ $(function () {
                       let dateMark = Number(cell.attr("days"));
                       let real = cell.closest("td");
                       let dur = Number(cell.attr("hours")) - duration;
+                      let beforeHour = Number(cellBefore.attr("hours")) +duration
                       if (dueTime >= dateMark) {
                         
                         if (dur >= 0) {
@@ -872,13 +875,22 @@ $(function () {
                             responseMessage
                           ) {
                             if (responseMessage) {
-                              let dur = cell.attr("hours") - duration;
+                              
+
                               cell.attr("hours", dur);
                               cell.html(
                                 `${calendarDays[id]},hours left:${Math.floor(
                                   Number(dur) / 3600000
                                 )}:${Math.floor(
                                   (Number(dur) % 3600000) / 60000
+                                )}`
+                              );
+                              cellBefore.attr("hours", beforeHour);
+                              cellBefore.html(
+                                `${calendarDays[idBefore]},hours left:${Math.floor(
+                                  Number(beforeHour) / 3600000
+                                )}:${Math.floor(
+                                  (Number(beforeHour) % 3600000) / 60000
                                 )}`
                               );
                               atask.remove();

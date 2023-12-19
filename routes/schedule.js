@@ -199,8 +199,8 @@ router.route("/auto")
         validation.checkNull(stDt);
         validation.checkNull(edDt);
         schName = validation.checkString(schName);
-        stDt = validation.checkString(schName);
-        edDt = validation.checkString(schName);
+        stDt = validation.checkString(stDt);
+        edDt = validation.checkString(edDt);
                
         }catch(e){
             return res.status(400).json({error:e});
